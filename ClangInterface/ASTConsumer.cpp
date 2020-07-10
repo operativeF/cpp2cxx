@@ -393,7 +393,7 @@ int MyASTConsumer::InitializeCI(CompilerInstance& ci,
     DEBUG_ASTCONSUMER(dbgs() << "\n\nSearch paths output from ASTConsumer:\n"
                              << search_paths;);
     ci.createDiagnostics(nullptr, true);
-    clang::CompilerInvocation *Invocation = new clang::CompilerInvocation;
+    auto Invocation = std::make_shared<clang::CompilerInvocation>();
     ci.setInvocation(Invocation);
 
     // Configure TargetOptions.
@@ -404,7 +404,9 @@ int MyASTConsumer::InitializeCI(CompilerInstance& ci,
 
     /// set the language to c++98
     ci.getInvocation().setLangDefaults(ci.getLangOpts(),
-                                       clang::InputKind::IK_CXX,
+                                       clang::Language::CXX,
+                                       llvm::Triple(llvm::Twine(to->Triple)),
+                                       pci->getPreprocessorOpts(),
                                        clang::LangStandard::lang_cxx11);
 
     DEBUG_ASTCONSUMER(if(ci.getInvocation().getLangOpts()->CPlusPlus)
@@ -457,7 +459,7 @@ int MyASTConsumer::InitializeCI(CompilerInstance& ci,
     ApplyHeaderSearchOptions(PP.getHeaderSearchInfo(), HSOpts,
                              PP.getLangOpts(), PP.getTargetInfo().getTriple());
 
-    PP.getBuiltinInfo().InitializeBuiltins(PP.getIdentifierTable(),
+    PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(),
                                            PP.getLangOpts());
 
     clang::InitializePreprocessor(PP, PPOpts, PCHHR, FEOpts);
@@ -486,7 +488,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
 
   DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: "
                            << current_file;);
-  const FileEntry *pFile = ci.getFileManager().getFile(file_name.c_str());
+  const FileEntry *pFile = ci.getFileManager().getFile(file_name.c_str()).get();
   SourceManager &SourceMgr = ci.getSourceManager();
   SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, SourceLocation(), Kind));
 

@@ -1,116 +1,147 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-PROJECT(demacrofier)
+cmake_minimum_required(VERSION 3.10)
 
-###############################################################################
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-SET(HEADER_OUTPUT_PATH ${PROJECT_BINARY_DIR}/include)
+if(${CMAKE_VERSION} VERSION_LESS 3.10)
+  cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+endif()
 
-SET(CFE_PREFIX_PATH "/home/hiraditya/work/llvm/install")
+include("C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-SET(UTILITIES_PREFIX_PATH ".")
+project(demacrofier
+  DESCRIPTION "An automated system for identifying and potentially replacing macros with modern C++ constructs."
+  VERSION 2.0
+  LANGUAGES CXX)
 
-INCLUDE_DIRECTORIES("${UTILITIES_PREFIX_PATH}/general_utilities")
-INCLUDE_DIRECTORIES("${CFE_PREFIX_PATH}/include")
+find_package(LLVM REQUIRED CONFIG)
+
+include_directories(${LLVM_INCLUDE_DIRS})
+add_definitions(${LLVM_DEFINITIONS})
+
+find_package(Clang REQUIRED CONFIG)
+
+include_directories(${CLANG_INCLUDE_DIRS})
+add_definitions(${CLANG_DEFINITIONS})
+
+find_package(Boost 1.55 REQUIRED COMPONENTS program_options system wave)
+
+include_directories(${Boost_INCLUDE_DIRS})
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+set(HEADER_OUTPUT_PATH ${CMAKE_BINARY_DIR}/include)
+
+include_directories(${CMAKE_BINARY_DIR}/lib)
+include_directories(${CMAKE_BINARY_DIR}/bin)
+include_directories(${CMAKE_BINARY_DIR}/include)
+
 ###############################################################################
 #THIS HAS TO BE ADDED BEFORE SUPPLYING THE COMPILER FLAGS FOR THIS DIRECTORY FILES
 #THE CLANG LIBRARIES COMPILE WITH THE -fno-rtti FLAGS
 #AFTER THE LIBRARY HAS BEEN BUILT WE NEED TO SET THE COMPILER FLAGS ONCE AGAIN 
 #BECAUSE THE BOOST LIBRARIES USE rtti
-ADD_SUBDIRECTORY(ClangInterface)
+add_subdirectory(ClangInterface)
 
 ###############################################################################
 # Compiler options
-SET(LLVM_CXXFLAGS "-fPIC -fvisibility-inlines-hidden")
-IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "-pedantic -Wall -std=c++11 -g ${LLVM_CXXFLAGS}")
-  MESSAGE(STATUS "GCC detected - Adding compiler flags ${CMAKE_CXX_FLAGS}")
-ELSEIF(MSVC)
-  MESSAGE(STATUS "MSVC detected - Adding compiler flags")
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set(LLVM_CXXFLAGS "-fPIC -fvisibility-inlines-hidden")
+  target_compile_features(cpp2cxx PRIVATE "-pedantic -Wall -std=c++17 -g ${LLVM_CXXFLAGS}")
+  message(STATUS "GCC detected - Adding compiler flags ${CMAKE_CXX_FLAGS}")
+elseif(MSVC)
+  message(STATUS "MSVC detected - Adding compiler flags")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 ###############################################################################
 #INCLUDE OTHER SUBDIRECTORIES HERE WHICH ARE FINE WITH -fno-rtti.
-ADD_SUBDIRECTORY(general_utilities)
+add_subdirectory(general_utilities)
 
 ###############################################################################
-INCLUDE_DIRECTORIES("${UTILITIES_PREFIX_PATH}/general_utilities")
-INCLUDE_DIRECTORIES("${CFE_PREFIX_PATH}/include")
+include_directories("${CMAKE_SOURCE_DIR}/general_utilities")
 
 ############## INCLUDE DIRECTORIES RELATED TO CLANG ###########################
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}")
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/ClangInterface")
+include_directories("${CMAKE_SOURCE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/ClangInterface")
 
 ############################ DEBUG MACROS #####################################
-#ADD_DEFINITIONS(-DBUILD_NEW_MACRO_LIST)
-ADD_DEFINITIONS(-DCLANG_AST_DEBUG_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_PARSER_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_CONDITIONALS_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_CONDITIONALS1_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_DEMACROFIER_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_RLPARSER_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_RLPARSER2_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_TREE_PRINT)
-#ADD_DEFINITIONS(-DBUILD_NEW_MACRO_LIST_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_MACRO_DEPENDENCY_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_MACRO_DEPENDENCY2_PRINT)
-#ADD_DEFINITIONS(-DENABLE_WARNING_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_MACRO_CLASS_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_MACRO_CLASS2_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_MACRO_USE_CASE_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_CLEANUP_CODE_PRINT)
-#ADD_DEFINITIONS(-DDEBUG_VALIDATOR_PRINT)
-ADD_DEFINITIONS(-DDEBUG_SUGGESTION_PRINT)
-#ADD_DEFINITIONS(-DGMACROS="${HEADER_OUTPUT_PATH}/gMacros.dat")
+#add_definitions(-DBUILD_NEW_MACRO_LIST)
+add_definitions(-DCLANG_AST_DEBUG_PRINT)
+#add_definitions(-DDEBUG_PARSER_PRINT)
+#add_definitions(-DDEBUG_CONDITIONALS_PRINT)
+#add_definitions(-DDEBUG_CONDITIONALS1_PRINT)
+#add_definitions(-DDEBUG_DEMACROFIER_PRINT)
+#add_definitions(-DDEBUG_RLPARSER_PRINT)
+#add_definitions(-DDEBUG_RLPARSER2_PRINT)
+#add_definitions(-DDEBUG_TREE_PRINT)
+#add_definitions(-DBUILD_NEW_MACRO_LIST_PRINT)
+#add_definitions(-DDEBUG_MACRO_DEPENDENCY_PRINT)
+#add_definitions(-DDEBUG_MACRO_DEPENDENCY2_PRINT)
+#add_definitions(-DENABLE_WARNING_PRINT)
+#add_definitions(-DDEBUG_MACRO_CLASS_PRINT)
+#add_definitions(-DDEBUG_MACRO_CLASS2_PRINT)
+#add_definitions(-DDEBUG_MACRO_USE_CASE_PRINT)
+#add_definitions(-DDEBUG_CLEANUP_CODE_PRINT)
+#add_definitions(-DDEBUG_VALIDATOR_PRINT)
+add_definitions(-DDEBUG_SUGGESTION_PRINT)
+#add_definitions(-DGMACROS="${HEADER_OUTPUT_PATH}/gMacros.dat")
 
 ############## DEFINITIONS RELATED TO CLANG ###################################
-ADD_DEFINITIONS(-D__STDC_CONSTANT_MACROS)
-ADD_DEFINITIONS(-D__STDC_FORMAT_MACROS)
-ADD_DEFINITIONS(-D__STDC_LIMIT_MACROS)
-ADD_DEFINITIONS(-D_GNU_SOURCE)
-###############################################################################
-ADD_LIBRARY(cpp2cxx-core SHARED
-                RlCategory.cpp
-                ReplacementList.cpp
-                RlParser.cpp
-                Macro.cpp
-                MacroStat.cpp
-                UseCaseState.cpp
-                DepGraph.cpp
-                CondParser.cpp
-                Demacrofier.cpp
-                Parser.cpp
-                FileManager.cpp
-                Overseer.cpp
-                ConfigScheme.cpp
-              )
+add_definitions(-D__STDC_CONSTANT_MACROS)
+add_definitions(-D__STDC_FORMAT_MACROS)
+add_definitions(-D__STDC_LIMIT_MACROS)
+add_definitions(-D_GNU_SOURCE)
 
-#################### SPECIFYING THE LINK DIRECTORIES ##########################
-# Library directory paths
-LINK_DIRECTORIES(
-   "/usr/lib"
-   "/usr/local/lib"
-   "${CMAKE_PREFIX_PATH}/lib"
-   "${CFE_PREFIX_PATH}/lib"
+add_library(cpp2cxx-core
+  SHARED
+    RlCategory.cpp
+    ReplacementList.cpp
+    RlParser.cpp
+    Macro.cpp
+    MacroStat.cpp
+    UseCaseState.cpp
+    DepGraph.cpp
+    CondParser.cpp
+    Demacrofier.cpp
+    Parser.cpp
+    FileManager.cpp
+    Overseer.cpp
+    ConfigScheme.cpp
+  )
+
+add_dependencies(cpp2cxx-core ASTConsumer)
+
+target_link_libraries(cpp2cxx-core
+  ASTConsumer
+  Boost::system
+  Boost::wave
+  Boost::program_options
+  clangFrontendTool clangFrontend clangDriver clangSerialization clangCodeGen clangParse clangSema clangAnalysis clangEdit clangAST clangLex clangBasic
 )
 
 ###############################################################################
-ADD_EXECUTABLE(cpp2cxx-suggest
-                MainSuggest.cpp
-              )
-
-ADD_EXECUTABLE(cpp2cxx-finalize
-                MainFinalize.cpp
-              )
-FILE(COPY "cpp2cxx-validate.py" DESTINATION ${EXECUTABLE_OUTPUT_PATH})
-FILE(COPY "gMacros.dat" DESTINATION ${HEADER_OUTPUT_PATH})
-###############################################################################
-#ADD_LIBRARY()
-#FIND_LIBRARY()
-TARGET_LINK_LIBRARIES(cpp2cxx-suggest cpp2cxx-core boost_system boost_wave
- boost_program_options ASTConsumer cpp2cxx-debug clang
+add_executable(cpp2cxx-suggest
+    MainSuggest.cpp
 )
 
-TARGET_LINK_LIBRARIES(cpp2cxx-finalize cpp2cxx-core boost_system boost_wave
- boost_program_options ASTConsumer cpp2cxx-debug clang
+target_link_libraries(cpp2cxx-suggest
+    cpp2cxx-core
+    Boost::system
+    Boost::wave
+    Boost::program_options
+    ASTConsumer
+    cpp2cxx-debug
 )
+
+add_executable(cpp2cxx-finalize
+    MainFinalize.cpp
+)
+
+target_link_libraries(cpp2cxx-finalize
+    cpp2cxx-core
+    Boost::system
+    Boost::wave
+    Boost::program_options
+    ASTConsumer
+    cpp2cxx-debug
+)
+
+file(COPY "cpp2cxx-validate.py" DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY "gMacros.dat" DESTINATION ${HEADER_OUTPUT_PATH})
