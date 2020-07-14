@@ -43,7 +43,7 @@ void TrackMacro::MacroExpands(const Token &MacroNameTok, const MacroInfo* MI,
     m_istat->insert(presumed.getLine());
 
     CLANG_AST_DEBUG(dbgs() << "arguments are:";
-                    for(auto arg_it = MI->arg_begin();
+                    for(auto arg_it = MI->param_begin();
                         arg_it != MI->arg_end(); ++arg_it)
                       dbgs() << (*arg_it)->getNameStart() << "\t";);
 
@@ -166,7 +166,7 @@ void TrackMacro::PrintStats()
 
 void TrackMacro::VerifyMacroScopeFast(std::map<std::string, ParsedDeclInfo>const & FunctionInfo)
 {
-  std::map<std::string, ParsedDeclInfo>::const_iterator fi_iter = FunctionInfo.begin();
+  auto fi_iter = FunctionInfo.begin();
   std::map<std::string, CollectedMacroInfo>::iterator ms;
   std::map<int,int> FunctionDefinitionRange;
   std::map<int,int>::iterator fdr_iter;
@@ -209,7 +209,7 @@ void TrackMacro::VerifyMacroScopeFast(std::map<std::string, ParsedDeclInfo>const
 void TrackMacro::
 VerifyMacroScope(std::map<std::string, ParsedDeclInfo>const & FunctionInfo)
 {
-  std::map<std::string, ParsedDeclInfo>::const_iterator fi = FunctionInfo.begin();
+  auto fi = FunctionInfo.begin();
   std::map<std::string, CollectedMacroInfo>::iterator ms;
   for( ; fi != FunctionInfo.end(); ++fi) {
     ms = ASTMacroStat.begin();

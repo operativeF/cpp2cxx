@@ -41,7 +41,7 @@ Vertex_t MacTree::GetParent(Vertex_t const v)
   pn = cn->parent;
   DEBUG_TREE(dbgs()<<"Parent nodeIndex: "<<pn->nodeIndex<<"\n";);
   //std::map<Node*,Vertex_t,NodeOrder>::iterator nodeMap_iter;
-  NodeMap_t::iterator nodeMap_iter = nodeMap.find(pn);
+  auto nodeMap_iter = nodeMap.find(pn);
   return nodeMap_iter->second;
 }
 

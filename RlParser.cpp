@@ -61,7 +61,7 @@ void RlParser::Parse(ReplacementList& rl)
     //replacement_list_temp.push_back(token_type(boost::wave::T_NEWLINE));
   }
   //end = rl.rl_tokens.end();
-  std::vector<token_type>::iterator beg = replacement_list_temp.begin();
+  auto beg = replacement_list_temp.begin();
   end = replacement_list_temp.end();
 
   try {
@@ -191,7 +191,7 @@ void RlParser::ExpressionStatement()
     ///      expression_opt ;
     using namespace boost::wave;
     Assignment();
-    boost::wave::token_id id = boost::wave::token_id(*it);
+    auto id = boost::wave::token_id(*it);
 
   DEBUG_RLPARSER(
     std::stringstream id_value;
@@ -212,7 +212,7 @@ void RlParser::Assignment()
   Expression();
   //assignment-- function like only
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
 DEBUG_RLPARSER(
   std::cout << "\nin Assignment: "<<id_value.str();
@@ -255,7 +255,7 @@ void RlParser::Expression()
   //bool expr_valid = false;
   Expression1();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
 DEBUG_RLPARSER(
   std::cout << "\nin Expression: "<<id_value.str();
@@ -276,7 +276,7 @@ void RlParser::Expression1()
   using namespace boost::wave;
   Expression2();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
   DEBUG_RLPARSER(std::cout<<"\nin Expression1: "<<id_value.str(););
   while(id == T_EQUAL || id == T_NOTEQUAL || id == T_NOTEQUAL_ALT ||
@@ -294,7 +294,7 @@ void RlParser::Expression2()
   using namespace boost::wave;
   Expression3();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
   DEBUG_RLPARSER(std::cout<<"\nin Expression2: "<<id_value.str(););
   while(id == T_SHIFTLEFT || id == T_SHIFTRIGHT) {
@@ -310,7 +310,7 @@ void RlParser::Expression3()
   using namespace boost::wave;
   Expression4();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
   DEBUG_RLPARSER(std::cout<<"\nin Expression3: "<<id_value.str(););
   while(id == T_PLUS || id == T_MINUS) {
@@ -326,7 +326,7 @@ void RlParser::Expression4()
   using namespace boost::wave;
   Expression5();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value << it->get_value();
   DEBUG_RLPARSER(std::cout<<"\nin Expression4: "<<id_value.str(););
   while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT) {
@@ -342,7 +342,7 @@ void RlParser::Expression5()
   using namespace boost::wave;
   Expression6();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   DEBUG_RLPARSER(std::cout<<"\nin Expression5: "<<id_value.str(););
   while(id == T_DOTSTAR || id == T_ARROWSTAR) {
     Match(id);
@@ -357,7 +357,7 @@ void RlParser::Expression6()
   using namespace boost::wave;
   Expression7();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   DEBUG_RLPARSER(std::cout<<"\nin Expression6: "<<id_value.str(););
   while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT) {
     Match(id);
@@ -372,7 +372,7 @@ void RlParser::Expression7()
   using namespace boost::wave;
   Expression8();
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   DEBUG_RLPARSER(std::cout<<"\nin Expression7: "<<id_value.str(););
   if(id == T_POUND_POUND || id == T_POUND_POUND_ALT ||
     id == T_POUND_POUND_TRIGRAPH) {
@@ -386,7 +386,7 @@ void RlParser::Expression8()
   using namespace boost::wave;
   int brace_count = 0;
   std::stringstream id_value;
-  boost::wave::token_id id = boost::wave::token_id(*it);
+  auto id = boost::wave::token_id(*it);
   id_value<<it->get_value();
   DEBUG_RLPARSER(std::cout<<"\nin Expression8: "<<id_value.str()<<"\n";);
 

@@ -104,7 +104,7 @@ void CondParser::Assignment()
   Expression();
   //assignment-- function like only
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs()  << "\nin Assignment: "<<id_value.str(););
 
@@ -145,7 +145,7 @@ void CondParser::Expression()
   //bool expr_valid = false;
   Expression1();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs()  << "\nin Expression: "<<id_value.str(););
 
@@ -164,7 +164,7 @@ void CondParser::Expression1()
   using namespace boost::wave;
   Expression2();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression1: "<<id_value.str(););
 
@@ -182,7 +182,7 @@ void CondParser::Expression2()
   using namespace boost::wave;
   Expression3();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression2: "<<id_value.str(););
   while(id == T_SHIFTLEFT || id == T_SHIFTRIGHT) {
@@ -197,7 +197,7 @@ void CondParser::Expression3()
   using namespace boost::wave;
   Expression4();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs() << "\nin Expression3: " << id_value.str(););
 
@@ -213,7 +213,7 @@ void CondParser::Expression4()
   using namespace boost::wave;
   Expression5();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value << (*it).get_value();
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression4: "<<id_value.str(););
   while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT) {
@@ -228,7 +228,7 @@ void CondParser::Expression5()
   using namespace boost::wave;
   Expression6();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression5: "<<id_value.str(););
   while(id == T_DOTSTAR || id == T_ARROWSTAR) {
     Match(id);
@@ -242,7 +242,7 @@ void CondParser::Expression6()
   using namespace boost::wave;
   Expression7();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
 DEBUG_CONDITIONALS(
   dbgs() <<"\nin Expression6: "<<id_value.str();
 );
@@ -258,7 +258,7 @@ void CondParser::Expression7()
   using namespace boost::wave;
   Expression8();
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value<<(*it).get_value();
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression7: "<<id_value.str(););
   while(id == T_MINUS ||id == T_PLUS || id == T_NOT || id == T_NOT_ALT ||
@@ -274,7 +274,7 @@ void CondParser::Expression8()
 {
   using namespace boost::wave;
   std::stringstream id_value;
-  token_id id = token_id(*it);
+  auto id = token_id(*it);
   id_value<<(*it).get_value();
   DEBUG_CONDITIONALS(dbgs() <<"\nin Expression8: "<<id_value.str()<<"\n";);
 

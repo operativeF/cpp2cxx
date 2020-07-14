@@ -25,7 +25,7 @@ limitations under the License.
 
 int UseCaseState::PutToken(token_iterator tok_iter)
 {
-  boost::wave::token_id id = boost::wave::token_id(*tok_iter);
+  auto id = boost::wave::token_id(*tok_iter);
   if(id == boost::wave::T_LEFTPAREN){
     ++numParens;
     if(numParens == 1)

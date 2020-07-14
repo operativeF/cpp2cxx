@@ -282,7 +282,7 @@ PPMacro::get_replacement_list_dep_idlist() const
   //iterator over function_like PPMacro's arguments
   std::vector<std::pair<token_type,unsigned int> >::const_iterator iter_args;
   //iterator for the ReplacementList tokens
-  std::list<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
+  auto iter_rl_idlist = dep_idlist.begin();
   //remove all those identifiers which are in the function argument
   iter_args = identifier_parameters.begin();
   for(;iter_args != identifier_parameters.end();iter_args++) {

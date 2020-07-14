@@ -465,7 +465,7 @@ int main(int argc, char* argv[])
     pConfigScheme.SetBuildScheme(make_command);
 
     //step1. load the Overseer class with the configuration scheme
-    Overseer* pOverseer = new Overseer(pConfigScheme);
+    auto* pOverseer = new Overseer(pConfigScheme);
     //step2. start processing
     pOverseer->StartProcessing(!no_translate);
     std::cout<<"\ndone...\n";

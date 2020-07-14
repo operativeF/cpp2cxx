@@ -472,7 +472,7 @@ std::string Demacrofier::GetFunctionArgs(const PPMacro *m_ptr)const
   std::string dtype = "decltype(";
   std::stringstream arg_string;
 
-  std::vector<std::string>::const_iterator invok_iter =
+  auto invok_iter =
       m_ptr->get_use_case_string().begin();
   // identifier parameters iterator
   auto ip_iter = m_ptr->get_identifier_parameters().begin();
@@ -548,7 +548,7 @@ void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden,
                                      std::string const& outstr)
 {
   // each macro has an entry in the pASTMacroStat
-  ASTMacroStat_t::iterator ast_macro_iter = pASTMacroStat->find(macro_iden.str());
+  auto ast_macro_iter = pASTMacroStat->find(macro_iden.str());
   if(ast_macro_iter != pASTMacroStat->end() &&
      ast_macro_iter->second.invoked_lines.size()){
     auto line_no = ast_macro_iter->second.invoked_lines[0];
