@@ -72,14 +72,14 @@ void PPMacro::set_identifier_str(std::string str)
 //    std::cout<<"iden_string: "<<identifier_str<<std::endl;
 }
 
-void PPMacro::set_replacement_list(token_type tok)
+void PPMacro::set_replacement_list(const token_type& tok)
 {
   rep_list.set_replacement_list(tok);
   //ReplacementList.push_back(*it);
 //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
 }
 
-void PPMacro::set_replacement_list_str(std::string str, RlParser & rl_parser)
+void PPMacro::set_replacement_list_str(const std::string& str, RlParser & rl_parser)
 {
   rep_list.set_replacement_list_str(str, identifier_parameters);
 //    std::cout<<"repl_string: "<<replacement_list_str<<std::endl;
@@ -317,7 +317,7 @@ MacroScopeCategory PPMacro::get_macro_scope_category() const
 }
   //comparison is based on the token id's to determine their equivalence
 
-bool PPMacro::IsEquivalent(std::pair<token_iterator, token_iterator> token_iter_range) const
+bool PPMacro::IsEquivalent(const std::pair<token_iterator, token_iterator>& token_iter_range) const
 {
   return true;
 /*

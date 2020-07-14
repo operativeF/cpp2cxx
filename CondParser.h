@@ -53,7 +53,7 @@ typedef std::map<std::string,   //identifier
 class CondParser {
 
   public:
-    CondParser(std::string file_global_macros);
+    CondParser(const std::string& file_global_macros);
     void Parser(Node& tree_node, token_iterator t_it);
 
     bool Match(boost::wave::token_id id);
@@ -69,7 +69,7 @@ class CondParser {
     void Expression7();
     void Expression8();
 
-    bool PPCheckIdentifier(std::string id_str);
+    bool PPCheckIdentifier(const std::string& id_str);
     token_iterator GetTokenPosition();
   private:
     CondCategory condCat;

@@ -27,8 +27,9 @@ limitations under the License.
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <utility>
 
-CondParser::CondParser(std::string file_global_macros)
+CondParser::CondParser(const std::string& file_global_macros)
 {
   const unsigned int line_width = 2048;
   //putting line_width instead of 256 gives an error why??
@@ -518,7 +519,7 @@ void CondParser::Expression8()
 }
 
 
-bool CondParser::PPCheckIdentifier(std::string id_str)
+bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
   DEBUG_CONDITIONALS(dbgs() << "\nlooking for the identifier: "
                             << id_str << "\n");

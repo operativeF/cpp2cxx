@@ -421,7 +421,7 @@ void RlParser::Expression8()
       //post increment operator
       rl_dcat = RlDCat::dependent;
       std::for_each(funArgId.begin(),funArgId.end(),
-        [this](token_type tok) {
+        [this](const token_type& tok) {
           if(*this->it == tok)
             this->rl_dcat = RlDCat::independent;
         });
@@ -724,7 +724,7 @@ DEBUG_RLPARSER2(
   }
 }
 
-bool RlParser::IsRejectPredefinedMacro(std::string str) const
+bool RlParser::IsRejectPredefinedMacro(const std::string& str) const
 {
   //basically all the following macros are categorised as reject types
   if(pDemacroficationScheme->macrosPreventingDemacrofication.find(str)
@@ -740,7 +740,7 @@ DEBUG_RLPARSER(
   }
 }
 
-void RlParser::FillFormattedRL(token_type tok)
+void RlParser::FillFormattedRL(const token_type& tok)
 {
   using namespace boost::wave;
   token_id id = tok;

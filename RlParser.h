@@ -78,8 +78,8 @@ class RlParser {
     void Expression6();
     void Expression7();
     void Expression8();
-    bool IsRejectPredefinedMacro(std::string str) const;
-    void FillFormattedRL(token_type tok);
+    bool IsRejectPredefinedMacro(const std::string& str) const;
+    void FillFormattedRL(const token_type& tok);
   private:
     std::vector<token_type> funArgId;
     std::vector<token_type>::iterator it;

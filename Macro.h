@@ -77,8 +77,8 @@ class PPMacro
     void set_identifier_parameters(token_type const& tok,
                                    unsigned int parameter_count);
     void set_identifier_str(std::string str);
-    void set_replacement_list(token_type tok);
-    void set_replacement_list_str(std::string str, RlParser & rl_parser);
+    void set_replacement_list(const token_type& tok);
+    void set_replacement_list_str(const std::string& str, RlParser & rl_parser);
     void set_operation(PPOperation op);
     void set_macro_category(MacroCategory m_cat);
     void set_replacement_list_category(RlParser & rl_parser);
@@ -134,7 +134,7 @@ class PPMacro
 
     MacroScopeCategory get_macro_scope_category() const;
 
-    bool IsEquivalent(std::pair<token_iterator, token_iterator> token_iter_range) const;
+    bool IsEquivalent(const std::pair<token_iterator, token_iterator>& token_iter_range) const;
     void AnalyzeIdentifier() const;
     /// @brief keeps important details about macro for printing to a file
     void set_macro_stat();

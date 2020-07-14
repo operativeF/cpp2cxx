@@ -220,7 +220,7 @@ class MacTree {
     bool          DeleteVertex(Vertex_t v);
     void          DeleteNodes();
     bool          IsMacro(token_type const& tok);
-    void          CheckToken(token_iterator tok_iter);
+    void          CheckToken(const token_iterator& tok_iter);
 
     /// not defined: for future use
     Vertex_t      GetAncestor(int nesting_level);

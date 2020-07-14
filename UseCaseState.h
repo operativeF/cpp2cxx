@@ -46,7 +46,7 @@ class UseCaseState {
       : numParens(0), done(true)
     {}
 
-    int PutToken(token_iterator tok_iter);
+    int PutToken(const token_iterator& tok_iter);
 
     std::pair<token_iterator,token_iterator> Get()
     { return argIter; }

@@ -56,7 +56,7 @@ class ReplacementList {
     //use token_iterator const&
     ReplacementList();
     typedef std::vector<std::pair<token_type,unsigned int> >vpTokInt;
-    void set_replacement_list(token_type tok);
+    void set_replacement_list(const token_type& tok);
     void set_replacement_list_str(std::string const& str, vpTokInt argId);
     void set_replacement_list_category(RlParser & rl_parser);
     /// set by the dependency analyzer at a later stage

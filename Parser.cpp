@@ -97,7 +97,7 @@ void Parser::Parse(std::string file_name, ASTMacroStat_t* p, InvocationStat_t* i
 }
 
   /// @todo complete this function
-void Parser::Parse(std::string file_name)
+void Parser::Parse(const std::string& file_name)
 {
   logFile<<file_name<<":\n";
   /// @todo not clearing the list of local macros for a file
@@ -200,7 +200,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     if(!gMacros.is_open())
       throw ExceptionHandler("file: " + fileGlobalMacros + " couldn't be opened\n");
     std::for_each(globalMacros.begin(),globalMacros.end(),
-      [&gMacros](std::pair<std::string,std::string> gm) {
+      [&gMacros](const std::pair<std::string,std::string>& gm) {
         gMacros << gm.first <<"\n"<< gm.second<<"\n";
       });
     gMacros.close();
@@ -586,7 +586,7 @@ void Parser::PPIfHandler(Node& node, bool def)
   }
 }
 
-void Parser::ParseLocalMacros(std::string ifileStr, position_type pos)
+void Parser::ParseLocalMacros(std::string ifileStr, const position_type& pos)
 {
   //logFile<<"Parsing local Macros:\n";
   it = token_iterator(ifileStr.begin(), ifileStr.end(), pos,
@@ -671,7 +671,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
         pm_iter = pTree->GetMacro(*it);
         /// to be looked for exact macro
         std::for_each(pm_iter.first,pm_iter.second,
-          [this,&m_ptr,&defn_counter](std::pair<token_type,PPMacro*> tm_pair) {
+          [this,&m_ptr,&defn_counter](const std::pair<token_type,PPMacro*>& tm_pair) {
             ++defn_counter;
             if(tm_pair.first.get_position() == this->it->get_position())
               m_ptr = tm_pair.second;

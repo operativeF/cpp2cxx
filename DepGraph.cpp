@@ -253,7 +253,7 @@ bool MacTree::IsMacro(token_type const& tok)
 }
 
 //checks the token to get the use case of macro
-void MacTree::CheckToken(token_iterator tok_iter)
+void MacTree::CheckToken(const token_iterator& tok_iter)
 {
   PairMacroIter_t pm_iter = GetMacro(*tok_iter);
 

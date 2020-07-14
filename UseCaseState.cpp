@@ -23,7 +23,7 @@ limitations under the License.
 #include "UseCaseState.h"
 #include "ExceptionHandler.h"
 
-int UseCaseState::PutToken(token_iterator tok_iter)
+int UseCaseState::PutToken(const token_iterator& tok_iter)
 {
   auto id = boost::wave::token_id(*tok_iter);
   if(id == boost::wave::T_LEFTPAREN){

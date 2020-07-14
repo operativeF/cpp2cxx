@@ -91,7 +91,7 @@ class Parser {
     Parser(DemacroficationScheme const& demacrofication_scheme,
            std::ostream& log_file, std::ostream& macro_list_file);
     ~Parser();
-    void Parse(std::string file_name);
+    void Parse(const std::string& file_name);
     void Parse(std::string file_name,ASTMacroStat_t* p, InvocationStat_t* is=NULL);
 
     void ParseNewGlobalMacros(std::string const& raw_global_macro_file_name);
@@ -106,7 +106,7 @@ class Parser {
 
     void ParseMacros(MacroList_t& macro_list);
     void ParseGlobalMacros();
-    void ParseLocalMacros(std::string ifileStr, position_type pos);
+    void ParseLocalMacros(std::string ifileStr, const position_type& pos);
 
     bool PPCheckIdentifier(std::string const& id_value) const;
     bool PPCheckIdentifier(std::string const& id_value,

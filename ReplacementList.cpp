@@ -32,7 +32,7 @@ ReplacementList::ReplacementList()
  rl_dcat(RlDCat::dependent)
 { }
 
-void ReplacementList::set_replacement_list(token_type tok)
+void ReplacementList::set_replacement_list(const token_type& tok)
 {
   rl_tokens.push_back(tok);
 //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
@@ -44,7 +44,7 @@ void ReplacementList::set_replacement_list_str(std::string const& str,
   rl_str = str;
   if(!argId.empty()) {
     std::for_each(argId.begin(),argId.end(),
-      [this](std::pair<token_type,int> p_ti) {
+      [this](const std::pair<token_type,int>& p_ti) {
       this->funArgId.push_back(p_ti.first);
     });
   }
@@ -69,7 +69,7 @@ ReplacementList::get_replacement_list_str() const
   std::stringstream strm;
   //since the last token is a new line so ignoring the last token
   //by taking rl_tokens.back() instead of rl_tokens.end()
-  std::for_each(rl_tokens.begin(),rl_tokens.end()-1,[&strm](token_type tok) {
+  std::for_each(rl_tokens.begin(),rl_tokens.end()-1,[&strm](const token_type& tok) {
     strm<<tok.get_value();
   });
   return strm.str();
@@ -124,7 +124,7 @@ ReplacementList::get_replacement_list_idlist() const
 {
   std::list<token_type> id_list;
   std::for_each(rl_idlist.begin(),rl_idlist.end(),
-    [&id_list](token_type tok) {
+    [&id_list](const token_type& tok) {
       id_list.push_back(tok);
     });
   return id_list;
