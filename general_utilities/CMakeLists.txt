@@ -1,4 +1,4 @@
 
-add_library(cpp2cxx-debug SHARED
+add_library(cpp2cxx-debug STATIC
     debug.cpp
   )

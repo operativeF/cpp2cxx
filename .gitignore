@@ -6,6 +6,9 @@
 # Folders
 _obj
 _test
+build
+dummy_test
+cpp2cxx-cppcheck-build-dir
 
 # Temporaru files
 *.*~

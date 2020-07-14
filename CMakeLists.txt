@@ -11,6 +11,8 @@ project(demacrofier
   VERSION 2.0
   LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+
 find_package(LLVM REQUIRED CONFIG)
 
 include_directories(${LLVM_INCLUDE_DIRS})
@@ -90,7 +92,7 @@ add_definitions(-D__STDC_LIMIT_MACROS)
 add_definitions(-D_GNU_SOURCE)
 
 add_library(cpp2cxx-core
-  SHARED
+  STATIC
     RlCategory.cpp
     ReplacementList.cpp
     RlParser.cpp
@@ -113,7 +115,18 @@ target_link_libraries(cpp2cxx-core
   Boost::system
   Boost::wave
   Boost::program_options
-  clangFrontendTool clangFrontend clangDriver clangSerialization clangCodeGen clangParse clangSema clangAnalysis clangEdit clangAST clangLex clangBasic
+  clangFrontendTool
+  clangFrontend
+  clangDriver
+  clangSerialization
+  clangCodeGen
+  clangParse
+  clangSema
+  clangAnalysis
+  clangEdit
+  clangAST
+  clangLex
+  clangBasic
 )
 
 ###############################################################################
