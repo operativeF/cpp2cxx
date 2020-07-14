@@ -423,8 +423,8 @@ int main(int argc, char* argv[])
     }
     if(vm.count("demacrofication-granularity"))
     {
-      if(demacrofication_granularity.compare("OneFileAtATime") &&
-          demacrofication_granularity.compare("OneMacroAtATime")) {
+      if((demacrofication_granularity != "OneFileAtATime") &&
+         (demacrofication_granularity != "OneMacroAtATime")) {
         std::cerr<<"error: invalid value for demacrofication_granularity\n"
                  <<config_file_options;
         return -1;

@@ -356,7 +356,7 @@ MacroStat const* PPMacro::get_macro_stat()
 
 bool PPMacro::operator==(PPMacro const& mac) const
 { //return this->identifier == mac.identifier;
-  return (this->identifier_str.compare(mac.identifier_str) == 0);
+  return (this->identifier_str == mac.identifier_str);
 }
 
 /*bool PPMacro::operator==(token_type const& tok) const
