@@ -35,9 +35,9 @@ limitations under the License.
 // Read the file name and then look for macros.
 // Take the line and give it to boost_wave for tokenizing.
 
-#include <fstream>
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
+#include <fstream>
 
 Parser::Parser(DemacroficationScheme const& demacrofication_scheme,
                std::ostream& log_file, std::ostream& macro_list_file)
