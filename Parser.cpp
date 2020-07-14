@@ -46,7 +46,7 @@ Parser::Parser(DemacroficationScheme const& demacrofication_scheme,
    mlFile(macro_list_file),
    nesting_level(0),
    condCat(CondCategory::local),
-   pTree(NULL),
+   pTree(nullptr),
    macro_count(0),
    object_like_count(0),
    function_like_count(0)
@@ -647,7 +647,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
   boost::wave::token_id id;
   std::string demacrofied_string;
   it = it_begin;
-  PPMacro* m_ptr = NULL;
+  PPMacro* m_ptr = nullptr;
   typedef std::multimap<token_type,PPMacro*> TokenMacroMap_t;
   typedef std::pair<TokenMacroMap_t::iterator,
                     TokenMacroMap_t::iterator> PairMacroIter_t;
@@ -677,7 +677,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
               m_ptr = tm_pair.second;
           });
         // if there was no match then throw error, although it is unlikely
-        if(m_ptr == NULL) {
+        if(m_ptr == nullptr) {
           err_msg<<"  - error: "<<"no macro with identifier: "<<it->get_value()<<" found\n";
           throw ExceptionHandler(err_msg.str());
         }
