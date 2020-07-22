@@ -134,7 +134,7 @@ class Demacrofier {
     friend class Parser;
 
     // keeps a list of postponed macros according to the line number
-    typedef std::map<std::size_t, std::string> ReadyQueue_t;
+    using ReadyQueue_t = std::map<std::size_t, std::string>;
 
     ReadyQueue_t readyQueue;
     // contains all the line numbers where macros were invoked in current file

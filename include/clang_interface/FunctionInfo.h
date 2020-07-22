@@ -22,8 +22,10 @@
     CondCategory c_cat;
     MacroScopeCategory s_cat;
   };
-  typedef std::string MacroNameStr;
-  typedef std::map<MacroNameStr, CollectedMacroInfo> ASTMacroStat_t;
-  typedef std::multiset<std::size_t> InvocationStat_t;
+  
+  using MacroNameStr = std::string;
+  using ASTMacroStat_t = std::map<MacroNameStr, CollectedMacroInfo>;
+  using InvocationStat_t = std::multiset<std::size_t>;
+  
   //typedef std::multimap<int,MacroName> InvocationStat_t;
 #endif // FUNCTION_INFO

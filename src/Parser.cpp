@@ -658,7 +658,8 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
   std::string demacrofied_string;
   it = it_begin;
   PPMacro* m_ptr = nullptr;
-  typedef std::multimap<token_type,PPMacro*> TokenMacroMap_t;
+
+  using TokenMacroMap_t = std::multimap<token_type, PPMacro*>;
   using PairMacroIter_t = std::pair<TokenMacroMap_t::iterator, TokenMacroMap_t::iterator>;
   PairMacroIter_t pm_iter;
 

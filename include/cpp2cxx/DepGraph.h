@@ -117,26 +117,29 @@ struct NodeOrder {
   }
 };
 
-typedef std::multimap<token_type,PPMacro*,TokenOrder> TokenMacroMap_t;
-typedef std::pair<TokenMacroMap_t::iterator,
-                  TokenMacroMap_t::iterator> PairMacroIter_t;
+using TokenMacroMap_t = std::multimap<token_type,PPMacro*,TokenOrder>;
+using PairMacroIter_t = std::pair<TokenMacroMap_t::iterator,
+                                  TokenMacroMap_t::iterator>;
 
 //first arg: type of adjacency list, second arg: backbone of graph
 //Also defined in DepAnalyzer.h
-typedef boost::adjacency_list<boost::listS, boost::vecS,
-                                boost::directedS,Node*> Graph_t;
-//Also defined in DepAnalyzer.h
-typedef boost::graph_traits<Graph_t>::vertex_descriptor Vertex_t;
+using Graph_t = boost::adjacency_list<boost::listS,
+                                      boost::vecS,
+                                      boost::directedS,
+                                      Node*>;
 
-typedef boost::graph_traits<Graph_t>::vertex_iterator VertexIterator_t;
-typedef boost::graph_traits<Graph_t>::out_edge_iterator OutEdgeIterator_t;
+//Also defined in DepAnalyzer.h
+using Vertex_t = boost::graph_traits<Graph_t>::vertex_descriptor;
+
+using VertexIterator_t = boost::graph_traits<Graph_t>::vertex_iterator;
+using OutEdgeIterator_t = boost::graph_traits<Graph_t>::out_edge_iterator;
 
 //since we are storing pointers no need of a multimap
-typedef std::map<Node*,Vertex_t,NodeOrder> NodeMap_t;
+using NodeMap_t = std::map<Node*,Vertex_t,NodeOrder>;
 
 // vector of pairs to retain the order in which they occur
 //also defined in the DepAnalyzer.h
-typedef std::vector<std::pair<PPMacro*,std::vector<PPMacro*> > > DepList_t;
+using DepList_t = std::vector<std::pair<PPMacro*, std::vector<PPMacro*>>>;
 
 //not used rite now
 class DFSVisitor : public boost::default_dfs_visitor

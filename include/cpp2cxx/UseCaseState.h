@@ -42,7 +42,8 @@ limitations under the License.
  */
 class UseCaseState {
   private:
-      typedef std::vector<token_iterator> VecTokenIter_t;
+      using VecTokenIter_t = std::vector<token_iterator>;
+      
   public:
     UseCaseState()
       : numParens(0), done(true)

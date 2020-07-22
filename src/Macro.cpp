@@ -145,7 +145,6 @@ void PPMacro::set_use_case_string(std::vector<std::string>& vec_string)
          */
   if(!use_case_set){
     invoArgs = vec_string;
-    using namespace general_utilities;
     DEBUG_MACRO_USE_CASE(std::cout<<"Use case args for macro: "
                                   << identifier_str << ":" <<invoArgs<<"\n";);
     use_case_set = true;

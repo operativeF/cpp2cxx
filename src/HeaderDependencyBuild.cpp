@@ -15,7 +15,6 @@ std::ostream& operator<<(std::ostream& os,std::set<T> const& l)
 return os;
 }
 
-using namespace std;
 // this files only requires list of files from grep and aftre that a little preprocessing
 // grep '#include' * > files_list
 // it outputs in following format
@@ -32,12 +31,13 @@ int main()
   //file1 file2
   //that means file1 includes file2 as header
   const char* file_name = "files_list";
-  ifstream fp(file_name);
+  std::ifstream fp(file_name);
   if(!fp.is_open())
     return -1;
 
-  pair<string,string> file_include_pair;
-  map<string,set<string> > dep_list;
+  std::pair<std::string, std::string> file_include_pair;
+  std::map<std::string, std::set<std::string>> dep_list;
+
   while(fp.good()){
     fp >> file_include_pair.first;
     fp >> file_include_pair.second;
@@ -48,12 +48,13 @@ int main()
 
   //print the list
   //make sure the dm_dir is already there
-  ofstream ofp("dm_dir/include_dependency.yaml");
+  std::ofstream ofp("dm_dir/include_dependency.yaml");
+
   if(!ofp.is_open())
     return -1;
-  map<string,set<string> >::iterator dep_list_iter;
+  std::map<std::tring, std::set<std::string> >::iterator dep_list_iter;
   for_each(dep_list.begin(), dep_list.end(),
-      [&ofp](pair<string,set<string> > p){
+      [&ofp](std::pair<std::string, std::set<std::string> > p){
         std::cout<<"\nPrinting "<<p.first<<" and "<<p.second;
         ofp<<p.first<<":\n"<<p.second<<"\n";
       });

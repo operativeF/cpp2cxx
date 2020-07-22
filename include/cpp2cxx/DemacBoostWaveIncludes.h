@@ -17,9 +17,9 @@
 #include <vector>
 #include <map>
 
-typedef boost::wave::cpplexer::lex_token<> token_type;
-typedef boost::wave::cpplexer::lex_iterator<token_type> token_iterator;
-typedef token_type::position_type position_type;
+using token_type = boost::wave::cpplexer::lex_token<>;
+using token_iterator = boost::wave::cpplexer::lex_iterator<token_type>;
+using position_type = token_type::position_type;
 
 /**
  * @struct TokenOrder

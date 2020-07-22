@@ -42,9 +42,8 @@ limitations under the License.
 #include <string>
 #include <map>
 
-typedef std::map<std::string,   //identifier
-        std::string             //replacement text
-        > MacroList_t;
+using MacroList_t = std::map<std::string,   //identifier
+                             std::string>;  //replacement text
 
 /**
  * @class CondParser

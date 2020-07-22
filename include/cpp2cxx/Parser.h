@@ -50,11 +50,10 @@ limitations under the License.
 #include <map>
 #include <tuple>
 
-typedef std::map<std::string,   //identifier
-        std::string>            //replacement text
-        MacroList_t;
-typedef Tuple4_t<std::string,std::string,std::string,MacroCategory>
-        Tuple4MacroStat_t;
+using MacroList_t = std::map<std::string,   //identifier
+                             std::string>;  //replacement text
+                             
+using Tuple4MacroStat_t = Tuple4_t<std::string, std::string, std::string, MacroCategory>;
 
 /** forward declaration
  * @class CondParser

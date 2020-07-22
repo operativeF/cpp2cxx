@@ -145,15 +145,16 @@ struct ReplacementListTokenType
 /**
  * @typedef ReplacementListDependencyCategory RlDCat
  */
-typedef ReplacementListDependencyCategory RlDCat;
+using RlDCat = ReplacementListDependencyCategory;
 /**
  * @typedef ReplacementListClosureCategory RlCCat;
  */
-typedef ReplacementListClosureCategory RlCCat;
+using RlCCat = ReplacementListClosureCategory;
 /**
  * @typedef ReplacementListTokenType RlTokType;
  */
-typedef ReplacementListTokenType RlTokType;
+using RlTokType = ReplacementListTokenType;
+
 std::ostream& operator<<(std::ostream& os,RlCCat const& cat);
 std::ostream& operator<<(std::ostream& os,RlDCat const& cat);
 

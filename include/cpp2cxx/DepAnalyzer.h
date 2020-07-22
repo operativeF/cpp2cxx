@@ -57,14 +57,16 @@ class DepAnalyzer {
 
      // vector of pairs to retain the order in which they occur
      //also defined in the DepGraph.h
-    typedef typename std::vector<std::pair<Vertex_t*,std::vector<Vertex_t*> >
-                                   > DepList_t;
-     //also defined in the DepGraph.h
-    typedef typename boost::adjacency_list<boost::listS, boost::vecS,
-                                boost::directedS,Vertex_t*> Graph_t;
+    using DepList_t = std::vector<std::pair<Vertex_t*, std::vector<Vertex_t*>>>;
 
-    typedef typename boost::graph_traits<Graph_t>::vertex_descriptor Vd_t;
-    typedef typename std::map<Vertex_t*,Vd_t,VertexOrder> MapVertexVd_t;
+     //also defined in the DepGraph.h
+    using Graph_t = boost::adjacency_list<boost::listS,
+                                          boost::vecS,
+                                          boost::directedS,
+                                          Vertex_t*>;
+
+    using Vd_t = typename boost::graph_traits<Graph_t>::vertex_descriptor;
+    using MapVertexVd_t = std::map<Vertex_t*,Vd_t,VertexOrder>;
 
   public:
      //check if the map has the object type that is less than convertible

@@ -7,21 +7,6 @@
 
 #include <iostream>
 
-using clang::CompilerInstance;
-using clang::TargetOptions;
-using clang::TargetInfo;
-using clang::FileEntry;
-using clang::Token;
-using clang::ASTContext;
-using clang::ASTConsumer;
-using clang::Parser;
-using clang::Preprocessor;
-using clang::SourceManager;
-using clang::SourceLocation;
-using clang::FunctionDecl;
-/// from TrackMacro.hpp
-using clang::TrackMacro;
-
 auto operator<<(std::ostream& os,const ParsedDeclInfo& inf) -> std::ostream&
 {
   os<<inf.start_line;
@@ -385,7 +370,7 @@ bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef d)
 /******************************************************************************
  *
  *****************************************************************************/
-auto MyASTConsumer::InitializeCI(CompilerInstance& ci,
+auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
                                 std::vector<std::string> const& search_paths) -> int
 {
     pci = &ci;
@@ -398,7 +383,7 @@ auto MyASTConsumer::InitializeCI(CompilerInstance& ci,
     // Configure TargetOptions.
     //TargetOptions &to = ci.getInvocation().getTargetOpts();
     //to.Triple = llvm::sys::getDefaultTargetTriple();
-    auto to = std::make_shared<TargetOptions>();
+    auto to = std::make_shared<clang::TargetOptions>();
     to->Triple = llvm::sys::getDefaultTargetTriple();
 
     /// set the language to c++98
@@ -411,7 +396,7 @@ auto MyASTConsumer::InitializeCI(CompilerInstance& ci,
     DEBUG_ASTCONSUMER(if(ci.getInvocation().getLangOpts()->CPlusPlus)
                         dbgs() << "c++ is defined now";);
 
-    TargetInfo *pti = TargetInfo::CreateTargetInfo(ci.getDiagnostics(),
+    auto* pti = clang::TargetInfo::CreateTargetInfo(ci.getDiagnostics(),
                                                    to);
                                                    //ci.getInvocation().TargetOpts);
 
@@ -431,7 +416,7 @@ auto MyASTConsumer::InitializeCI(CompilerInstance& ci,
 
     set_package_specific_options(PPOpts);
 
-    Preprocessor& PP = ci.getPreprocessor();
+    clang::Preprocessor& PP = ci.getPreprocessor();
     HeaderSearchOptions& HSOpts = ci.getHeaderSearchOpts();
 
     /// use the libc++ library
@@ -477,7 +462,7 @@ auto MyASTConsumer::InitializeCI(CompilerInstance& ci,
 
 void MyASTConsumer::DumpContent(std::string const& file_name)
 {
-  CompilerInstance& ci = *pci;
+  clang::CompilerInstance& ci = *pci;
   current_file = file_name;
 
   // Kind is C_User for now because I do not know how to set the righ option,
@@ -487,9 +472,9 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
 
   DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: "
                            << current_file;);
-  const FileEntry *pFile = ci.getFileManager().getFile(file_name.c_str()).get();
-  SourceManager &SourceMgr = ci.getSourceManager();
-  SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, SourceLocation(), Kind));
+  const clang::FileEntry *pFile = ci.getFileManager().getFile(file_name.c_str()).get();
+  clang::SourceManager &SourceMgr = ci.getSourceManager();
+  SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));
 
   // set file and loc parameters for the track_macro callback
   // placing here is important. It should be after the source manager
@@ -502,7 +487,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
   ci.getDiagnosticClient().EndSourceFile();
 }
 
-void MyASTConsumer::PrintSourceLocation(SourceManager& sm, SourceLocation loc)
+void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceLocation loc)
 {
     clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
     /// print only when the functions are in the current file
@@ -512,13 +497,12 @@ void MyASTConsumer::PrintSourceLocation(SourceManager& sm, SourceLocation loc)
     }
 }
 
-void MyASTConsumer::PrintSourceLocation(FunctionDecl* fd)
+void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
 {
   clang::CompilerInstance& ci = *pci;
-  using namespace clang;
   ParsedDeclInfo inf;
-  SourceManager& sm = ci.getSourceManager();
-  PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
+  clang::SourceManager& sm = ci.getSourceManager();
+  clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
   if(current_file == presumed.getFilename()) {
 /*    std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";

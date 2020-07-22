@@ -9,10 +9,10 @@
 #include <iostream>
 #include <fstream>
 
-typedef std::set<std::string> ValidMacros_t;
+using ValidMacros_t = std::set<std::string>;
 
-class ValidatorMap{
-
+class ValidatorMap
+{
 public:
     void InitValidatorMap(std::string const& v_file)
     {
