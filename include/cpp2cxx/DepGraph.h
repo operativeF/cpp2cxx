@@ -197,24 +197,22 @@ class MacTree {
     void          PushBackMacro(PPMacro& mac);
 
     /// @brief returns the macro associated having the identifier token as tok
-    PairMacroIter_t GetMacro(token_type const& tok);
+    PairMacroIter_t GetMacro(const token_type& tok);
 
     /// @brief sets the pointer of the current node to the parent node
     void          GotoParent();
 
     /// @brief builds the dependency list, and returns a refernce to it
-    DepList_t const& BuildMacroDependencyList();
+    const DepList_t& BuildMacroDependencyList();
 
     /// @brief gets the vertex descriptor to the parent of the current vertex
     Vertex_t      GetParent(Vertex_t const v);
 
     /// @brief returns the pair of iterators to the siblings
-    std::pair<OutEdgeIterator_t, OutEdgeIterator_t>
-                  GetSiblings(Vertex_t const vd);
+    std::pair<OutEdgeIterator_t, OutEdgeIterator_t> GetSiblings(Vertex_t const vd);
 
     /// @brief returns the pair of iterators to the children
-    std::pair<OutEdgeIterator_t, OutEdgeIterator_t>
-                  GetChildren(Vertex_t const vd);
+    std::pair<OutEdgeIterator_t, OutEdgeIterator_t> GetChildren(Vertex_t const vd);
 
     bool          MakeChild(Vertex_t parentV, Vertex_t childV);
     bool          MakeSibling(Vertex_t firstV,Vertex_t secondV);

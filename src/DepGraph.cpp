@@ -163,45 +163,49 @@ void MacTree::PushBackMacro(PPMacro& mac)
   tokenMacroMap.insert(std::pair<token_type,PPMacro*>(m_ptr->get_identifier(),m_ptr));
 }
 
-DepList_t const& MacTree::BuildMacroDependencyList()
+const DepList_t& MacTree::BuildMacroDependencyList()
 {
-  PPMacro* m_ptr;
-  std::list<token_type> id_list;
-  std::list<token_type>::iterator id_list_iter;
-  std::stringstream err_msg;
-  TokenMacroMap_t::iterator tmm_iter;
-  tmm_iter = tokenMacroMap.begin();
-  std::vector<PPMacro*>::iterator mp_iter;
-  mp_iter = linearOrder.begin();
+  std::vector<std::pair<std::string, std::string>> missing_macros;
+
   //putting the macros in macroDepList as they occur
-  for(; mp_iter != linearOrder.end(); mp_iter++) {
-    m_ptr = *mp_iter;
+  for(const auto& mp_iter : linearOrder)
+  {
     //every loop should have a new instance to do away with emptying
     std::vector<PPMacro*> vec_mp;
-    DEBUG_TREE(dbgs()<<"Processing Macro: "<<m_ptr->get_identifier_str()<<"\n";);
 
-    id_list = m_ptr->get_replacement_list_dep_idlist();
-    id_list_iter = id_list.begin();
-    for(; id_list_iter != id_list.end();id_list_iter++) {
-      tmm_iter = tokenMacroMap.find(*id_list_iter);
+    DEBUG_TREE(dbgs() << "Processing Macro: " << mp_iter->get_identifier_str() << "\n";);
+
+    for(const auto& anId : mp_iter->get_replacement_list_dep_idlist())
+    {
+      auto tmm_iter = tokenMacroMap.find(anId);
+
       //check if the token was not found
-      try {
-        if(tmm_iter != tokenMacroMap.end()) {
-          vec_mp.push_back(tmm_iter->second);//if macro found
-        }
-        else {//if not then throw the error
-          err_msg << "Exception Line Number: "
-                  << id_list_iter->get_position().get_line()
-                  << ", No macro found for token: "
-                  << id_list_iter->get_value()<<"\n";
-          throw ExceptionHandler(err_msg.str());
-        }
-      } catch(ExceptionHandler &e) {
-        std::cout<<e.GetMessage();;
+      if(tmm_iter != tokenMacroMap.end())
+      {
+        vec_mp.push_back(tmm_iter->second);
+      }
+      else
+      {
+        const auto line_val = std::to_string(anId.get_position().get_line());
+        const auto val = std::string(anId.get_value().c_str());
+        missing_macros.emplace_back(std::make_pair(line_val, val));
       }
     }
-    macroDepList.push_back(std::make_pair(m_ptr,vec_mp));
+
+    macroDepList.push_back(std::make_pair(mp_iter, vec_mp));
   }
+
+  for(const auto& mmacro : missing_macros)
+  {
+    std::string err_msg = "Exception Line Number: ";
+    err_msg.append(mmacro.first);
+    err_msg.append(", No macro found for token: ");
+    err_msg.append(mmacro.second);
+    err_msg.append("\n");
+    
+    std::cout << err_msg;
+  }
+
   return macroDepList;
 }
 
@@ -214,12 +218,11 @@ void MacTree::GotoParent()
 void MacTree::DeleteNodes()
 {
   //for each out_edges call the delete
-  std::pair<VertexIterator_t, VertexIterator_t> vp;
   //vertices(g) returns the pair of vertex iterators
   //the first one points to the first vertex
   //the second points past the end of the last vertex
   //dereferencing the vertex iterator gives the vertex object
-  for(vp = vertices(depGraph); vp.first != vp.second; ++vp.first) {
+  for(auto vp = vertices(depGraph); vp.first != vp.second; ++vp.first) {
     delete depGraph[*(vp.first)];
   }
 }
@@ -227,7 +230,7 @@ void MacTree::DeleteNodes()
 bool MacTree::DeleteVertex(Vertex_t v)
 {
   //first delete all the macros in the node as they are allocated on the store
-  if(v == startVertex) {
+  if(startVertex == v) {
     return false;
 }
   if(currVertex == v) {
