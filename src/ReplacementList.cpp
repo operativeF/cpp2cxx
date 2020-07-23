@@ -120,10 +120,10 @@ ReplacementList::get_replacement_list_token_type()
 }
 
 
-std::list<token_type>
+std::vector<token_type>
 ReplacementList::get_replacement_list_idlist() const
 {
-  std::list<token_type> id_list;
+  std::vector<token_type> id_list;
   std::for_each(rl_idlist.begin(),rl_idlist.end(),
     [&id_list](const token_type& tok) {
       id_list.push_back(tok);

@@ -79,7 +79,7 @@ class ReplacementList {
     RlTokType&
     get_replacement_list_token_type();
 
-    std::list<token_type>
+    std::vector<token_type>
     get_replacement_list_idlist() const;
 
   private:

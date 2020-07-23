@@ -267,21 +267,21 @@ CondCategory PPMacro::get_conditional_category() const
 { return condCat; }
 
 
-std::list<token_type>
+std::vector<token_type>
 PPMacro::get_replacement_list_idlist() const
 { return rep_list.get_replacement_list_idlist(); }
 
-std::list<token_type>
+std::vector<token_type>
 PPMacro::get_replacement_list_dep_idlist() const
 {
   //will contain dependent identifiers in the ReplacementList
   //i.e. those which do not occur as function arguments
   if(m_cat == MacroCategory::null_define)
   {
-    return std::list<token_type>{};
+    return std::vector<token_type>{};
   }
   
-  std::list<token_type> dep_idlist = rep_list.get_replacement_list_idlist();
+  std::vector<token_type> dep_idlist = rep_list.get_replacement_list_idlist();
 
   if(m_cat == MacroCategory::object_like)
   {
@@ -291,18 +291,22 @@ PPMacro::get_replacement_list_dep_idlist() const
   //iterator over function_like PPMacro's arguments
   std::vector<std::pair<token_type,unsigned int> >::const_iterator iter_args;
   //iterator for the ReplacementList tokens
-  std::list<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
+  std::vector<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
   //remove all those identifiers which are in the function argument
   iter_args = identifier_parameters.begin();
   for(;iter_args != identifier_parameters.end();iter_args++) {
     iter_rl_idlist = dep_idlist.begin();
-    for( ; iter_rl_idlist != dep_idlist.end(); iter_rl_idlist++) {
+    for(; iter_rl_idlist != dep_idlist.end();) {
       if(iter_args->first == *iter_rl_idlist) {
         //remove the identifiers which are in the function argument
-        dep_idlist.erase(iter_rl_idlist);
+        iter_rl_idlist = dep_idlist.erase(iter_rl_idlist);
         //since the iterators will be invalidated after deletion
-        iter_rl_idlist = dep_idlist.begin();
       }
+      else
+      {
+        ++iter_rl_idlist;
+      }
+      
     }
   }
 

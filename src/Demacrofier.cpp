@@ -460,13 +460,18 @@ std::string Demacrofier::DemacrofyFunctionLikePostponed(const PPMacro *m_ptr)con
 std::string Demacrofier::GetFunctionClosure(const PPMacro *m_ptr)
 {
   std::string closure_str;
-  std::list<token_type> dep_list = m_ptr->get_replacement_list_dep_idlist();
-  std::list<token_type>::const_iterator dep_list_iter = dep_list.begin();
-  if(!dep_list.empty()){
+
+  std::vector<token_type> dep_list = m_ptr->get_replacement_list_dep_idlist();
+  std::vector<token_type>::const_iterator dep_list_iter = dep_list.begin();
+
+  if(!dep_list.empty())
+  {
     // taking all the parameters by reference
     closure_str = "&" ;
     closure_str += dep_list_iter->get_value().c_str();
-    while(++dep_list_iter != dep_list.end()) {
+
+    while(++dep_list_iter != dep_list.end())
+    {
       closure_str += ", &";
       closure_str += dep_list_iter->get_value().c_str();
     }

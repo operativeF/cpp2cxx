@@ -118,10 +118,10 @@ class PPMacro
     RlCCat
     get_replacement_list_closure_category() const;
 
-    std::list<token_type>
+    std::vector<token_type>
     get_replacement_list_idlist() const;
 
-    std::list<token_type>
+    std::vector<token_type>
     get_replacement_list_dep_idlist() const;
 
     CondCategory get_conditional_category() const;
