@@ -41,25 +41,18 @@ class MyASTConsumer : public clang::ASTConsumer
 {
 
 public:
-    MyASTConsumer()
-    { 
-    }
-
-    ~MyASTConsumer() 
-    { 
-    }
-
     virtual bool HandleTopLevelDecl(clang::DeclGroupRef d);
     int InitializeCI(clang::CompilerInstance& ci,
-                     std::vector<std::string> const& search_paths);
+                     const std::vector<std::string>& search_paths);
 
-    void DumpContent(std::string const& file_name);
+    void DumpContent(const std::string& file_name);
     void PrintSourceLocation(clang::FunctionDecl* fd);
     void PrintSourceLocation(clang::SourceManager& sm, clang::SourceLocation loc);
     void PrintStats();
     void VerifyMacroScope(bool use_fast);
     ASTMacroStat_t GetMacroStat();
     InvocationStat_t* GetInvocationStat(){ return track_macro->GetInvocationStat(); }
+
 private:
     clang::CompilerInstance *pci;
 

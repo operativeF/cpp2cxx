@@ -6,7 +6,7 @@ Copyrights remain with the original copyright holders.
 Use of this material is by permission and/or license.
 
 Copyright [2012] Aditya Kumar, Andrew Sutton, Bjarne Stroustrup
-
+          [2020] Thomas Figueroa
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -199,14 +199,17 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
   std::stringstream arg_str;
   int parameter_count = 0;
   std::vector<std::pair<token_type,unsigned int> >::const_iterator p_it;
-  if(!m_ptr->get_identifier_parameters().empty()) {
+
+  if(!m_ptr->get_identifier_parameters().empty())
+  {
     //for the first argument in the function like macro
     p_it = m_ptr->get_identifier_parameters().begin();
     parameter_count++;
     template_arg << "template <"
                  << "class _T"
                  << p_it->second;
-    if(p_it->first != boost::wave::T_EOF) {
+    if(p_it->first != boost::wave::T_EOF)
+    {
       arg_str << "_T"
               << p_it->second
               << " && "  //space
@@ -214,23 +217,27 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
     }
 
     //for the 2nd till the last argument in the function like macro
-    while(++p_it != m_ptr->get_identifier_parameters().end()) {
+    while(++p_it != m_ptr->get_identifier_parameters().end())
+    {
       //  parameter_count++;
         template_arg << ", "; //comma then space
         template_arg << "class _T"
                      << p_it->second;
 
         arg_str << ", ";//comma then space
-        if(p_it->first != boost::wave::T_EOF) {
+        if(p_it->first != boost::wave::T_EOF)
+        {
           arg_str << "_T"
                   << p_it->second
                   << " && "  //space
                   << p_it->first.get_value();
         }
     }
+
     template_arg << "> "; // '>' then space
     demacrofied_line << template_arg.str();
   }
+
   demacrofied_line << "\nvoid "  //auto then space
                    << m_ptr->get_identifier().get_value()
                    << "(" << arg_str.str()<< ")\n{\n"
