@@ -11,13 +11,13 @@ It is a set of three tools (i.e., cpp2cxx-suggest, cpp2cxx-validate, and cpp2cxx
 User guide and installation details:
 INSTALL.pdf
 
-https://github.com/hiraditya/cpp2cxx/blob/master/INSTALL.pdf
+https://github.com/operativeF/cpp2cxx/blob/master/INSTALL.pdf
 
 
 -------------------------------------------------------------------------------------------------------------
 
 Builds with 
-**llvm/clang-3.8**
+**Visual Studio 2019 / 16.8**
 
 -------------------------------------------------------------------------------------------------------------
 

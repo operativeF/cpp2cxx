@@ -7,7 +7,7 @@ Use of this material is by permission and/or license.
 
 Copyright [2012] Aditya Kumar, Andrew Sutton, Bjarne Stroustrup
           [2020] Thomas Figueroa
-
+          
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
