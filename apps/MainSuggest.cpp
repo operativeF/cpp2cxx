@@ -433,16 +433,15 @@ int main(int argc, char* argv[])
         pConfigScheme.SetBuildScheme(make_command);
 
         //step1. load the Overseer class with the configuration scheme
-        auto* pOverseer = new Overseer(pConfigScheme);
+        auto pOverseer = Overseer(pConfigScheme);
         //step2. start processing
-        pOverseer->StartProcessing(!no_translate);
+        pOverseer.StartProcessing(!no_translate);
         std::cout << "\ndone...\n";
 
 
         ///@todo when global_macros_formatted is provided use that one
         plog_file.close();
         pstat_file.close();
-        delete pOverseer;
         //    delete pConfigScheme;
     }
     catch(const char* s)
