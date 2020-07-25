@@ -143,7 +143,7 @@ void Parser::ReadGlobalMacros(std::string const& global_macro_file_name)
         // @TODO: Initialize these.
         char fc[line_width];
         char sc[line_width];
-        std::ifstream gMacros(global_macro_file_name);
+        std::ifstream gMacros(global_macro_file_name, std::ios_base::in);
         if(!gMacros.is_open())
         {
             logFile << "  - error: " << global_macro_file_name << " couldn't be opened\n";
@@ -216,7 +216,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     {
         //writing into fileGlobalMacros
         ParseMacros(globalMacros);
-        std::ofstream gMacros(fileGlobalMacros);
+        std::ofstream gMacros(fileGlobalMacros, std::ios_base::out);
         if(!gMacros.is_open())
         {
             throw ExceptionHandler("file: " + fileGlobalMacros + " couldn't be opened\n");

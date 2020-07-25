@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
         if(vm.count("macro-stat-file"))
         {
             macro_list_file = output_directory + "/" + macro_list_file;
-            mac_stat_file.open(macro_list_file);
+            mac_stat_file.open(macro_list_file, std::ios_base::out);
             if(!mac_stat_file.is_open())
             {
                 std::cerr << "file to list macros: " << macro_list_file << " could not be opened, "
@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
         if(vm.count("log-file"))
         {
             log_file = output_directory + "/" + log_file;
-            plog_file.open(log_file);
+            plog_file.open(log_file, std::ios_base::out);
             if(plog_file.is_open())
             {
                 err_outstream = &plog_file;
@@ -303,7 +303,7 @@ int main(int argc, char* argv[])
         if(vm.count("stat-file"))
         {
             stat_file = output_directory + "/" + stat_file;
-            pstat_file.open(stat_file);
+            pstat_file.open(stat_file, std::ios_base::out);
             if(pstat_file.is_open())
             {
                 stat_outstream = &pstat_file;

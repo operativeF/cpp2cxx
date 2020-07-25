@@ -37,7 +37,7 @@ CondParser::CondParser(const std::string& file_global_macros)
     // @TODO: Initialize these
     char fc[line_width];
     char sc[line_width];
-    std::ifstream gMacros(file_global_macros);
+    std::ifstream gMacros(file_global_macros, std::ios_base::in);
     if(!gMacros.is_open())
     {
         return;

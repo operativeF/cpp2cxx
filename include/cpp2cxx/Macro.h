@@ -155,13 +155,13 @@ private:
     std::string identifier_str;
     //keep the function_like PPMacro's arguments and their position
     vpTokInt identifier_parameters;
-    PPOperation operation;     //define or undefine etc...
+    PPOperation operation {PPOperation::unknown};     //define or undefine etc...
     MacroCategory m_cat;       //function like or object like etc...
     MacroScopeCategory m_scat; // inside function, inside class, etc...
     //log file to store all the errors and warnings etc.
     std::ostream& logFile;
     ReplacementList rep_list;
-    CondCategory condCat; //either config or local
+    CondCategory condCat {CondCategory::config};
     // keep only the first use case
     std::pair<token_iterator, token_iterator> use_case;
     std::vector<std::string> invoArgs;

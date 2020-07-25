@@ -91,7 +91,7 @@ const std::vector<std::string>& Overseer::GetInputFiles()
 void Overseer::RunParser(const std::string& log_file_name)
 {
     /// pass the data collected from clang front end
-    pParser->Parse(log_file_name, &ASTMacroStat);
+    pParser->Parse(log_file_name, &ASTMacroStat, nullptr);
     //pMacTree = pParser->GetMacTree();
 }
 
@@ -174,7 +174,7 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
         return;
     }
 
-    clang::CompilerInstance ci;
+    clang::CompilerInstance ci(std::make_shared<clang::PCHContainerOperations>(), nullptr);
 
     //InvocationStat_t inv_stat;
     // @TODO: lol, Where is this memory going?

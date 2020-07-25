@@ -37,7 +37,8 @@ enum class PPOperation
     pragma,
     warning,
     line,
-    error
+    error,
+    unknown
 };
 
 inline std::ostream& operator<<(std::ostream& os, PPOperation const& oper)

@@ -408,8 +408,7 @@ auto MyASTConsumer::InitializeCI(
     auto to = std::make_shared<clang::TargetOptions>();
     to->Triple = llvm::sys::getDefaultTargetTriple();
 
-    /// set the language to c++98
-    ci.getInvocation().setLangDefaults(ci.getLangOpts(), clang::Language::CXX,
+    clang::CompilerInvocation::setLangDefaults(ci.getLangOpts(), clang::Language::CXX,
             llvm::Triple(llvm::Twine(to->Triple)), pci->getPreprocessorOpts(),
             clang::LangStandard::lang_cxx11);
 
@@ -420,7 +419,7 @@ auto MyASTConsumer::InitializeCI(
     //ci.getInvocation().TargetOpts);
 
     ci.setTarget(pti);
-    ci.createFileManager();
+    ci.createFileManager(nullptr);
     ci.createSourceManager(ci.getFileManager());
     ci.createPreprocessor(clang::TranslationUnitKind::TU_Complete);
 

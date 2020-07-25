@@ -130,9 +130,8 @@ DEBUG_RLPARSER(
 
 bool RlParser::Match(boost::wave::token_id id)
 {
-    boost::wave::token_id next_id;
+    boost::wave::token_id next_id = *it;
     std::stringstream id_value;
-    next_id = *it;
     //while ((next_id = *it) == boost::wave::T_SPACE)
     //  it++;
     id_value << it->get_value();

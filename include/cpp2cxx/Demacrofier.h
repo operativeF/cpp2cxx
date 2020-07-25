@@ -137,9 +137,9 @@ private:
 
     ReadyQueue_t readyQueue;
     // contains all the line numbers where macros were invoked in current file
-    InvocationStat_t* pInvocationStat;
+    InvocationStat_t* pInvocationStat {nullptr};
     // containes all the information about macros in current file a/c clang
-    ASTMacroStat_t* pASTMacroStat;
+    ASTMacroStat_t* pASTMacroStat {nullptr};
 
     //pointer to the container having all the valid macros
     //to be used only when the cleanup is in process

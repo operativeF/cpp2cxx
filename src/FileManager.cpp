@@ -73,7 +73,7 @@ void FileManager::UpdateFile(std::string const& file_str)
 
     if(!output_file.empty())
     {
-        std::ofstream fp(output_file);
+        std::ofstream fp(output_file, std::ios_base::out);
         if(fp.is_open())
         {
             UpdateFile(fp, file_str);
@@ -106,7 +106,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
     std::string output_file = GetOutputFile();
     if(!output_file.empty())
     {
-        std::ofstream fp(output_file);
+        std::ofstream fp(output_file, std::ios_base::out);
         if(fp.is_open())
         {
             overseer.WriteOutputFile(fp);

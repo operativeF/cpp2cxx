@@ -103,7 +103,7 @@ private:
     ConfigScheme& configScheme;
     std::unique_ptr<FileManager> pFileManager;
     std::unique_ptr<Parser> pParser;
-    const MacTree* pMacTree;
+    const MacTree* pMacTree {nullptr};
     MyASTConsumer* pASTConsumer {nullptr};
     /// \brief holds information returned from clang AST
     ASTMacroStat_t ASTMacroStat;
