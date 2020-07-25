@@ -44,7 +44,6 @@ limitations under the License.
 #include "Tuple3_t.h"
 #include "clang_interface/FunctionInfo.h"
 
-
 #include <iosfwd> //for void Parser::GetDemacrofiedFile(std::ostream os)
 #include <map>
 #include <sstream>
@@ -82,6 +81,11 @@ struct DemacroficationScheme;
  * @class MacroStat
  */
 class MacroStat;
+
+/** forward declaration
+ * @class PPMacro
+ */
+class PPMacro;
 
 /**
  * @class Parser

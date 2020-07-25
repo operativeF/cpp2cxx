@@ -40,12 +40,9 @@ limitations under the License.
 #include "DemacroficationScheme.h"
 #include "FileManagerScheme.h"
 
-
 #include <iosfwd>
 #include <string>
 #include <vector>
-
-
 
 class ConfigScheme
 {

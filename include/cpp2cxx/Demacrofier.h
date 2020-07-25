@@ -35,7 +35,6 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "Macro.h"
 #include "ValidatorMap.h"
 #include "clang_interface/FunctionInfo.h"
 
@@ -48,6 +47,12 @@ limitations under the License.
  * @brief forward declaration
  */
 class Parser;
+
+/**
+ * @class PPMacro
+ * @brief forward declaration
+ */
+class PPMacro;
 
 /**
  * @class Demacrofier

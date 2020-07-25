@@ -23,6 +23,7 @@ limitations under the License.
 
 #ifndef MACRO_HPP
 #define MACRO_HPP
+
 #include "MacroScopeClassifier.h"
 #include "ReplacementList.h"
 #include "RlCategory.h"
@@ -61,7 +62,7 @@ class RlParser;
 /** forward declaration
  * @class MacroStat
  */
-class MacroStat;
+struct MacroStat;
 
 /**
  * @class PPMacro

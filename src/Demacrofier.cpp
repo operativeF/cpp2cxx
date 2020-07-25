@@ -24,6 +24,7 @@ limitations under the License.
 #include "cpp2cxx/DemacBoostWaveIncludes.h"
 #include "cpp2cxx/DepGraph.h"
 #include "cpp2cxx/ExceptionHandler.h"
+#include "cpp2cxx/Macro.h"
 #include "cpp2cxx/Parser.h"
 #include "cpp2cxx/RlCategory.h"
 #include "general_utilities/debug.h"
