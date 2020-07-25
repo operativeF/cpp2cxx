@@ -111,12 +111,9 @@ bool TrackMacro::MacroIsLocal(SourceLocation loc)
   //clang::FileID ID = sm->getFileID(loc);
   //std::cout<<"file id = "<<ID.getHashValue()<<"\n";
   //std::cout<<"Filea name is: "<<file_name;
-  if(file_name == sm->getBufferName(loc)){
+  return file_name == sm->getBufferName(loc);
   //PresumedLoc presumed = sm->getPresumedLoc(loc);
   //if(file_name == presumed.getFilename())
-    return true;
-  }
-  return false;
 }
 
 void TrackMacro::SetFileName(const std::string & f)

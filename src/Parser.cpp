@@ -321,12 +321,8 @@ void Parser::ParseMacros(MacroList_t& macro_list)
 
 bool Parser::PPCheckIdentifier(std::string const& id_value) const
 {
-  if(localMacros.find(id_value)!=localMacros.end() ||
-      globalMacros.find(id_value)!=localMacros.end()) {
-    return true;
-  } else {
-    return false;
-}
+  return (localMacros.find(id_value) != localMacros.end()) ||
+         (globalMacros.find(id_value) != localMacros.end());
 }
 
 bool Parser::PPCheckIdentifier(std::string const& id_str, MacroList_t const& macro_list) const
@@ -335,11 +331,8 @@ bool Parser::PPCheckIdentifier(std::string const& id_str, MacroList_t const& mac
 //  logFile<<"size of globalMacros: "<<macro_list.size()
 //           <<"first element: "<<macro_list.begin()->first<<"\n";
   );
-  if(macro_list.find(id_str)!=macro_list.end()) {
-    return true;
-  } else {
-    return false;
-}
+
+  return macro_list.find(id_str) != macro_list.end();
 }
 
 void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)

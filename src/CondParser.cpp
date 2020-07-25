@@ -534,12 +534,8 @@ bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
   DEBUG_CONDITIONALS(dbgs() << "\nlooking for the identifier: "
                             << id_str << "\n");
-  if(macroList.find(id_str) != macroList.end())
-  {
-    return true;
-  }
 
-  return false;
+  return macroList.find(id_str) != macroList.end();
 }
 
 token_iterator CondParser::GetTokenPosition()

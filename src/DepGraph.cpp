@@ -248,15 +248,10 @@ PairMacroIter_t MacTree::GetMacro(token_type const& tok)
   return tokenMacroMap.equal_range(tok);
 }
 
-bool MacTree::IsMacro(token_type const& tok)
+bool MacTree::IsMacro(const token_type& tok)
 {
-  PairMacroIter_t m_iter = GetMacro(tok);
   //if there is atleast a macro with the token_type tok as identifier
-  if(m_iter.first != m_iter.second) {
-    return true;
-  } else {
-    return false;
-}
+  return GetMacro(tok).first != GetMacro(tok).second;
 }
 
 //checks the token to get the use case of macro
