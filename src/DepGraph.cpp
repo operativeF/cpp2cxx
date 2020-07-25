@@ -68,7 +68,7 @@ std::pair<OutEdgeIterator_t, OutEdgeIterator_t> MacTree::GetChildren(Vertex_t co
     return boost::out_edges(vd, depGraph);
 }
 
-int MacTree::GetNumNodes()
+int MacTree::GetNumNodes() const
 {
     return nodeIndex;
 }

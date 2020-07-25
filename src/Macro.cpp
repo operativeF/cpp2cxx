@@ -209,7 +209,7 @@ bool PPMacro::HasLeadingUnderscore() const
 }
 
 
-const token_type PPMacro::get_identifier() const
+token_type PPMacro::get_identifier() const
 {
     return identifier;
 }

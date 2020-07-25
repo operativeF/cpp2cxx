@@ -183,7 +183,7 @@ public:
     Node* GetFirstChild(Vertex_t const v);
 
     /// @brief get the total number of nodes
-    int GetNumNodes();
+    int GetNumNodes() const;
 
     /// @brief is the node a root node
     bool IsRoot(Vertex_t const v) const;

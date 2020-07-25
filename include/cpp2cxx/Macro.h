@@ -89,7 +89,7 @@ public:
     void set_use_case(std::pair<token_iterator, token_iterator>& token_iter_range);
     void set_use_case_string(std::vector<std::string>& vec_string);
 
-    token_type const get_identifier() const;
+    token_type get_identifier() const;
     std::vector<token_type> const& get_tokens() const;
     std::size_t get_num_tokens() const;
     std::string const& get_identifier_str() const;
