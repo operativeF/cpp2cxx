@@ -159,12 +159,6 @@ std::vector<std::string> const& FileManager::GetInputFiles() const
     return fileManagerScheme.inputFiles;
 }
 
-///@todo perform checks
-bool FileManager::SanityCheck()
-{
-    return true;
-}
-
 void FileManager::WriteLog(std::string const& str)
 {
     *(fileManagerScheme.pLogFile) << str << "\n";

@@ -66,28 +66,7 @@ public:
 
     /// @brief uses the FileManagerScheme to configure the settings
     void Configure(FileManagerScheme const& fs);
-
-    /// @brief performs checks etc., not implemented as of now
-    /// check if the directory exists or not, if the files
-    /// in the list are actually found or not
-    static bool SanityCheck();
-    //
-
-    //not useful as of now
-    /*
-    FileManager(std::vector<std::string> const& input_files,
-                std::vector<std::string> const& output_files,
-                std::string const& input_directory,
-                std::string const& output_directory,
-                std::string const& backup_directory);
-    //not useful as of now
-    FileManager(std::vector<std::string> const& input_files,
-                std::vector<std::string> const& output_files,
-                std::string const& backup_directory);
-    //not useful as of now
-    FileManager(std::vector<std::string> const& input_files);
-*/
-
+    
     std::vector<std::string> const& OutputFiles();
     std::vector<std::string> const& InputFiles();
     std::string const& OutputDirectory();
