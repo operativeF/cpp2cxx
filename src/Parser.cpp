@@ -94,7 +94,7 @@ Parser::~Parser()
     delete demac;
 }
 
-void Parser::Parse(std::string file_name, ASTMacroStat_t* p, InvocationStat_t* is)
+void Parser::Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is)
 {
     assert(p && "AST doesnot give any information");
     pASTMacroStat = p;
@@ -110,7 +110,7 @@ void Parser::Parse(const std::string& file_name)
     /// and using the existing macros might become useful
     /// to find the macros in a header file included by the the current file
     localMacros.clear();
-    std::ifstream instream(file_name);
+    std::ifstream instream(file_name, std::ios_base::in);
     if(!instream.is_open())
     {
         logFile << "  - error: " << file_name << " couldn't be opened\n";

@@ -69,7 +69,7 @@ void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int para
     identifier_parameters.push_back(std::make_pair(tok, parameter_count));
 }
 
-void PPMacro::set_identifier_str(std::string str)
+void PPMacro::set_identifier_str(const std::string& str)
 {
     identifier_str = str;
     //    std::cout<<"iden_string: "<<identifier_str<<std::endl;

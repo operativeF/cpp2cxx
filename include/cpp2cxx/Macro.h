@@ -75,7 +75,7 @@ public:
     void set_identifier(token_type const& tok);
     void put_tokens(std::vector<token_type> const& vec_tokens);
     void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);
-    void set_identifier_str(std::string str);
+    void set_identifier_str(const std::string& str);
     void set_replacement_list(const token_type& tok);
     void set_replacement_list_str(const std::string& str, RlParser& rl_parser);
     void set_operation(PPOperation op);

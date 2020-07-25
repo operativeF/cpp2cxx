@@ -96,7 +96,7 @@ public:
             std::ostream& macro_list_file);
     ~Parser();
     void Parse(const std::string& file_name);
-    void Parse(std::string file_name, ASTMacroStat_t* p, InvocationStat_t* is = NULL);
+    void Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
 
     void ParseNewGlobalMacros(std::string const& raw_global_macro_file_name);
     void ReadGlobalMacros(std::string const& global_macro_file_name);
