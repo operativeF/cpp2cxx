@@ -66,13 +66,12 @@ void Overseer::StartProcessing(bool demacrofy)
     /// and subsequently compiled
     try
     {
-        std::vector<std::string>::const_iterator v_iter;
-        v_iter = GetInputFiles().begin();
-        for(; v_iter != GetInputFiles().end(); ++v_iter)
+        for(const auto& aFile : GetInputFiles())
         {
-            GenerateExternalASTHandler(*v_iter);
+            GenerateExternalASTHandler(aFile);
             //GetInformationFromExternalSource(*v_iter);
-            RunParser(*v_iter);
+            RunParser(aFile);
+
             if(demacrofy)
             {
                 RunDemacrofier();
