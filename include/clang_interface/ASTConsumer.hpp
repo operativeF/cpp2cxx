@@ -27,34 +27,20 @@ limitations under the License.
 #include "general_utilities/map_utils.hpp"
 #include "general_utilities/vector_utils.hpp"
 
-#include "llvm/Support/Host.h"
-
 #include "clang/AST/ASTConsumer.h"
-#include "clang/AST/ASTContext.h"
-
-#include "clang/Basic/Builtins.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Basic/FileManager.h"
-#include "clang/Basic/LangOptions.h"
-#include "clang/Basic/SourceLocation.h"
-#include "clang/Basic/SourceManager.h"
-#include "clang/Basic/TargetInfo.h"
-#include "clang/Basic/TargetOptions.h"
-
-#include "clang/Frontend/CompilerInstance.h"
-#include "clang/Frontend/FrontendOptions.h"
-#include "clang/Frontend/Utils.h"
-
-#include "clang/Lex/HeaderSearch.h"
-#include "clang/Lex/Preprocessor.h"
+#include "clang/AST/DeclGroup.h"
 
 #include "clang/Parse/ParseAST.h"
-#include "clang/Parse/Parser.h"
 
 #include <map>
 #include <ostream>
 #include <string>
 #include <vector>
+
+// Forward declarations:
+class clang::CompilerInstance;
+class clang::FunctionDecl;
+class clang::SourceManager;
 
 /******************************************************************************
  *

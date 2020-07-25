@@ -26,7 +26,22 @@ limitations under the License.
 
 #include "general_utilities/debug.h"
 
+#include "llvm/Support/Host.h"
+
 #include "clang/AST/Decl.h"
+#include "clang/Basic/Builtins.h"
+#include "clang/Basic/Diagnostic.h"
+#include "clang/Basic/FileManager.h"
+#include "clang/Basic/LangOptions.h"
+#include "clang/Basic/SourceManager.h"
+#include "clang/Basic/TargetInfo.h"
+#include "clang/Basic/TargetOptions.h"
+#include "clang/Frontend/CompilerInstance.h"
+#include "clang/Frontend/FrontendOptions.h"
+#include "clang/Frontend/Utils.h"
+#include "clang/Lex/HeaderSearch.h"
+#include "clang/Lex/Preprocessor.h"
+#include "clang/Parse/ParseAST.h"
 
 #include <algorithm>
 #include <iostream>
