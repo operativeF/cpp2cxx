@@ -28,10 +28,6 @@ limitations under the License.
 #include <algorithm>
 #include <sstream>
 
-ReplacementList::ReplacementList() : rl_ccat(RlCCat::open), rl_dcat(RlDCat::dependent)
-{
-}
-
 void ReplacementList::set_replacement_list(const token_type& tok)
 {
     rl_tokens.push_back(tok);

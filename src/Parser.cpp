@@ -241,10 +241,10 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
 void Parser::ParseMacros(MacroList_t& macro_list)
 {
     InitializeMacTree();
-    boost::wave::token_id id;
+    boost::wave::token_id id = *it;
     // causes memory leak
     //id = boost::wave::token_id(*it);
-    id = *it;
+
     token_iterator ti_mac_begin;
     token_iterator ti_mac_end;
     bool PPDEFINED = true;
@@ -394,7 +394,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
         unsigned int parameter_count = 0;
         unsigned int comma_count = 0;
         //handle function like PPMacro
-        while(left_paren_count != 0u)
+        while(left_paren_count != 0U)
         {
             //logFile<<"  - log: \nfound token: "<<id_value.str();
             // causes memory leaks
@@ -708,13 +708,11 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
 
     Demacrofier::ReadyQueue_t::iterator post_demac_iter;
 
-    // @TODO: Initialize this.
-    int defn_counter;
-
     while(it != it_end)
     {
         id = boost::wave::token_id(*it);
-        defn_counter = 0;
+        std::size_t defn_counter = 0;
+
         switch(id)
         {
         case boost::wave::T_PP_DEFINE:
@@ -794,8 +792,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
 
 token_iterator Parser::GoPastMacro(token_iterator it)
 {
-    boost::wave::token_id id;
-    id = *it;
+    boost::wave::token_id id = *it;
 
     while(id != boost::wave::T_NEWLINE)
     {

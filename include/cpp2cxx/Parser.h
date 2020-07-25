@@ -142,10 +142,10 @@ private:
 
     /// @brief pointer to the map passed by the Overseer class,
     /// this contains information collected by the clang front end.
-    ASTMacroStat_t* pASTMacroStat;
+    ASTMacroStat_t* pASTMacroStat {nullptr};
 
     /// @brief contains line numbers whre the macros are invoked
-    InvocationStat_t* pInvocationStat;
+    InvocationStat_t* pInvocationStat {nullptr};
 
     /**
      * Variables initialized in the body of the constructor

@@ -35,11 +35,10 @@ Node* MacTree::GetParent(Node* const np)
 }
 
 Vertex_t MacTree::GetParent(Vertex_t const v)
-{ //in a uni-directed graph incoming edge can't be accessed
-    Node* cn;
-    Node* pn;
-    cn = depGraph[v];
-    pn = cn->parent;
+{
+    //in a uni-directed graph incoming edge can't be accessed
+    Node* cn = depGraph[v];
+    Node* pn = cn->parent;
 
     DEBUG_TREE(dbgs() << "Parent nodeIndex: " << pn->nodeIndex << "\n";);
 
@@ -84,8 +83,9 @@ bool MacTree::MakeSibling(Node& rn)
 {
     DEBUG_TREE(dbgs() << "\nMaking sibling: " << rn.key.get_value() << "\t"
                       << rn.key.get_position().get_line() << "\n";);
-    // @TODO: Initialize this.
-    Vertex_t v_dummy; //faking
+
+    Vertex_t v_dummy{}; //faking
+
     // @TODO: Replace with smart pointer?
     Node* pn = new Node;
     *pn = rn;
@@ -122,8 +122,8 @@ bool MacTree::MakeChild(Node& rn)
 {
     DEBUG_TREE(dbgs() << "\nMaking child: " << rn.key.get_value() << "\t"
                       << rn.key.get_position().get_line() << "\n";);
-    // @TODO: Initialize this.
-    Vertex_t v_dummy; //faking
+
+    Vertex_t v_dummy{}; //faking
     // @TODO: Replace with smart pointer?
     Node* pn = new Node;
     *pn = rn;
@@ -166,8 +166,7 @@ void MacTree::PushBackMacro(PPMacro& mac)
     DEBUG_TREE(dbgs() << "Pushing Macro: " << mac.get_identifier_str() << "\n";);
     depGraph[currVertex]->PushBackMacro(mac);
     //get the pointer to the macro
-    PPMacro* m_ptr;
-    m_ptr = depGraph[currVertex]->vecMacro.back();
+    PPMacro* m_ptr = depGraph[currVertex]->vecMacro.back();
     linearOrder.push_back(m_ptr);
     tokenMacroMap.insert(std::pair<token_type, PPMacro*>(m_ptr->get_identifier(), m_ptr));
 }
@@ -206,11 +205,8 @@ const DepList_t& MacTree::BuildMacroDependencyList()
 
     for(const auto& mmacro : missing_macros)
     {
-        std::string err_msg = "Exception Line Number: ";
-        err_msg.append(mmacro.first);
-        err_msg.append(", No macro found for token: ");
-        err_msg.append(mmacro.second);
-        err_msg.append("\n");
+        std::string err_msg = "Exception Line Number: " + mmacro.first
+                              + ", No macro found for token: " + mmacro.second + "\n";
 
         std::cout << err_msg;
     }

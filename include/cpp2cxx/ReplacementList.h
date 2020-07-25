@@ -100,8 +100,8 @@ private:
     /// identifiers in the replacement list of the macro
     std::set<token_type, TokenOrder> rl_idlist;
 
-    RlCCat rl_ccat;
-    RlDCat rl_dcat;
+    RlCCat rl_ccat {RlCCat::open};
+    RlDCat rl_dcat {RlDCat::dependent};
     RlTokType rl_ttype;
 };
 
