@@ -35,9 +35,10 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "clang_interface/FunctionInfo.h"
 #include "Macro.h"
 #include "ValidatorMap.h"
+#include "clang_interface/FunctionInfo.h"
+
 
 #include <string>
 
@@ -51,8 +52,9 @@ class Parser;
  * @class Demacrofier
  * @brief demacrofies the macro on a per macro basis
  */
-class Demacrofier {
-  public:
+class Demacrofier
+{
+public:
     Demacrofier();
     /// @TODO change pointer to const ref
     /// when cleaning up, the translations are put without any conditionals
@@ -65,11 +67,11 @@ class Demacrofier {
     // @TODO: Replace bools in the function.
 
     void SetMacroInvocationStat(InvocationStat_t* pInvocationStat);
-    void SetASTStat(ASTMacroStat_t*  pASTMacroStat);
+    void SetASTStat(ASTMacroStat_t* pASTMacroStat);
     void SetValidator(ValidMacros_t const* v_macros);
-  private:
 
-/**
+private:
+    /**
  * #define FXY(X,Y,Z) ((X) + (Y))
  * template <class T1, class T2, class T3>
  * auto FXY(T1 X, T2 Y, T3 Z) -> decltype(((X) + (Y)))
@@ -87,21 +89,21 @@ class Demacrofier {
      * for statement like macros use void function
      */
     // lambda function transformation
-    std::string DemacrofyFunctionLikePostponed(const PPMacro * m_ptr)const;
-    static std::string GetFunctionClosure(const PPMacro *m_ptr);
-    static std::string GetFunctionArgs(const PPMacro *m_ptr);
-    static std::string GetFunctionBody(const PPMacro *m_ptr);
+    std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr) const;
+    static std::string GetFunctionClosure(const PPMacro* m_ptr);
+    static std::string GetFunctionArgs(const PPMacro* m_ptr);
+    static std::string GetFunctionBody(const PPMacro* m_ptr);
     /**
       * #define shift2 var = var<<2
       * auto shift2 = [&var]()->void { var = var<<2; }
       */
-    std::string DemacrofyObjectLikePostponed(const PPMacro *m_ptr) const;
-/**
+    std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr) const;
+    /**
  * #define _abc 1000
  * constexpr auto _abc = 1000;
  */
-    static std::string DemacrofyObjectLike(PPMacro const* m_ptr) ;
-/**
+    static std::string DemacrofyObjectLike(PPMacro const* m_ptr);
+    /**
  * #define proc(X,Y) {  FXY(X,Y,0);  }
  * template<typename T1, typename T2>
  * void proc(T1 X, T2 Y)
@@ -111,25 +113,21 @@ class Demacrofier {
  */
     static std::string DemacrofyMultipleStatements(PPMacro const* m_ptr);
     static std::string DemacrofyStatementType(PPMacro const* m_ptr);
-    static bool IsDemacrofiable(PPMacro const& mac) ;
+    static bool IsDemacrofiable(PPMacro const& mac);
 
     std::string SuggestTranslation(std::string const& unique_macro_switch,
-                std::string const& demacrofied_fstream,
-                std::string const& original_str) const;
+            std::string const& demacrofied_fstream, std::string const& original_str) const;
 
     static std::string GenerateTranslation(std::string const& macro_iden,
-                 std::string const& unique_macro_switch,
-                 std::string const& demacrofied_fstream);
+            std::string const& unique_macro_switch, std::string const& demacrofied_fstream);
 
     static std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr);
 
-    void InsertToReadyQueue(std::stringstream const& macro_iden,
-                            std::string const& outstr);
+    void InsertToReadyQueue(std::stringstream const& macro_iden, std::string const& outstr);
 
     bool CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const;
 
-  private:
-
+private:
     // it can change the readyQueue
     friend class Parser;
 

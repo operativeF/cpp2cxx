@@ -35,10 +35,11 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include <vector>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <vector>
+
 
 //depending upon the demacrofication scheme the demacrofier should
 //return to the subject class which should call the FileManager for file handling
@@ -65,9 +66,10 @@ class Overseer;
  * @brief  will be responsible for maintaining all the files that are required
  * to be demacrofied and
  */
-class FileManager {
+class FileManager
+{
 
-  public:
+public:
     /// @function FileManager(FileManagerScheme const& fs)
     /// @brief constructor takes the file scheme FileManagerScheme
     /// uses the FileManagerScheme to configure the settings
@@ -75,12 +77,12 @@ class FileManager {
     FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds);
 
     /// @brief uses the FileManagerScheme to configure the settings
-    void  Configure(FileManagerScheme const& fs);
+    void Configure(FileManagerScheme const& fs);
 
     /// @brief performs checks etc., not implemented as of now
     /// check if the directory exists or not, if the files
     /// in the list are actually found or not
-    static bool  SanityCheck();
+    static bool SanityCheck();
     //
 
     //not useful as of now
@@ -98,36 +100,36 @@ class FileManager {
     FileManager(std::vector<std::string> const& input_files);
 */
 
-    std::vector<std::string> const&  OutputFiles();
-    std::vector<std::string> const&  InputFiles();
-    std::string const&              OutputDirectory();
-    std::string const&              InputDirectory();
+    std::vector<std::string> const& OutputFiles();
+    std::vector<std::string> const& InputFiles();
+    std::string const& OutputDirectory();
+    std::string const& InputDirectory();
 
     //check whether this file is there in the list of output_files or not
-    void          UpdateFile(std::string const& file_str);
-    void          UpdateFile(std::ostream& fp, std::string const& file_str);
+    void UpdateFile(std::string const& file_str);
+    void UpdateFile(std::ostream& fp, std::string const& file_str);
 
     /// @brief observer, gets updated whenever a new file is demacrofied
-    void          UpdateFile(Overseer const& overseer);
+    void UpdateFile(Overseer const& overseer);
 
     /// @brief returns the list of input files
     std::vector<std::string> const& GetInputFiles() const;
 
     /// @brief returns the output file which will be updated in the
     /// current iteration
-    std::string   GetOutputFile();
+    std::string GetOutputFile();
 
     /// @brief returns the search paths
-    std::vector<std::string> const&  GetSearchPaths() const;
+    std::vector<std::string> const& GetSearchPaths() const;
 
     /// @brief writes the string to the log file fileManagerScheme.pConfigFile
-    void          WriteLog(std::string const& str);
+    void WriteLog(std::string const& str);
 
     /// @brief writes the header to the stat file
     void PrepareMacroStatFile();
 
     /// @brief writes the header to the demacrofied macro stat file
-    void          PrepareDemacrofiedMacroStatFile();
+    void PrepareDemacrofiedMacroStatFile();
 
     /// @brief returns the reference to the pLogFile where the messages
     /// can be logged
@@ -141,15 +143,14 @@ class FileManager {
     /// where the list of macros and related information can be logged
     std::ostream& GetDemacrofiedMacroStatFile();
 
-  private:
+private:
     /// @var reference to the fileManagerScheme
-    FileManagerScheme const&  fileManagerScheme;
+    FileManagerScheme const& fileManagerScheme;
 
     DemacroficationScheme const& demacroficationScheme;
     /// @todo try to make a map from input files to output files
-    unsigned int              inputFileIndex;
-    unsigned int              outputFileIndex;
-
+    unsigned int inputFileIndex;
+    unsigned int outputFileIndex;
 };
 
 #endif /*FILEMANAGER_H*/

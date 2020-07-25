@@ -34,9 +34,10 @@ limitations under the License.
  *  compiles with g++-4.5 or higher,
  *  for compiling pass -std=c++0x to the compiler
  */
-#include "FileManagerScheme.h"
 #include "ConfigScheme.h"
+#include "FileManagerScheme.h"
 #include "clang_interface/ASTConsumer.hpp"
+
 
 #include <string>
 #include <vector>
@@ -74,12 +75,13 @@ class MacTree;
  * transferring controls to various other classes and getting
  * their outputs.
  */
-class Overseer {
-  public:
+class Overseer
+{
+public:
     Overseer(ConfigScheme& config_scheme);
     ~Overseer();
 
-    void        ConfigureFileManager();
+    void ConfigureFileManager();
     /**
      * @function StartProcessing
      * @details processing is to be done in the following steps
@@ -94,15 +96,15 @@ class Overseer {
      * 9. goto step2
      * 10. catch any errors
      */
-    void        StartProcessing(bool demacrofy);
-    void        RunParser(std::string file_name);
-    void        RunDependencyAnalyzer();
-    void        PrintTotalOrder();
-    void        RunDemacrofier();
-    void        UpdateFileManager();
-    void        WriteOutputFile(std::ostream& os) const;
+    void StartProcessing(bool demacrofy);
+    void RunParser(std::string file_name);
+    void RunDependencyAnalyzer();
+    void PrintTotalOrder();
+    void RunDemacrofier();
+    void UpdateFileManager();
+    void WriteOutputFile(std::ostream& os) const;
     //void        GetInformationFromExternalSource(const std::string& filename);
-    void        GenerateExternalASTHandler(const std::string& filename);
+    void GenerateExternalASTHandler(const std::string& filename);
     //void        GenerateExternalASTHandler();
     std::ostream& GetLogFile();
     std::ostream& GetMacroStatFile();
@@ -112,15 +114,14 @@ class Overseer {
     FileManagerScheme& GetFileManagerScheme();
 
 
-
-  private:
-    ConfigScheme&       configScheme;
-    FileManager*        pFileManager;
-    Parser*             pParser;
-    MacTree const*      pMacTree;
-    MyASTConsumer*      pASTConsumer;
+private:
+    ConfigScheme& configScheme;
+    FileManager* pFileManager;
+    Parser* pParser;
+    MacTree const* pMacTree;
+    MyASTConsumer* pASTConsumer;
     /// \brief holds information returned from clang AST
-    ASTMacroStat_t      ASTMacroStat;
+    ASTMacroStat_t ASTMacroStat;
 };
 
 #endif /*OVERSEER_H*/

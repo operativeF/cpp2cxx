@@ -10,19 +10,22 @@
  */
 
 
-#include<map>
-#include<iostream>
-namespace general_utilities{
-  template<typename T1,typename T2>
-  std::ostream& operator<<(std::ostream& os,const std::map<T1,T2>& m)
-  {
-    for(typename std::map<T1,T2>::const_iterator i = m.begin(); i!= m.end(); ++i){
-      os<<i->first;
-      os<<"\t";
-      os<<i->second;
-      os<<"\n";
+#include <iostream>
+#include <map>
+
+namespace general_utilities
+{
+template <typename T1, typename T2>
+std::ostream& operator<<(std::ostream& os, const std::map<T1, T2>& m)
+{
+    for(typename std::map<T1, T2>::const_iterator i = m.begin(); i != m.end(); ++i)
+    {
+        os << i->first;
+        os << "\t";
+        os << i->second;
+        os << "\n";
     }
     return os;
-  }
 }
+} // namespace general_utilities
 #endif // UTILS_MAP_HPP

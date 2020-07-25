@@ -35,13 +35,15 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "RlCategory.h"
 #include "DemacBoostWaveIncludes.h"
+#include "RlCategory.h"
 
-#include <string>
-#include <vector>
+
 #include <list>
 #include <set>
+#include <string>
+#include <vector>
+
 
 /// @brief forward declaration
 class RlParser;
@@ -51,16 +53,17 @@ class RlParser;
  * @brief class to keep all the details of replacement list of a macro
  * This class is a member variable of the PPMacro class
  */
-class ReplacementList {
+class ReplacementList
+{
 
-  public:
+public:
     using vpTokInt = std::vector<std::pair<token_type, unsigned int>>;
-    
+
     //use token_iterator const&
     ReplacementList();
     void set_replacement_list(const token_type& tok);
     void set_replacement_list_str(std::string const& str, vpTokInt argId);
-    void set_replacement_list_category(RlParser & rl_parser);
+    void set_replacement_list_category(RlParser& rl_parser);
     /// set by the dependency analyzer at a later stage
     void set_replacement_list_dependency_category(bool c);
     std::string get_replacement_list_str() const;
@@ -68,22 +71,17 @@ class ReplacementList {
     const std::string& get_replacement_list_str_with_comments() const;
     const std::vector<token_type>& get_replacement_list_tokens() const;
 
-    RlDCat
-    get_replacement_list_dependency_category() const;
+    RlDCat get_replacement_list_dependency_category() const;
 
-    RlCCat
-    get_replacement_list_closure_category() const;
+    RlCCat get_replacement_list_closure_category() const;
 
-    RlTokType const&
-    get_replacement_list_token_type() const;
+    RlTokType const& get_replacement_list_token_type() const;
 
-    RlTokType&
-    get_replacement_list_token_type();
+    RlTokType& get_replacement_list_token_type();
 
-    std::vector<token_type>
-    get_replacement_list_idlist() const;
+    std::vector<token_type> get_replacement_list_idlist() const;
 
-  private:
+private:
     /** friend class
      *  @class RlParser
      */
@@ -100,7 +98,7 @@ class ReplacementList {
     std::string rl_str_formatted;
 
     /// identifiers in the replacement list of the macro
-    std::set<token_type,TokenOrder> rl_idlist;
+    std::set<token_type, TokenOrder> rl_idlist;
 
     RlCCat rl_ccat;
     RlDCat rl_dcat;

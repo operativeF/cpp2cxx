@@ -1,7 +1,7 @@
 #ifndef DEMACROFICATIONSCHEME_H
 #define DEMACROFICATIONSCHEME_H
 
- /**
+/**
   *  @file DemacroficationScheme.h
   *  @brief contains the details which will be used by the Parser class
   *  and other subclasses for configuration
@@ -9,32 +9,34 @@
   *  @author Aditya Kumar, Thomas Figueroa
   */
 
-#include "general_utilities/string_utils.hpp"
 #include "ValidatorMap.h"
+#include "general_utilities/string_utils.hpp"
 
-#include <string>
+
 #include <set>
+#include <string>
 
- /**
+/**
   *  @struct DemacroficationScheme
   *  @brief contains the details which will be used by the Parser class
   *  and other subclasses for configuration
   */
-struct DemacroficationScheme {
-  ///@var enableWarningFlag
-  ///@details whether to enable the warning or not
-  ///to be used instead of the ENABLE_WARNING macro
-  ///if this flag is set then check for the struct warningLogFile
-  bool enableWarningFlag;
-  bool multipleDefinitions;
-  bool performCleanup;
+struct DemacroficationScheme
+{
+    ///@var enableWarningFlag
+    ///@details whether to enable the warning or not
+    ///to be used instead of the ENABLE_WARNING macro
+    ///if this flag is set then check for the struct warningLogFile
+    bool enableWarningFlag;
+    bool multipleDefinitions;
+    bool performCleanup;
 
-  std::set<std::string, general_utilities::SortString> macrosPreventingDemacrofication;
+    std::set<std::string, general_utilities::SortString> macrosPreventingDemacrofication;
 
-  std::string demacroficationGranularity;
-  std::string globalMacrosRaw;
-  std::string globalMacrosFormatted;
-  ValidatorMap validatorMap;
+    std::string demacroficationGranularity;
+    std::string globalMacrosRaw;
+    std::string globalMacrosFormatted;
+    ValidatorMap validatorMap;
 };
 
 #endif // DEMACROFICATIONSCHEME_H

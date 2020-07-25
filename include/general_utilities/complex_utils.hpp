@@ -10,16 +10,18 @@
  */
 
 #include <complex>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
-namespace general_utilities{
-  template<typename T>
-  std::ostream& operator<<(std::ostream& os, std::complex<T> c)
-  {
-    os<<'('<<c.real()<<","<<c.imag()<<')';
+
+namespace general_utilities
+{
+template <typename T>
+std::ostream& operator<<(std::ostream& os, std::complex<T> c)
+{
+    os << '(' << c.real() << "," << c.imag() << ')';
     return os;
-  }
 }
+} // namespace general_utilities
 
 #endif // UTILS_COMPLEX_HPP

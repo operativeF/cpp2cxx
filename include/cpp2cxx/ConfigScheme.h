@@ -36,51 +36,43 @@ limitations under the License.
  * 6. Whether to invoke compiler/make command for each file demacrofied or not
  */
 
-#include "FileManagerScheme.h"
-#include "DemacroficationScheme.h"
 #include "BuildScheme.h"
+#include "DemacroficationScheme.h"
+#include "FileManagerScheme.h"
+
 
 #include <iostream>
-#include <vector>
-#include <string>
 #include <set>
+#include <string>
+#include <vector>
 
 
-class ConfigScheme {
 
-  public:
+class ConfigScheme
+{
+
+public:
     ConfigScheme();
     ~ConfigScheme();
-    void SetFileManagerScheme(std::vector<std::string>const& input_files,
-                              std::vector<std::string>const& output_files,
-                              std::vector<std::string>const& search_paths,
-                              std::string const& input_directory,
-                              std::string const& output_directory,
-                              std::string const& backup_directory,
-                              std::string const& cleanup_directory,
-                              std::string const& validator_file,
-                              std::ostream* log_file,
-                              std::ostream* stat_file,
-                              std::ostream* macro_list_file
-                              );
+    void SetFileManagerScheme(std::vector<std::string> const& input_files,
+            std::vector<std::string> const& output_files,
+            std::vector<std::string> const& search_paths, std::string const& input_directory,
+            std::string const& output_directory, std::string const& backup_directory,
+            std::string const& cleanup_directory, std::string const& validator_file,
+            std::ostream* log_file, std::ostream* stat_file, std::ostream* macro_list_file);
     /// @todo demacrofication granularity to be implemented
     void SetDemacroficationScheme(std::string const& demac_gran,
-                                  std::vector<std::string> const& mac_prev_demac,
-                                  bool enable_warning,
-                                  std::string const& global_mac_raw,
-                                  std::string const& global_mac_formatted,
-                                  bool multiple_definitions,
-                                  bool cleanup
-                                  );
+            std::vector<std::string> const& mac_prev_demac, bool enable_warning,
+            std::string const& global_mac_raw, std::string const& global_mac_formatted,
+            bool multiple_definitions, bool cleanup);
     void SetBuildScheme(const std::string& make_command);
     FileManagerScheme& GetFileManagerScheme();
     DemacroficationScheme& GetDemacroficationScheme();
     BuildScheme& GetBuildScheme();
 
-  private:
+private:
     FileManagerScheme* pFileManagerScheme;
     DemacroficationScheme* pDemacroficationScheme;
     BuildScheme* pBuildScheme;
-
 };
 #endif /*CONFIGSCHEME_H*/

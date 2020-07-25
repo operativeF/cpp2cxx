@@ -36,22 +36,25 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "DepGraph.h"
 #include "DemacBoostWaveIncludes.h"
+#include "DepGraph.h"
 
-#include <string>
+
 #include <map>
+#include <string>
 
-using MacroList_t = std::map<std::string,   //identifier
-                             std::string>;  //replacement text
+
+using MacroList_t = std::map<std::string, //identifier
+        std::string>;                     //replacement text
 
 /**
  * @class CondParser
  * To parse the tokens of the preprocessing conditional statements
  */
-class CondParser {
+class CondParser
+{
 
-  public:
+public:
     CondParser(const std::string& file_global_macros);
     void Parser(Node& tree_node, token_iterator t_it);
 
@@ -71,7 +74,8 @@ class CondParser {
 
     bool PPCheckIdentifier(const std::string& id_str);
     token_iterator GetTokenPosition();
-  private:
+
+private:
     CondCategory condCat;
     //std::vector<token_type> condStmt;
     Node* pNode;
@@ -79,4 +83,4 @@ class CondParser {
     MacroList_t macroList;
 };
 
-#endif/*CONDPARSER_H*/
+#endif /*CONDPARSER_H*/

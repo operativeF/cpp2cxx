@@ -14,18 +14,21 @@
   *  DepAnalyzer<macro> macro_dep(dl);
   */
 
-#include "ExceptionHandler.h"
 #include "DemacBoostWaveIncludes.h"
+#include "ExceptionHandler.h"
 
+
+#include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <algorithm>
 #include <unordered_map>
 
+
 #include <boost/bind.hpp>
-#include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graph_traits.hpp>
 #include <boost/graph/topological_sort.hpp>
+
 
 /// @todo handle multiple definitions
 /// how does multimap handle Compare functor
@@ -35,44 +38,42 @@
  * analyzes the dependencies between the macros based on the replacement list
  */
 template <typename Vertex_t>
-class DepAnalyzer {
-  private:
-
+class DepAnalyzer
+{
+private:
     struct VertexOrder
     {
-      bool operator()(const Vertex_t* v1, const Vertex_t* v2) const
-      {
-        //comparing the pointers to handle multiple definitions
-        return v1 < v2;
-      }
+        bool operator()(const Vertex_t* v1, const Vertex_t* v2) const
+        {
+            //comparing the pointers to handle multiple definitions
+            return v1 < v2;
+        }
     };
-     //for the hash map
+    //for the hash map
     struct VertexEqual
     {
-      bool operator()(const Vertex_t* v1, const Vertex_t* v2) const
-      {
-        return v1->get_identifier_str() == v2->get_identifier_str();
-      }
+        bool operator()(const Vertex_t* v1, const Vertex_t* v2) const
+        {
+            return v1->get_identifier_str() == v2->get_identifier_str();
+        }
     };
 
-     // vector of pairs to retain the order in which they occur
-     //also defined in the DepGraph.h
+    // vector of pairs to retain the order in which they occur
+    //also defined in the DepGraph.h
     using DepList_t = std::vector<std::pair<Vertex_t*, std::vector<Vertex_t*>>>;
 
-     //also defined in the DepGraph.h
-    using Graph_t = boost::adjacency_list<boost::listS,
-                                          boost::vecS,
-                                          boost::directedS,
-                                          Vertex_t*>;
+    //also defined in the DepGraph.h
+    using Graph_t = boost::adjacency_list<boost::listS, boost::vecS, boost::directedS, Vertex_t*>;
 
     using Vd_t = typename boost::graph_traits<Graph_t>::vertex_descriptor;
-    using MapVertexVd_t = std::map<Vertex_t*,Vd_t,VertexOrder>;
+    using MapVertexVd_t = std::map<Vertex_t*, Vd_t, VertexOrder>;
 
-  public:
-     //check if the map has the object type that is less than convertible
-    DepAnalyzer(DepList_t const& adjList)
-    :pDepList(&adjList)
-    { depGraph = pDepList->size(); }
+public:
+    //check if the map has the object type that is less than convertible
+    DepAnalyzer(DepList_t const& adjList) : pDepList(&adjList)
+    {
+        depGraph = pDepList->size();
+    }
 
     void Analyze(DepList_t const& adjList);
 
@@ -84,10 +85,11 @@ class DepAnalyzer {
     void DoTopologicalSort(std::vector<Vd_t>& topo_order);
     void CheckTotalOrder(std::ostream& os);
 
-  private:
+private:
     void MakeVertices();
     void MakeEdges();
-  private:
+
+private:
     DepList_t const* pDepList;
     MapVertexVd_t mapVertexVd;
     Graph_t depGraph;
@@ -96,13 +98,13 @@ class DepAnalyzer {
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::Analyze(DepList_t const& adjList)
 {
-  pDepList = &adjList;
-  MakeGraph();
+    pDepList = &adjList;
+    MakeGraph();
 #ifdef DEBUG_MACRO_DEPENDENCY
-  std::cout<<"\nInserting macros to the property map:\n";
-  PrintEdges();
+    std::cout << "\nInserting macros to the property map:\n";
+    PrintEdges();
 #endif
-  CheckTotalOrder();
+    CheckTotalOrder();
 }
 
 /**
@@ -114,8 +116,8 @@ void DepAnalyzer<Vertex_t>::Analyze(DepList_t const& adjList)
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::MakeGraph()
 {
-  MakeVertices();
-  MakeEdges();
+    MakeVertices();
+    MakeEdges();
 }
 
 /**
@@ -128,20 +130,17 @@ void DepAnalyzer<Vertex_t>::MakeGraph()
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::DoTopologicalSort(std::vector<Vertex_t*>& v)
 {
-  //typename is required since the type Vd_t depends upon the type Vertex_t
-  typename std::vector<Vd_t> topo_order;
-  boost::topological_sort(depGraph,std::back_inserter(topo_order));
-  std::for_each(topo_order.begin(),topo_order.end(),
-                [&v, this](Vd_t vd) {
-                  v.push_back(this->depGraph[vd]);
-                });
+    //typename is required since the type Vd_t depends upon the type Vertex_t
+    typename std::vector<Vd_t> topo_order;
+    boost::topological_sort(depGraph, std::back_inserter(topo_order));
+    std::for_each(topo_order.begin(), topo_order.end(),
+            [&v, this](Vd_t vd) { v.push_back(this->depGraph[vd]); });
 #ifdef DEBUG_MACRO_DEPENDENCY
-  std::cout<<"Printing the total order:\n";
-  //use the reverse iterator for vector v
-  std::for_each(v.rbegin(),v.rend(),
-                [](Vertex_t* mac_ptr) {
-                  std::cout<<"-->"<<mac_ptr->get_identifier().get_value()<<"-->\n";
-                });
+    std::cout << "Printing the total order:\n";
+    //use the reverse iterator for vector v
+    std::for_each(v.rbegin(), v.rend(), [](Vertex_t* mac_ptr) {
+        std::cout << "-->" << mac_ptr->get_identifier().get_value() << "-->\n";
+    });
 #endif
 }
 
@@ -149,7 +148,7 @@ void DepAnalyzer<Vertex_t>::DoTopologicalSort(std::vector<Vertex_t*>& v)
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::DoTopologicalSort(std::vector<Vd_t>& topo_order)
 {
-  boost::topological_sort(depGraph,std::back_inserter(topo_order));
+    boost::topological_sort(depGraph, std::back_inserter(topo_order));
 }
 
 /** @todo improve the code by removing the portion of code specific to
@@ -158,84 +157,110 @@ void DepAnalyzer<Vertex_t>::DoTopologicalSort(std::vector<Vd_t>& topo_order)
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
 {
-  //typename is required since the type Vd_t depends upon the type Vertex_t
-  typename std::vector<Vd_t> topo_order;
-  typename std::vector<Vd_t>::iterator ordered_vertices_iter;
-  typename boost::graph_traits<Graph_t>::edge_iterator ei, ei_end;
+    //typename is required since the type Vd_t depends upon the type Vertex_t
+    typename std::vector<Vd_t> topo_order;
+    typename std::vector<Vd_t>::iterator ordered_vertices_iter;
+    typename boost::graph_traits<Graph_t>::edge_iterator ei, ei_end;
 
-  //puts the topologically sorted vertices into topo_order
-  DoTopologicalSort(topo_order);
-  std::stringstream err_msg;
-  //will point to the vertices in the order they were inserted
-  typename boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
-  std::unordered_map<Vertex_t*,int,std::hash<Vertex_t*>,
-                      VertexEqual> orig_order_map, topo_order_map;
+    //puts the topologically sorted vertices into topo_order
+    DoTopologicalSort(topo_order);
+    std::stringstream err_msg;
+    //will point to the vertices in the order they were inserted
+    typename boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
+    std::unordered_map<Vertex_t*, int, std::hash<Vertex_t*>, VertexEqual> orig_order_map,
+            topo_order_map;
 
-  int i = 0;
-  //int num_macros;
-  //inserts the macros in hash table with value as integer
-  for(std::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi) {
-    orig_order_map[depGraph[*vi]] = ++i;
-    //std::cout<<depGraph[*vi]->get_identifier_str()<<"\n";
-  }
-  //num_macros = i;
-  i = 0;
-  //will point to the vertices in the topological order
-  ordered_vertices_iter = topo_order.begin();
-  for(;ordered_vertices_iter != topo_order.end(); ordered_vertices_iter++) {
-  //inserts the macros in hash table with value as integer
-    topo_order_map[depGraph[*ordered_vertices_iter]] = ++i;
-    //std::cout<<depGraph[*ordered_vertices_iter]->get_identifier_str()<<"\n";
-  }
-
-  ordered_vertices_iter = topo_order.begin();
-  if(ordered_vertices_iter != topo_order.end()){
-    os<<"  - log: checking the dependency order of macro "
-      <<depGraph[*ordered_vertices_iter]->get_identifier_str()<<"\n";
-  }
-  for(;ordered_vertices_iter != topo_order.end(); ordered_vertices_iter++) {
-    //if the vertex in topologically sorted list occurs before(w.r.t. position)
-    //the macro in the original list of vertices, then it's okay
-    if(orig_order_map[depGraph[*ordered_vertices_iter]] >
-      topo_order_map[depGraph[*ordered_vertices_iter]]) {
-      //try to remove get_identifier to the exception handler
-      //making sure the processing continues even after an out of order
-      //macro is found, ask Andrew
-
-      err_msg <<"  - "
-              <<depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_file()<<":"
-              <<depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_line()<<":"
-              <<depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_column()<<":\n";
-      err_msg << "    - warning: ";
-      os << err_msg.str() << "macro '"
-         << depGraph[*ordered_vertices_iter]->get_identifier_str()
-         << "' is used before it is defined\n";
-      err_msg.str(std::string());
-      /// set the out_of_order_dependent_type token type, to true
-      depGraph[*ordered_vertices_iter]->
-          get_replacement_list().set_replacement_list_dependency_category(true);
-      boost::tie(ei,ei_end) = boost::edges(depGraph);
-      //finding the macro which depend upon this out of order macros
-      for(; ei != ei_end; ++ei) {
-        //if the target vertex is the current vertex i.e. we have a match
-        if(target(*ei, depGraph) == *ordered_vertices_iter) {
-          //print the source vertex
-          os << "    - note: used at: "
-             << depGraph[source(*ei, depGraph)]->get_identifier().get_position().get_file()<<":"
-             << depGraph[source(*ei, depGraph)]->get_identifier().get_position().get_line()<<":"
-             << depGraph[source(*ei, depGraph)]->get_identifier().get_position().get_column()<<":"
-             << " with macro: "
-             << depGraph[source(*ei, depGraph)]->get_identifier_str()
-             << "\n";
-          /// this macro depends upon a macro that is defined after its use
-          depGraph[source(*ei, depGraph)]->
-          get_replacement_list().set_replacement_list_dependency_category(true);
-        }
-      }
-      //err_msg = depGraph[*ordered_vertices_iter]->get_identifier_str();
-      //std::cerr << "macro: " << err_msg << ": out of order\n";
+    int i = 0;
+    //int num_macros;
+    //inserts the macros in hash table with value as integer
+    for(std::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi)
+    {
+        orig_order_map[depGraph[*vi]] = ++i;
+        //std::cout<<depGraph[*vi]->get_identifier_str()<<"\n";
     }
-  }
+    //num_macros = i;
+    i = 0;
+    //will point to the vertices in the topological order
+    ordered_vertices_iter = topo_order.begin();
+    for(; ordered_vertices_iter != topo_order.end(); ordered_vertices_iter++)
+    {
+        //inserts the macros in hash table with value as integer
+        topo_order_map[depGraph[*ordered_vertices_iter]] = ++i;
+        //std::cout<<depGraph[*ordered_vertices_iter]->get_identifier_str()<<"\n";
+    }
+
+    ordered_vertices_iter = topo_order.begin();
+    if(ordered_vertices_iter != topo_order.end())
+    {
+        os << "  - log: checking the dependency order of macro "
+           << depGraph[*ordered_vertices_iter]->get_identifier_str() << "\n";
+    }
+    for(; ordered_vertices_iter != topo_order.end(); ordered_vertices_iter++)
+    {
+        //if the vertex in topologically sorted list occurs before(w.r.t. position)
+        //the macro in the original list of vertices, then it's okay
+        if(orig_order_map[depGraph[*ordered_vertices_iter]]
+                > topo_order_map[depGraph[*ordered_vertices_iter]])
+        {
+            //try to remove get_identifier to the exception handler
+            //making sure the processing continues even after an out of order
+            //macro is found, ask Andrew
+
+            err_msg << "  - "
+                    << depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_file()
+                    << ":"
+                    << depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_line()
+                    << ":"
+                    << depGraph[*ordered_vertices_iter]
+                               ->get_identifier()
+                               .get_position()
+                               .get_column()
+                    << ":\n";
+            err_msg << "    - warning: ";
+            os << err_msg.str() << "macro '"
+               << depGraph[*ordered_vertices_iter]->get_identifier_str()
+               << "' is used before it is defined\n";
+            err_msg.str(std::string());
+            /// set the out_of_order_dependent_type token type, to true
+            depGraph[*ordered_vertices_iter]
+                    ->get_replacement_list()
+                    .set_replacement_list_dependency_category(true);
+            boost::tie(ei, ei_end) = boost::edges(depGraph);
+            //finding the macro which depend upon this out of order macros
+            for(; ei != ei_end; ++ei)
+            {
+                //if the target vertex is the current vertex i.e. we have a match
+                if(target(*ei, depGraph) == *ordered_vertices_iter)
+                {
+                    //print the source vertex
+                    os << "    - note: used at: "
+                       << depGraph[source(*ei, depGraph)]
+                                    ->get_identifier()
+                                    .get_position()
+                                    .get_file()
+                       << ":"
+                       << depGraph[source(*ei, depGraph)]
+                                    ->get_identifier()
+                                    .get_position()
+                                    .get_line()
+                       << ":"
+                       << depGraph[source(*ei, depGraph)]
+                                    ->get_identifier()
+                                    .get_position()
+                                    .get_column()
+                       << ":"
+                       << " with macro: " << depGraph[source(*ei, depGraph)]->get_identifier_str()
+                       << "\n";
+                    /// this macro depends upon a macro that is defined after its use
+                    depGraph[source(*ei, depGraph)]
+                            ->get_replacement_list()
+                            .set_replacement_list_dependency_category(true);
+                }
+            }
+            //err_msg = depGraph[*ordered_vertices_iter]->get_identifier_str();
+            //std::cerr << "macro: " << err_msg << ": out of order\n";
+        }
+    }
 }
 
 
@@ -249,23 +274,24 @@ void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::MakeVertices()
 {
-  DepList_t const& depList = *pDepList;
+    DepList_t const& depList = *pDepList;
 #ifdef DEBUG_MACRO_DEPENDENCY2
-  std::cout<<"Inserting macros to the property map:\n";
+    std::cout << "Inserting macros to the property map:\n";
 #endif
- //add vertices
-  typename boost::graph_traits<Graph_t>::vertex_iterator v_iter;
-  v_iter = vertices(depGraph).first;
-  typename DepList_t::const_iterator dl_iter;
-  dl_iter = depList.begin();
-  for( ;dl_iter != depList.end(); dl_iter++, v_iter++) {
-     //vd = boost::add_vertex(map_iter->first,depGraph);
-    depGraph[*v_iter] = dl_iter->first;
-    mapVertexVd.insert(std::make_pair(dl_iter->first,*v_iter));
+    //add vertices
+    typename boost::graph_traits<Graph_t>::vertex_iterator v_iter;
+    v_iter = vertices(depGraph).first;
+    typename DepList_t::const_iterator dl_iter;
+    dl_iter = depList.begin();
+    for(; dl_iter != depList.end(); dl_iter++, v_iter++)
+    {
+        //vd = boost::add_vertex(map_iter->first,depGraph);
+        depGraph[*v_iter] = dl_iter->first;
+        mapVertexVd.insert(std::make_pair(dl_iter->first, *v_iter));
 #ifdef DEBUG_MACRO_DEPENDENCY2
-    std::cout<<depGraph[*v_iter]->get_identifier_str()<<"\n";
+        std::cout << depGraph[*v_iter]->get_identifier_str() << "\n";
 #endif
-  }
+    }
 }
 
 /**
@@ -278,47 +304,54 @@ template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::MakeEdges()
 {
     DepList_t const& depList = *pDepList;
-/*    DepList_t depList;
+    /*    DepList_t depList;
     MapVertexVd_t mapVertexVd;
     Graph_t depGraph;*/
-  //iterator to the depList mapped_type
-  typename std::vector<Vertex_t*>::const_iterator dt_iter;
-  //iterator to the depList
-  typename DepList_t::const_iterator dl_iter;
-  //iterator to the map of vertex to vertex descriptor
-  typename MapVertexVd_t::iterator pm_iter = mapVertexVd.begin();
-  // @TODO: Initialize these.
-  Vd_t u,v;//ordered pair (u,v)
-  for(dl_iter = depList.begin(); dl_iter != depList.end(); dl_iter++) {
-    //find the iterator to the mapVertex where macro is
-    pm_iter = mapVertexVd.find(dl_iter->first);
-    if(pm_iter != mapVertexVd.end()) {
-      //the vertex with the in edge in the ordered pair (u,v)
-      v = pm_iter->second;
-    }
-    else {
-      std::string err_msg = "vertex for " + dl_iter->first->get_identifier_str() + " not added\n";
-      throw ExceptionHandler(err_msg);
-    }
-    dt_iter = dl_iter->second.begin();
-    for( ; dt_iter != dl_iter->second.end(); dt_iter++) {
+    //iterator to the depList mapped_type
+    typename std::vector<Vertex_t*>::const_iterator dt_iter;
+    //iterator to the depList
+    typename DepList_t::const_iterator dl_iter;
+    //iterator to the map of vertex to vertex descriptor
+    typename MapVertexVd_t::iterator pm_iter = mapVertexVd.begin();
+    // @TODO: Initialize these.
+    Vd_t u, v; //ordered pair (u,v)
+    for(dl_iter = depList.begin(); dl_iter != depList.end(); dl_iter++)
+    {
+        //find the iterator to the mapVertex where macro is
+        pm_iter = mapVertexVd.find(dl_iter->first);
+        if(pm_iter != mapVertexVd.end())
+        {
+            //the vertex with the in edge in the ordered pair (u,v)
+            v = pm_iter->second;
+        }
+        else
+        {
+            std::string err_msg =
+                    "vertex for " + dl_iter->first->get_identifier_str() + " not added\n";
+            throw ExceptionHandler(err_msg);
+        }
+        dt_iter = dl_iter->second.begin();
+        for(; dt_iter != dl_iter->second.end(); dt_iter++)
+        {
 #ifdef DEBUG_MACRO_DEPENDENCY2
-    std::cout<<"Finding the macro: "<<(*dt_iter)->get_identifier_str()<<"\n";
+            std::cout << "Finding the macro: " << (*dt_iter)->get_identifier_str() << "\n";
 #endif
-     // the vertex with the out edge in the ordered pair (u,v)
-      pm_iter = mapVertexVd.find(*dt_iter);
-      if(pm_iter != mapVertexVd.end()) {
-        u = pm_iter->second;
-        //for topological_sort insert the edges in opposite direction
-        //since this topological_sort uses BFS
-        boost::add_edge(v,u,depGraph);
-      }
-      else { //first vertex not found => error
-        std::string err_msg = "macro: " + (*dt_iter)->get_identifier_str() + " not found\n";
-        throw ExceptionHandler(err_msg);
-      }
+            // the vertex with the out edge in the ordered pair (u,v)
+            pm_iter = mapVertexVd.find(*dt_iter);
+            if(pm_iter != mapVertexVd.end())
+            {
+                u = pm_iter->second;
+                //for topological_sort insert the edges in opposite direction
+                //since this topological_sort uses BFS
+                boost::add_edge(v, u, depGraph);
+            }
+            else
+            { //first vertex not found => error
+                std::string err_msg = "macro: " + (*dt_iter)->get_identifier_str() + " not found\n";
+                throw ExceptionHandler(err_msg);
+            }
+        }
     }
-  }
 }
 
 /**
@@ -330,13 +363,14 @@ void DepAnalyzer<Vertex_t>::MakeEdges()
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::PrintVertices()
 {
-  std::stringstream strm;
-  typename boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
+    std::stringstream strm;
+    typename boost::graph_traits<Graph_t>::vertex_iterator vi, vi_end;
 
-  for (boost::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi) {
-    strm << depGraph[*vi]->get_identifier_str()<<"\n";
-  }
-  std::cout<<strm.str();
+    for(boost::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi)
+    {
+        strm << depGraph[*vi]->get_identifier_str() << "\n";
+    }
+    std::cout << strm.str();
 }
 
 /**
@@ -348,17 +382,15 @@ void DepAnalyzer<Vertex_t>::PrintVertices()
 template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::PrintEdges()
 {
-  std::stringstream strm;
-  typename boost::graph_traits<Graph_t>::edge_iterator ei, ei_end;
+    std::stringstream strm;
+    typename boost::graph_traits<Graph_t>::edge_iterator ei, ei_end;
 
-  for (boost::tie(ei, ei_end) = boost::edges(depGraph); ei != ei_end; ++ei) {
-    strm << " ("
-         << depGraph[source(*ei, depGraph)]->get_identifier_str()
-         << " , "
-         << depGraph[target(*ei, depGraph)]->get_identifier_str()
-         << ")\n";
-  }
-  std::cout<<strm.str();
+    for(boost::tie(ei, ei_end) = boost::edges(depGraph); ei != ei_end; ++ei)
+    {
+        strm << " (" << depGraph[source(*ei, depGraph)]->get_identifier_str() << " , "
+             << depGraph[target(*ei, depGraph)]->get_identifier_str() << ")\n";
+    }
+    std::cout << strm.str();
 }
 
 #endif /*DEPANALYZER_H*/
@@ -523,4 +555,3 @@ void Parser::PPAnalyzeMacroDependency()
 #endif
 }
 */
-

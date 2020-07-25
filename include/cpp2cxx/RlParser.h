@@ -35,12 +35,14 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "RlCategory.h"
 #include "DemacBoostWaveIncludes.h"
+#include "RlCategory.h"
 
+
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
+
 
 /**
  * @class DemacroficationScheme
@@ -57,14 +59,13 @@ class ReplacementList;
  * @class RlParser
  * @brief The parser of replacement list of the macro
  */
-class RlParser {
+class RlParser
+{
 
-  public:
-    RlParser(DemacroficationScheme const& demacrofication_scheme,
-                     std::ostream& log_file);
+public:
+    RlParser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file);
     void Parse(ReplacementList& rl);
-    void Parser(std::vector<token_type>::iterator beg,
-             std::vector<token_type>::iterator term);
+    void Parser(std::vector<token_type>::iterator beg, std::vector<token_type>::iterator term);
 
     bool Match(boost::wave::token_id id);
     void ExpressionStatement();
@@ -80,14 +81,15 @@ class RlParser {
     void Expression8();
     bool IsRejectPredefinedMacro(const std::string& str) const;
     void FillFormattedRL(const token_type& tok);
-  private:
+
+private:
     std::vector<token_type> funArgId;
     std::vector<token_type>::iterator it;
     std::vector<token_type>::iterator end;
     //formatted replacement list string
     std::string rl_str_formatted;
     //contains identifiers in the ReplacementList
-    std::set<token_type,TokenOrder> rl_idlist;
+    std::set<token_type, TokenOrder> rl_idlist;
     RlCCat rl_ccat;
     RlDCat rl_dcat;
     RlTokType rl_ttype;

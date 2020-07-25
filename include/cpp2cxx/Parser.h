@@ -38,22 +38,24 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "clang_interface/FunctionInfo.h"
-#include "DepGraph.h"
 #include "DemacBoostWaveIncludes.h"
+#include "DepGraph.h"
 #include "Tuple3_t.h"
+#include "clang_interface/FunctionInfo.h"
 
-#include <string>
-#include <sstream>
+
 #include <iostream> //for void Parser::GetDemacrofiedFile(std::ostream os)
-#include <vector>
 #include <map>
+#include <sstream>
+#include <string>
 #include <tuple>
+#include <vector>
+
 
 // @TODO: Replace std::map
-using MacroList_t = std::map<std::string,   //identifier
-                             std::string>;  //replacement text
-                             
+using MacroList_t = std::map<std::string, //identifier
+        std::string>;                     //replacement text
+
 using Tuple4MacroStat_t = Tuple4_t<std::string, std::string, std::string, MacroCategory>;
 
 /** forward declaration
@@ -84,15 +86,16 @@ class MacroStat;
 /**
  * @class Parser
  */
-class Parser {
+class Parser
+{
 
-  public:
+public:
     //Parser();
-    Parser(DemacroficationScheme const& demacrofication_scheme,
-           std::ostream& log_file, std::ostream& macro_list_file);
+    Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file,
+            std::ostream& macro_list_file);
     ~Parser();
     void Parse(const std::string& file_name);
-    void Parse(std::string file_name,ASTMacroStat_t* p, InvocationStat_t* is=NULL);
+    void Parse(std::string file_name, ASTMacroStat_t* p, InvocationStat_t* is = NULL);
 
     void ParseNewGlobalMacros(std::string const& raw_global_macro_file_name);
     void ReadGlobalMacros(std::string const& global_macro_file_name);
@@ -109,25 +112,24 @@ class Parser {
     void ParseLocalMacros(std::string ifileStr, const position_type& pos);
 
     bool PPCheckIdentifier(std::string const& id_value) const;
-    bool PPCheckIdentifier(std::string const& id_str,
-                           MacroList_t const& macro_list) const;
+    bool PPCheckIdentifier(std::string const& id_str, MacroList_t const& macro_list) const;
     void GetDemacrofiedFile(std::ostream& os);
     //std::stringstream const& GetDemacrofiedFile();
     void PPAnalyzeMacroDependency(std::ostream& os);
     // when multiple occurences of same macros are allowed multiple_definitions=true
-    void Demacrofy(std::ostream& stat, bool multiple_definitions=false);
+    void Demacrofy(std::ostream& stat, bool multiple_definitions = false);
 
-  private:
-    void            InitializeMacTree();
-    void            PPDefineHandler(MacroList_t& macro_list,PPMacro& macro_ref);
-    std::string     PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref);
-    void            PPIfHandler(Node& node);
-    void            PPIfHandler(Node& node, bool def);
-    void            PPBuildMacroDependencyList(std::ostream& os);
-    static token_iterator  GoPastMacro(token_iterator it);
-    std::string     FillCondTokens(std::vector<token_type> const& cs);
-  private:
+private:
+    void InitializeMacTree();
+    void PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref);
+    std::string PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref);
+    void PPIfHandler(Node& node);
+    void PPIfHandler(Node& node, bool def);
+    void PPBuildMacroDependencyList(std::ostream& os);
+    static token_iterator GoPastMacro(token_iterator it);
+    std::string FillCondTokens(std::vector<token_type> const& cs);
 
+private:
     /**
      * Friend Classes:
      *     @class CondParser;
@@ -152,12 +154,12 @@ class Parser {
      *     @var token_iterator it_begin;//first token
      *     @var token_iterator it_end;//one past the last token
      */
-    CondParser*     cp;
-    RlParser*       rp;
-    Demacrofier*    demac;
-    token_iterator  it;//current token
-    token_iterator  it_begin;//first token
-    token_iterator  it_end;//one past the last token
+    CondParser* cp;
+    RlParser* rp;
+    Demacrofier* demac;
+    token_iterator it;       //current token
+    token_iterator it_begin; //first token
+    token_iterator it_end;   //one past the last token
     /**
       * variables to be passed to the constructor to be called by the
       * Overseer class
@@ -180,18 +182,18 @@ class Parser {
      * @details nesting level is 0 for the predefined macros and
      * increases by 1 with each #if style block
      */
-    int           nesting_level;
-   /**
+    int nesting_level;
+    /**
      * @var std::string fileGlobalMacros;
      * @details useful for passing around the conditional category(config/local)
      */
-    CondCategory  condCat;
+    CondCategory condCat;
 
     /**
      * @var std::string fileGlobalMacros;
      * @details file containing global macros
      */
-    std::string   fileGlobalMacros;
+    std::string fileGlobalMacros;
 
     /**
      * Other Variables:
@@ -205,15 +207,15 @@ class Parser {
     /// @brief useful for passing around the conditional statement
     std::vector<token_type> condStmt;
     /// @brief list of macros in the current file
-    MacroList_t             localMacros;
+    MacroList_t localMacros;
     /// @brief list of predefined macros
-    MacroList_t             globalMacros;
+    MacroList_t globalMacros;
     /// @brief make this a pointer to tree and dynamically allocate
-    MacTree*                 pTree;
+    MacTree* pTree;
     /// @brief demacrofied file
-    std::stringstream       outStream;
+    std::stringstream outStream;
     /// @brief the input file contents
-    std::string             ifileStr;
+    std::string ifileStr;
     /// @brief statistics
     unsigned int macro_count;
     unsigned int object_like_count;
@@ -222,4 +224,3 @@ class Parser {
 };
 
 #endif /*PARSER_H*/
-

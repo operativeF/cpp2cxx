@@ -24,9 +24,10 @@ limitations under the License.
 #ifndef USECASESTATE_H
 #define USECASESTATE_H
 
-#include "MacroScopeClassifier.h"
-#include "Macro.h"
 #include "DemacBoostWaveIncludes.h"
+#include "Macro.h"
+#include "MacroScopeClassifier.h"
+
 
 #include <sstream>
 
@@ -40,55 +41,77 @@ limitations under the License.
  * tokens in use case then the string which records the use case
  * will not contain the complete identifier list
  */
-class UseCaseState {
-  private:
-      using VecTokenIter_t = std::vector<token_iterator>;
-      
-  public:
-    UseCaseState()
-      : numParens(0), done(true)
-    {}
+class UseCaseState
+{
+private:
+    using VecTokenIter_t = std::vector<token_iterator>;
+
+public:
+    UseCaseState() : numParens(0), done(true)
+    {
+    }
 
     int PutToken(const token_iterator& tok_iter);
 
-    std::pair<token_iterator,token_iterator> Get()
-    { return argIter; }
+    std::pair<token_iterator, token_iterator> Get()
+    {
+        return argIter;
+    }
 
     void Init()
-    { numParens = 0; done = true; arg.str(std::string()); argString.clear(); }
+    {
+        numParens = 0;
+        done = true;
+        arg.str(std::string());
+        argString.clear();
+    }
 
     bool DoneCollection()
-    { return done; }
+    {
+        return done;
+    }
 
     void PutArgBegin(token_iterator tok_iter, PPMacro* p)
-    { Init(); argIter.first = tok_iter; done = false; pp = p; }
+    {
+        Init();
+        argIter.first = tok_iter;
+        done = false;
+        pp = p;
+    }
 
     void PutArgEnd(token_iterator tok_iter)
-    { argIter.second = tok_iter; }
+    {
+        argIter.second = tok_iter;
+    }
 
-    std::pair<token_iterator,token_iterator>
-    GetUseCase()
-    { return argIter; }
+    std::pair<token_iterator, token_iterator> GetUseCase()
+    {
+        return argIter;
+    }
 
     void MakeEntry(PPMacro* pp)
-    { pp->set_use_case(argIter); }
+    {
+        pp->set_use_case(argIter);
+    }
 
     void SetUseCaseString(PPMacro* pp)
-    { pp->set_use_case_string(argString); }
+    {
+        pp->set_use_case_string(argString);
+    }
 
     // the following function is only for function like macro
     std::vector<std::string> GetArgString()
-    { return argString; }
+    {
+        return argString;
+    }
 
-  private:
-
+private:
     int numParens;
     bool done;
-    std::pair<token_iterator,token_iterator> argIter;
+    std::pair<token_iterator, token_iterator> argIter;
     std::vector<std::string> argString;
     std::stringstream arg;
     PPMacro* pp;
-
 };
 
 #endif /*USECASESTATE_H*/

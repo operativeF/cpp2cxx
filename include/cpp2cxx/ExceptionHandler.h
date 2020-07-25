@@ -15,38 +15,41 @@
 #include "DemacBoostWaveIncludes.h"
 
 #include <exception>
-#include <string>
 #include <sstream>
+#include <string>
+
 /**
  * @class ExceptionHandler
  * To handle exceptions
  * @TODO: Change the name to exception
  * Handle exception thrown as ExceptionHandler(const PPMacro* mac, std::string msg)
  */
-class ExceptionHandler : public std::exception {
+class ExceptionHandler : public std::exception
+{
 public:
+    ExceptionHandler() : message("Unknown Exception")
+    {
+    }
 
-  ExceptionHandler() : message("Unknown Exception")
-  {}
+    ExceptionHandler(int i) : error_code(i)
+    {
+    }
 
-  ExceptionHandler(int i) : error_code(i)
-  {}
+    ExceptionHandler(std::string msg) : message(msg)
+    {
+    }
 
-  ExceptionHandler(std::string msg) : message(msg)
-  {}
+    ExceptionHandler(token_type const& tok, std::string msg)
+    {
+        std::stringstream err_msg;
+        err_msg << "  - exception note: ";
+        err_msg //<<tok.get_position().get_file()<<":"
+                << tok.get_position().get_line() << ":" << tok.get_position().get_column() << ": ";
+        err_msg << msg << "\n";
+        message = err_msg.str();
+    }
 
-  ExceptionHandler(token_type const& tok, std::string msg)
-  {
-    std::stringstream err_msg;
-    err_msg << "  - exception note: ";
-    err_msg //<<tok.get_position().get_file()<<":"
-            <<tok.get_position().get_line()<<":"
-            <<tok.get_position().get_column()<<": ";
-    err_msg << msg << "\n";
-    message = err_msg.str();
-  }
-
-/*
+    /*
   ExceptionHandler(const PPMacro* mac, std::string msg)
   {
     std::stringstream err_msg;
@@ -58,19 +61,18 @@ public:
     message = err_msg.str();
   }
 */
-  inline const std::string& GetMessage() const
-  {
-    return message;
-  }
-  inline int GetErrorCode()
-  {
-    return error_code;
-  }
+    inline const std::string& GetMessage() const
+    {
+        return message;
+    }
+    inline int GetErrorCode()
+    {
+        return error_code;
+    }
 
 private:
-  std::string message;
-  int error_code;
-
+    std::string message;
+    int error_code;
 };
 
 #endif /*EXCEPTIONHANDLER_H*/

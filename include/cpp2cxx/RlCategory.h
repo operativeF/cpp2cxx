@@ -46,10 +46,10 @@ limitations under the License.
  */
 enum class ReplacementListDependencyCategory
 {
-  /// having any identifier previously defined
-  dependent,
-  /// no identifiers only constants
-  independent
+    /// having any identifier previously defined
+    dependent,
+    /// no identifiers only constants
+    independent
 };
 
 /**
@@ -58,10 +58,10 @@ enum class ReplacementListDependencyCategory
  */
 enum class ReplacementListClosureCategory
 {
-  /// incomplete expressions
-  open,
-  /// complete expressions in the sense of C++ expressions without the semicolon
-  closed
+    /// incomplete expressions
+    open,
+    /// complete expressions in the sense of C++ expressions without the semicolon
+    closed
 };
 
 /**
@@ -70,76 +70,76 @@ enum class ReplacementListClosureCategory
  */
 struct ReplacementListTokenType
 {
-  ReplacementListTokenType()
-  {
-    Reset();
-  }
+    ReplacementListTokenType()
+    {
+        Reset();
+    }
 
-  void Reset()
-  {
-    identifier_type = false;
+    void Reset()
+    {
+        identifier_type = false;
+        /// string numeric etc.
+        literal_type = false;
+        /// unary operators like !, ~ , unary plus, unary minus
+        unary_operator_type = false;
+        /// all binary operators except concatenation and stringification
+        binary_operator_type = false;
+        ///  ? : conditional operator
+        ternary_operator_type = false;
+        ///  > , < , == , != etc
+        relational_operator_type = false;
+        /// +=, -= , = , etc
+        assignment_type = false;
+        /// ()
+        paren_type = false;
+        /// {}
+        braces_type = false;
+        /// all c++ keywords
+        keyword_type = false;
+        /// reject_type
+        reject_type = false;
+        /// all others which cannot be categorised
+        special_type = false;
+        /// when the replacement text has a statement, i.e. semicolon at the end
+        statement_type = false;
+        /// unknown tokens
+        unknown_type = false;
+        ///  when atleast one of the tokens is dependent on another macro
+        ///  and the dependency is out of topological order
+        out_of_order_dependent_type = false;
+    }
+    /// expression_type when there are more than two tokens
+    /// identifiers
+    bool identifier_type;
     /// string numeric etc.
-    literal_type = false;
+    bool literal_type;
     /// unary operators like !, ~ , unary plus, unary minus
-    unary_operator_type = false;
+    bool unary_operator_type;
     /// all binary operators except concatenation and stringification
-    binary_operator_type = false;
+    bool binary_operator_type;
     ///  ? : conditional operator
-    ternary_operator_type = false;
+    bool ternary_operator_type;
     ///  > , < , == , != etc
-    relational_operator_type = false;
+    bool relational_operator_type;
     /// +=, -= , = , etc
-    assignment_type = false;
+    bool assignment_type;
     /// ()
-    paren_type = false;
+    bool paren_type;
     /// {}
-    braces_type = false;
+    bool braces_type;
     /// all c++ keywords
-    keyword_type = false;
-    /// reject_type
-    reject_type = false;
-    /// all others which cannot be categorised
-    special_type = false;
+    bool keyword_type;
+    /// e.g. __FILE__ and __LINE__
+    bool reject_type;
     /// when the replacement text has a statement, i.e. semicolon at the end
-    statement_type = false;
+    bool statement_type;
+    /// all others which cannot be categorised
+    bool special_type;
     /// unknown tokens
-    unknown_type = false;
+    bool unknown_type;
     ///  when atleast one of the tokens is dependent on another macro
     ///  and the dependency is out of topological order
-    out_of_order_dependent_type = false;
-  }
-  /// expression_type when there are more than two tokens
-  /// identifiers
-  bool identifier_type;
-  /// string numeric etc.
-  bool literal_type;
-  /// unary operators like !, ~ , unary plus, unary minus
-  bool  unary_operator_type;
-  /// all binary operators except concatenation and stringification
-  bool  binary_operator_type;
-  ///  ? : conditional operator
-  bool  ternary_operator_type;
-  ///  > , < , == , != etc
-  bool  relational_operator_type;  
-  /// +=, -= , = , etc
-  bool assignment_type;
-  /// ()
-  bool paren_type;
-  /// {}
-  bool braces_type;
-  /// all c++ keywords
-  bool keyword_type;
-  /// e.g. __FILE__ and __LINE__
-  bool reject_type;
-  /// when the replacement text has a statement, i.e. semicolon at the end
-  bool statement_type;
-  /// all others which cannot be categorised
-  bool special_type;
-  /// unknown tokens
-  bool unknown_type;
-  ///  when atleast one of the tokens is dependent on another macro
-  ///  and the dependency is out of topological order
-  bool out_of_order_dependent_type;
+    bool out_of_order_dependent_type;
 };
 
 /**
@@ -155,7 +155,7 @@ using RlCCat = ReplacementListClosureCategory;
  */
 using RlTokType = ReplacementListTokenType;
 
-std::ostream& operator<<(std::ostream& os,RlCCat const& cat);
-std::ostream& operator<<(std::ostream& os,RlDCat const& cat);
+std::ostream& operator<<(std::ostream& os, RlCCat const& cat);
+std::ostream& operator<<(std::ostream& os, RlDCat const& cat);
 
 #endif /*RL_CATEGORY_H*/

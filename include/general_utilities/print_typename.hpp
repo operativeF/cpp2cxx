@@ -11,21 +11,21 @@
  */
 
 
-#include<typeinfo>
-#include<iostream>
+#include <iostream>
+#include <typeinfo>
 
 
-template<typename T>
+template <typename T>
 void print_typeref(std::ostream& os, T const& x)
 {
-  os<<typeid(x).name();
+    os << typeid(x).name();
 }
 
 
-template<typename T>
+template <typename T>
 void print_type(std::ostream& os, T x)
 {
-  os<<typeid(x).name();
+    os << typeid(x).name();
 }
 
 #endif //PRINT_TYPENAME_HPP

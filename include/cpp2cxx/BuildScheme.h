@@ -14,11 +14,12 @@
 
 #include <string>
 
-struct BuildScheme {
-  /// @var makeCommand
-  /// @brief the command string to be invoked for compiling the package
-  /// to be sent to the Parser class(as of now)
-  std::string makeCommand;
+struct BuildScheme
+{
+    /// @var makeCommand
+    /// @brief the command string to be invoked for compiling the package
+    /// to be sent to the Parser class(as of now)
+    std::string makeCommand;
 };
 
 #endif // BUILDSCHEME_H

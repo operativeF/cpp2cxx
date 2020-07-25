@@ -10,22 +10,20 @@
  */
 
 
+#include <iostream>
+#include <iterator>
+#include <set>
 
+namespace general_utilities
+{
+// A helper function to simplify the main part.
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::set<T>& s)
+{
 
-
-#include<iostream>
-#include<iterator>
-#include<set>
-
-namespace general_utilities{
-  // A helper function to simplify the main part.
-  template<class T>
-  std::ostream& operator<<(std::ostream& os, const std::set<T>& s)
-  {
-
-      //std::for_each(s.begin(), s.end(), [&os](const T& t){os<<t<<"\n";});
-      std::copy(s.begin(), s.end(), std::ostream_iterator<T>(os, "\n"));
-      return os;
-  }
+    //std::for_each(s.begin(), s.end(), [&os](const T& t){os<<t<<"\n";});
+    std::copy(s.begin(), s.end(), std::ostream_iterator<T>(os, "\n"));
+    return os;
 }
+} // namespace general_utilities
 #endif // PRINTSET_H

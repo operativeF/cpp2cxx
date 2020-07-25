@@ -9,19 +9,21 @@
  *  for terms and conditions.
  */
 
-#include<string>
+#include <string>
 /*
 bool SortString(std::string const& s1,std::string const& s2){
   return s1.compare(s2) < 0;
 }
 */
-namespace general_utilities {
-  struct SortString {
-    bool operator()(std::string const& s1,std::string const& s2) const
+namespace general_utilities
+{
+struct SortString
+{
+    bool operator()(std::string const& s1, std::string const& s2) const
     {
-      return s1.compare(s2) < 0;
+        return s1.compare(s2) < 0;
     }
-  };
+};
 
-}
+} // namespace general_utilities
 #endif // SORTFUNCTORS_H

@@ -18,48 +18,49 @@
  */
 enum class PPOperation
 {
-  define,
-  undef,
-  conditional,
-  includes,
-  pragma,
-  warning,
-  line,
-  error
+    define,
+    undef,
+    conditional,
+    includes,
+    pragma,
+    warning,
+    line,
+    error
 };
 
 inline std::ostream& operator<<(std::ostream& os, PPOperation const& oper)
 {
-  switch(oper){
-  case PPOperation::define:
-      os<<"define";
-      break;
-  case PPOperation::undef:
-      os<<"undef";
-      break;
-  case PPOperation::conditional:
-      os<<"conditional";
-      break;
-  case PPOperation::includes:
-      os<<"includes";
-      break;
-  case PPOperation::pragma:
-      os<<"pragma";
-      break;
-  case PPOperation::warning:
-      os<<"warning";
-      break;
-  case PPOperation::line:
-      os<<"line";
-      break;
-  case PPOperation::error:
-      os<<"error";
-      break;
-  default:
-      os<<"unknown";
-      break;
-  }
-  return os;
+    switch(oper)
+    {
+    case PPOperation::define:
+        os << "define";
+        break;
+    case PPOperation::undef:
+        os << "undef";
+        break;
+    case PPOperation::conditional:
+        os << "conditional";
+        break;
+    case PPOperation::includes:
+        os << "includes";
+        break;
+    case PPOperation::pragma:
+        os << "pragma";
+        break;
+    case PPOperation::warning:
+        os << "warning";
+        break;
+    case PPOperation::line:
+        os << "line";
+        break;
+    case PPOperation::error:
+        os << "error";
+        break;
+    default:
+        os << "unknown";
+        break;
+    }
+    return os;
 }
 
 /**
@@ -67,33 +68,34 @@ inline std::ostream& operator<<(std::ostream& os, PPOperation const& oper)
  */
 enum class MacroCategory
 {
-  none,
-  null_define,//#define X i.e. without replacement_list
-  object_like,
-  function_like,
-  variadic
+    none,
+    null_define, //#define X i.e. without replacement_list
+    object_like,
+    function_like,
+    variadic
 };
 
-inline std::ostream& operator<<(std::ostream& os, MacroCategory const& m_cat )
+inline std::ostream& operator<<(std::ostream& os, MacroCategory const& m_cat)
 {
-  switch(m_cat){
+    switch(m_cat)
+    {
     case MacroCategory::none:
-      os<<"none";
-      break;
+        os << "none";
+        break;
     case MacroCategory::null_define:
-      os<<"null_define";
-      break;
+        os << "null_define";
+        break;
     case MacroCategory::object_like:
-      os<<"object_like";
-      break;
+        os << "object_like";
+        break;
     case MacroCategory::function_like:
-      os<<"function_like";
-      break;
+        os << "function_like";
+        break;
     case MacroCategory::variadic:
-      os<<"variadic";
-      break;
-  }
-  return os;
+        os << "variadic";
+        break;
+    }
+    return os;
 }
 
 /**
@@ -101,24 +103,24 @@ inline std::ostream& operator<<(std::ostream& os, MacroCategory const& m_cat )
  */
 struct MacroScopeCategory
 {
-  bool predefined {false};
-  bool local {true};
-  bool inside_function {false};
-  bool inside_class {false};
+    bool predefined{ false };
+    bool local{ true };
+    bool inside_function{ false };
+    bool inside_class{ false };
 };
-inline std::ostream& operator<<(std::ostream& os, MacroScopeCategory const& m_cat )
+inline std::ostream& operator<<(std::ostream& os, MacroScopeCategory const& m_cat)
 {
-  if(m_cat.predefined)
-    os<<"predefined\t";
-  if(m_cat.local)
-    os<<"local\t";
-  if(m_cat.inside_function)
-    os<<"inside_function\t";
-  if(m_cat.inside_class)
-    os<<"inside_class\t";
-  else
-    os<<"Not classified\t";
-  return os;
+    if(m_cat.predefined)
+        os << "predefined\t";
+    if(m_cat.local)
+        os << "local\t";
+    if(m_cat.inside_function)
+        os << "inside_function\t";
+    if(m_cat.inside_class)
+        os << "inside_class\t";
+    else
+        os << "Not classified\t";
+    return os;
 }
 
 /*
@@ -146,20 +148,21 @@ inline std::ostream& operator<<(std::ostream& os, MacroScopeCategory const& m_ca
  */
 enum class CondCategory
 {
-  config,
-  local
+    config,
+    local
 };
-inline std::ostream& operator<<(std::ostream& os, CondCategory const& c_cat )
+inline std::ostream& operator<<(std::ostream& os, CondCategory const& c_cat)
 {
-  switch(c_cat){
+    switch(c_cat)
+    {
     case CondCategory::config:
-      os<<"config";
-      break;
+        os << "config";
+        break;
     case CondCategory::local:
-      os<<"local";
-      break;
-  }
-  return os;
+        os << "local";
+        break;
+    }
+    return os;
 }
 
 #endif // MACROSCOPECLASSIFIER_H

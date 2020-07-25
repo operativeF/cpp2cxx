@@ -12,25 +12,27 @@
 */
 
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
+
 
 /**
 *  @struct FileManagerScheme
 *  @brief defines the configuration for the FileManager
 */
-struct FileManagerScheme {
-  std::ostream*             pLogFile;
-  std::ostream*             pDemacrofiedMacroStatFile;
-  std::ostream*             pMacroStatFile;
-  std::vector<std::string>  inputFiles;
-  std::vector<std::string>  outputFiles;
-  std::vector<std::string>  searchPaths;
-  std::string               inputDirectory;
-  std::string               outputDirectory;
-  std::string               backupDirectory;
-  std::string               cleanup_directory;
-  std::string               validator_file;
+struct FileManagerScheme
+{
+    std::ostream* pLogFile;
+    std::ostream* pDemacrofiedMacroStatFile;
+    std::ostream* pMacroStatFile;
+    std::vector<std::string> inputFiles;
+    std::vector<std::string> outputFiles;
+    std::vector<std::string> searchPaths;
+    std::string inputDirectory;
+    std::string outputDirectory;
+    std::string backupDirectory;
+    std::string cleanup_directory;
+    std::string validator_file;
 };
 
 #endif // FILEMANAGERSCHEME_H
