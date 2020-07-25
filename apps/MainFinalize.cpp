@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
         //p.add("input-file", -1);
 
         po::variables_map vm;
-        std::ifstream cfg(config_file);
+        std::ifstream cfg(config_file, std::ios_base::in);
         if(!cfg.is_open())
         {
             std::cerr << "can not open config file: " << config_file << "\n";

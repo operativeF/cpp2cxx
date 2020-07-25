@@ -192,7 +192,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     //  const char* infile = "gConditions.h";
     globalMacros.clear();
     std::string instr;
-    std::ifstream gmstream(raw_global_macro_file_name);
+    std::ifstream gmstream(raw_global_macro_file_name, std::ios_base::in);
     if(!gmstream.is_open())
     {
         throw ExceptionHandler("file: " + raw_global_macro_file_name + " couldn't be opened\n");
