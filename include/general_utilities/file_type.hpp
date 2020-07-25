@@ -10,25 +10,21 @@
  *  for terms and conditions.
  */
 
-
-#include "string_utils.hpp"
-
-#include <string>
+#include <string_view>
 
 namespace general_utilities
 {
-bool header_file(std::string const& filename)
+
+static constexpr bool isHeaderFile(std::string_view filename)
 {
-    if(ends_with(filename, ".h") || ends_with(filename, ".hpp"))
-        return true;
-    return false;
+    return filename.ends_with(".h") || filename.ends_with(".hpp");
 }
 
-bool cpp_file(std::string const& filename)
+static constexpr bool isCppFile(std::string_view filename)
 {
-    if(ends_with(filename, ".cpp") || ends_with(filename, ".cxx") || ends_with(filename, ".C"))
-        return true;
-    return false;
+    return filename.ends_with(".cpp") || filename.ends_with(".cxx") || filename.ends_with(".c");
 }
+
 } // namespace general_utilities
+
 #endif // FILETYPE_HPP

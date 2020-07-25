@@ -52,19 +52,6 @@ inline std::string keep_alpha_numeric(std::string const& str)
     return s_new;
 }
 
-inline bool ends_with(std::string const& str, std::string const& suffix)
-{
-    auto str_size = str.size();
-    auto suf_size = suffix.size();
-    for(std::string::size_type i = 0; i < suffix.size(); ++i)
-    {
-        if(str[str_size - i - 1] != suffix[suf_size - i - 1])
-            return false;
-    }
-    return true;
-}
-
-
 struct SortString
 {
     bool operator()(std::string const& s1, std::string const& s2) const
