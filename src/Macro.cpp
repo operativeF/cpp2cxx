@@ -29,6 +29,7 @@ limitations under the License.
 #include "general_utilities/vector_utils.hpp"
 
 #include <cctype> //for islower
+#include <string>
 
 // @TODO: Replace with smart pointer
 PPMacro::PPMacro(std::ostream& log_file)
