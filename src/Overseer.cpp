@@ -177,7 +177,9 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
     {
         return;
     }
+
     clang::CompilerInstance ci;
+
     //InvocationStat_t inv_stat;
     pASTConsumer = new MyASTConsumer;
     MyASTConsumer& ASTConsumer = *pASTConsumer;

@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
         {
             //if output files are given then total number of output files
             //should be equal to the total number of input files
-            if(input_files.size() && (input_files.size() != output_files.size()))
+            if(!input_files.empty() && (input_files.size() != output_files.size()))
             {
                 std::cerr << "Number of input files and output files are not equal";
                 return -1;
@@ -279,8 +279,10 @@ int main(int argc, char* argv[])
             macro_list_file = output_directory + "/" + macro_list_file;
             mac_stat_file.open(macro_list_file);
             if(!mac_stat_file.is_open())
+            {
                 std::cerr << "file to list macros: " << macro_list_file << " could not be opened, "
                           << "redirecting the list to std::cerr";
+            }
         }
 
         if(vm.count("log-file"))
@@ -288,7 +290,9 @@ int main(int argc, char* argv[])
             log_file = output_directory + "/" + log_file;
             plog_file.open(log_file);
             if(plog_file.is_open())
+            {
                 err_outstream = &plog_file;
+            }
             else
             {
                 std::cerr << "log-file: " << log_file << " could not be opened, "
@@ -301,7 +305,9 @@ int main(int argc, char* argv[])
             stat_file = output_directory + "/" + stat_file;
             pstat_file.open(stat_file);
             if(pstat_file.is_open())
+            {
                 stat_outstream = &pstat_file;
+            }
             else
             {
                 std::cerr << "stat-file: " << stat_file << " could not be opened, "

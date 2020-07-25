@@ -606,11 +606,12 @@ void Parser::PPIfHandler(Node& node, bool def)
     std::stringstream id_value;
     boost::wave::token_id id;
     condStmt.push_back(*it);
+
     while((id = *(++it)) == boost::wave::T_SPACE)
     {
         condStmt.push_back(*it);
     }
-    //push the identifier
+
     condStmt.push_back(*it);
     id_value << it->get_value();
     if(PPCheckIdentifier(id_value.str(), globalMacros))
@@ -795,6 +796,7 @@ token_iterator Parser::GoPastMacro(token_iterator it)
 {
     boost::wave::token_id id;
     id = *it;
+
     while(id != boost::wave::T_NEWLINE)
     {
         if(id == boost::wave::T_CPPCOMMENT || id == boost::wave::T_CCOMMENT)
