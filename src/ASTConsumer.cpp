@@ -7,16 +7,16 @@
 
 #include <iostream>
 
-auto operator<<(std::ostream& os,const ParsedDeclInfo& inf) -> std::ostream&
+auto operator<<(std::ostream& os, const ParsedDeclInfo& inf) -> std::ostream&
 {
-  os<<inf.start_line;
-  os<<"\t"<<inf.end_line;
-  return os;
+    os << inf.start_line;
+    os << "\t" << inf.end_line;
+    return os;
 }
 
 static void set_package_specific_options(clang::PreprocessorOptions& PPOpts)
 {
-    (void)PPOpts;
+    (void) PPOpts;
     ///PPOpts.UsePredefines = false;
     ///////////////////////////////////////////
     /// hiphop specific options
@@ -33,10 +33,10 @@ static void set_package_specific_options(clang::PreprocessorOptions& PPOpts)
 
 static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
 {
-  (void)HSOpts;
-  /// clang specific include
-  /// it contains headers with all the standard(platform-specific) definitions etc.
-  /*
+    (void) HSOpts;
+    /// clang specific include
+    /// it contains headers with all the standard(platform-specific) definitions etc.
+    /*
     HSOpts.AddPath("/home/hiraditya/Documents/llvm/install/lib/clang/3.2/include",
           clang::frontend::Angled,
           false,  false,  false);
@@ -75,7 +75,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*only in ix86 computers
+    /*only in ix86 computers
   /// c++ platform specific includes
     HSOpts.AddPath("/usr/include/c++/4.6/i686-linux-gnu",
           clang::frontend::Angled,
@@ -110,20 +110,20 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*only in ix86 computers
+    /*only in ix86 computers
   /// gcc specific includes
     HSOpts.AddPath("/usr/lib/gcc/i686-linux-gnu/4.6.1",
           clang::frontend::Angled,
           false,  false,  false);
 
   */
-  /*
+    /*
   //cryptopp specific
     HSOpts.AddPath("/media/space/packages/cryptopp",
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*
+    /*
   /// wx-widgets specific
     HSOpts.AddPath("/media/space/packages/wxWidgets-2.9.3/include",
           clang::frontend::Angled,
@@ -153,7 +153,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*
+    /*
   /// ace specific
     HSOpts.AddPath("/home/hiraditya/Downloads/ACE_wrappers",
           clang::frontend::Angled,//in ace local files are in quotes
@@ -161,7 +161,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
   */
 
 
-  /* poco specific
+    /* poco specific
     HSOpts.AddPath("/home/hiraditya/Downloads/poco-1.4.3p1/XML/include",
           clang::frontend::Angled,
           false,  false,  false);
@@ -181,7 +181,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*
+    /*
   /// torcs specific
     HSOpts.AddPath("/home/hiraditya/Downloads/torcs-1.3.3/src/linux",
           clang::frontend::Angled,
@@ -245,7 +245,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /* scintilla specific
+    /* scintilla specific
     HSOpts.AddPath("/usr/include/glib-2.0",
           clang::frontend::Angled,
           false,  false,  false);
@@ -277,7 +277,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /*
+    /*
   /// hiphop specific
     HSOpts.AddPath("/home/hiraditya/Downloads/hiphop-php/install/include",
           clang::frontend::Angled,
@@ -339,7 +339,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
           clang::frontend::Angled,
           false,  false,  false);
   */
-  /* p7zip specific
+    /* p7zip specific
     HSOpts.AddPath("/home/hiraditya/Downloads/p7zip_9.20.1/CPP/include_windows",
           clang::frontend::Angled,
           false,  false,  false);
@@ -354,28 +354,27 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
 
 bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef d)
 {
-  for( auto it = d.begin(); it != d.end(); it++)
-  {
-    auto fd = llvm::dyn_cast<clang::FunctionDecl>(*it);
-    /// can be extended for class declaration
-    if(fd != nullptr)
+    for(auto it = d.begin(); it != d.end(); it++)
     {
-      PrintSourceLocation(fd);
+        auto fd = llvm::dyn_cast<clang::FunctionDecl>(*it);
+        /// can be extended for class declaration
+        if(fd != nullptr)
+        {
+            PrintSourceLocation(fd);
+        }
     }
-  }
-  
-  return true;
+
+    return true;
 }
 
 /******************************************************************************
  *
  *****************************************************************************/
-auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
-                                std::vector<std::string> const& search_paths) -> int
+auto MyASTConsumer::InitializeCI(
+        clang::CompilerInstance& ci, std::vector<std::string> const& search_paths) -> int
 {
     pci = &ci;
-    DEBUG_ASTCONSUMER(dbgs() << "\n\nSearch paths output from ASTConsumer:\n"
-                             << search_paths;);
+    DEBUG_ASTCONSUMER(dbgs() << "\n\nSearch paths output from ASTConsumer:\n" << search_paths;);
     ci.createDiagnostics(nullptr, true);
     auto Invocation = std::make_shared<clang::CompilerInvocation>();
     ci.setInvocation(Invocation);
@@ -387,18 +386,15 @@ auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
     to->Triple = llvm::sys::getDefaultTargetTriple();
 
     /// set the language to c++98
-    ci.getInvocation().setLangDefaults(ci.getLangOpts(),
-                                       clang::Language::CXX,
-                                       llvm::Triple(llvm::Twine(to->Triple)),
-                                       pci->getPreprocessorOpts(),
-                                       clang::LangStandard::lang_cxx11);
+    ci.getInvocation().setLangDefaults(ci.getLangOpts(), clang::Language::CXX,
+            llvm::Triple(llvm::Twine(to->Triple)), pci->getPreprocessorOpts(),
+            clang::LangStandard::lang_cxx11);
 
-    DEBUG_ASTCONSUMER(if(ci.getInvocation().getLangOpts()->CPlusPlus)
-                        dbgs() << "c++ is defined now";);
+    DEBUG_ASTCONSUMER(
+            if(ci.getInvocation().getLangOpts()->CPlusPlus) dbgs() << "c++ is defined now";);
 
-    auto* pti = clang::TargetInfo::CreateTargetInfo(ci.getDiagnostics(),
-                                                   to);
-                                                   //ci.getInvocation().TargetOpts);
+    auto* pti = clang::TargetInfo::CreateTargetInfo(ci.getDiagnostics(), to);
+    //ci.getInvocation().TargetOpts);
 
     ci.setTarget(pti);
     ci.createFileManager();
@@ -408,9 +404,9 @@ auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
     /// \brief to enable parsing of exceptions by the clang front end
     ci.getLangOpts().CXXExceptions = 1;
 
-    using clang::PreprocessorOptions;
-    using clang::HeaderSearchOptions;
     using clang::FrontendOptions;
+    using clang::HeaderSearchOptions;
+    using clang::PreprocessorOptions;
 
     PreprocessorOptions& PPOpts = ci.getPreprocessorOpts();
 
@@ -429,22 +425,20 @@ auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
      * bool IsUserSupplied, bool IsFramework, bool IgnoreSysRoot,
      * bool IsInternal=false, bool ImplicitExternC=false)
     */
-    std::for_each(search_paths.begin(), search_paths.end(),
-                  [&HSOpts](const std::string& search_path) {
-                  HSOpts.AddPath(search_path, clang::frontend::Angled,
-                                 false, false);
-                  });
+    std::for_each(
+            search_paths.begin(), search_paths.end(), [&HSOpts](const std::string& search_path) {
+                HSOpts.AddPath(search_path, clang::frontend::Angled, false, false);
+            });
 
     // Include header paths for the package.
     set_package_specific_paths(HSOpts);
 
     const FrontendOptions& FEOpts = ci.getFrontendOpts();
     const auto& PCHHR = ci.getPCHContainerReader();
-    ApplyHeaderSearchOptions(PP.getHeaderSearchInfo(), HSOpts,
-                             PP.getLangOpts(), PP.getTargetInfo().getTriple());
+    ApplyHeaderSearchOptions(
+            PP.getHeaderSearchInfo(), HSOpts, PP.getLangOpts(), PP.getTargetInfo().getTriple());
 
-    PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(),
-                                           PP.getLangOpts());
+    PP.getBuiltinInfo().initializeBuiltins(PP.getIdentifierTable(), PP.getLangOpts());
 
     clang::InitializePreprocessor(PP, PPOpts, PCHHR, FEOpts);
 
@@ -464,50 +458,50 @@ auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
 
 void MyASTConsumer::DumpContent(std::string const& file_name)
 {
-  clang::CompilerInstance& ci = *pci;
-  current_file = file_name;
+    clang::CompilerInstance& ci = *pci;
+    current_file = file_name;
 
-  // Kind is C_User for now because I do not know how to set the right option,
-  // this does not matter so much, I think it is only used to selectively
-  // emit/ignore compiler warnings.
-  clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
+    // Kind is C_User for now because I do not know how to set the right option,
+    // this does not matter so much, I think it is only used to selectively
+    // emit/ignore compiler warnings.
+    clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
 
-  DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: "
-                           << current_file;);
-  const clang::FileEntry *pFile = ci.getFileManager().getFile(file_name.c_str()).get();
-  clang::SourceManager &SourceMgr = ci.getSourceManager();
-  SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));
+    DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: " << current_file;);
+    const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name.c_str()).get();
+    clang::SourceManager& SourceMgr = ci.getSourceManager();
+    SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));
 
-  // set file and loc parameters for the track_macro callback
-  // placing here is important. It should be after the source manager
-  // has created fileid for the file to be processed.
-  track_macro->SetFileName(current_file);
-  ///////////////////////////////////////////////////////////
-  ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(),
-                                            &ci.getPreprocessor());
-  clang::ParseAST(ci.getPreprocessor(), this, ci.getASTContext());
-  ci.getDiagnosticClient().EndSourceFile();
+    // set file and loc parameters for the track_macro callback
+    // placing here is important. It should be after the source manager
+    // has created fileid for the file to be processed.
+    track_macro->SetFileName(current_file);
+    ///////////////////////////////////////////////////////////
+    ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(), &ci.getPreprocessor());
+    clang::ParseAST(ci.getPreprocessor(), this, ci.getASTContext());
+    ci.getDiagnosticClient().EndSourceFile();
 }
 
 void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceLocation loc)
 {
     clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
     /// print only when the functions are in the current file
-    if(current_file == presumed.getFilename()) {
-      std::cout<<"line: "<<presumed.getLine();
-      std::cout<<", column: "<<presumed.getColumn();
+    if(current_file == presumed.getFilename())
+    {
+        std::cout << "line: " << presumed.getLine();
+        std::cout << ", column: " << presumed.getColumn();
     }
 }
 
 void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
 {
-  // @TODO: Initialize this.
-  ParsedDeclInfo inf;
-  // @TODO: Check fd for nullness?
-  clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
+    // @TODO: Initialize this.
+    ParsedDeclInfo inf;
+    // @TODO: Check fd for nullness?
+    clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
-  if(current_file == presumed.getFilename()) {
-/*    std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";
+    if(current_file == presumed.getFilename())
+    {
+        /*    std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";
     std::cout<<"Start:\t";
     std::cout<<"line: "<<presumed.getLine();
     std::cout<<", column: "<<presumed.getColumn();
@@ -515,29 +509,29 @@ void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
     std::cout<<"\nEnd:\t";
     std::cout<<"line: "<<presumed.getLine();
     std::cout<<", column: "<<presumed.getColumn();*/
-    inf.start_line = presumed.getLine();
-    presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
-    inf.end_line = presumed.getLine();
-    FunctionInfo[fd->getNameInfo().getAsString()] = inf;
-  }
+        inf.start_line = presumed.getLine();
+        presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
+        inf.end_line = presumed.getLine();
+        FunctionInfo[fd->getNameInfo().getAsString()] = inf;
+    }
 }
 
 void MyASTConsumer::PrintStats()
 {
-  using namespace general_utilities;
-  std::cout << FunctionInfo;
-  track_macro->PrintStats();
+    using namespace general_utilities;
+    std::cout << FunctionInfo;
+    track_macro->PrintStats();
 }
 
 void MyASTConsumer::VerifyMacroScope(bool use_fast)
 {
-  if (use_fast)
-    track_macro->VerifyMacroScopeFast(FunctionInfo);
-  else // This was the initial implementation which is compute intensive.
-    track_macro->VerifyMacroScope(FunctionInfo);
+    if(use_fast)
+        track_macro->VerifyMacroScopeFast(FunctionInfo);
+    else // This was the initial implementation which is compute intensive.
+        track_macro->VerifyMacroScope(FunctionInfo);
 }
 
 ASTMacroStat_t MyASTConsumer::GetMacroStat()
 {
-  return track_macro->GetMacroStat();
+    return track_macro->GetMacroStat();
 }

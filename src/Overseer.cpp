@@ -21,29 +21,28 @@ limitations under the License.
 */
 
 #include "cpp2cxx/Overseer.h"
-#include "cpp2cxx/FileManager.h"
-#include "cpp2cxx/Parser.h"
 #include "cpp2cxx/DepGraph.h"
 #include "cpp2cxx/ExceptionHandler.h"
+#include "cpp2cxx/FileManager.h"
+#include "cpp2cxx/Parser.h"
 
 #include "general_utilities/file_type.hpp"
 
-Overseer::Overseer(ConfigScheme& config_scheme)
-  :configScheme(config_scheme)
+Overseer::Overseer(ConfigScheme& config_scheme) : configScheme(config_scheme)
 {
-  pFileManager = new FileManager(GetFileManagerScheme(), GetDemacroficationScheme());
-  pParser = new Parser(GetDemacroficationScheme(),GetLogFile(),GetMacroStatFile());
+    pFileManager = new FileManager(GetFileManagerScheme(), GetDemacroficationScheme());
+    pParser = new Parser(GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile());
 }
 
 void Overseer::ConfigureFileManager()
 {
-  pFileManager->Configure(configScheme.GetFileManagerScheme());
+    pFileManager->Configure(configScheme.GetFileManagerScheme());
 }
 
 Overseer::~Overseer()
 {
-  delete pFileManager;
-  delete pParser;
+    delete pFileManager;
+    delete pParser;
 }
 
 /**
@@ -62,130 +61,135 @@ Overseer::~Overseer()
   */
 
 void Overseer::StartProcessing(bool demacrofy)
-{/// @todo after demacrofication maintain a list of all the macro
- /// identities so that each identifier can be defined in the make file
- /// and subsequently compiled
-  try {
-    std::vector<std::string>::const_iterator v_iter;
-    v_iter = GetInputFiles().begin();
-    for( ; v_iter!=GetInputFiles().end(); ++v_iter) {
-      GenerateExternalASTHandler(*v_iter);
-      //GetInformationFromExternalSource(*v_iter);
-      RunParser(*v_iter);
-      if(demacrofy){
-        RunDemacrofier();
-        RunDependencyAnalyzer();
-      }
+{ /// @todo after demacrofication maintain a list of all the macro
+    /// identities so that each identifier can be defined in the make file
+    /// and subsequently compiled
+    try
+    {
+        std::vector<std::string>::const_iterator v_iter;
+        v_iter = GetInputFiles().begin();
+        for(; v_iter != GetInputFiles().end(); ++v_iter)
+        {
+            GenerateExternalASTHandler(*v_iter);
+            //GetInformationFromExternalSource(*v_iter);
+            RunParser(*v_iter);
+            if(demacrofy)
+            {
+                RunDemacrofier();
+                RunDependencyAnalyzer();
+            }
+        }
     }
-  } catch(ExceptionHandler& e) {
-    //std::cout<<"There was some error in start processing";
-    GetLogFile() << "Error: "<<e.GetMessage()<<"\n";
-  }
+    catch(ExceptionHandler& e)
+    {
+        //std::cout<<"There was some error in start processing";
+        GetLogFile() << "Error: " << e.GetMessage() << "\n";
+    }
 }
 
 const std::vector<std::string>& Overseer::GetInputFiles()
 {
-  return pFileManager->GetInputFiles();
+    return pFileManager->GetInputFiles();
 }
 
 void Overseer::RunParser(std::string log_file_name)
 {
-  /// pass the data collected from clang front end
-  pParser->Parse(log_file_name, &ASTMacroStat);
-  //pMacTree = pParser->GetMacTree();
+    /// pass the data collected from clang front end
+    pParser->Parse(log_file_name, &ASTMacroStat);
+    //pMacTree = pParser->GetMacTree();
 }
 
 void Overseer::RunDependencyAnalyzer()
 {
-  //pass the tree pointer
-  //pass the log_file pointer
-  //pass a call_back function(observer) which will give the
-  //return the relevant error message to the dependency analyser
-  //or may be it can only take the relevant error message and put that into
-  //log file
-  //
-  pParser->PPAnalyzeMacroDependency(GetLogFile());
-  //
-  //dependency analyzer should do the analysis and then put the analysis
-  //result into the log_file
-
+    //pass the tree pointer
+    //pass the log_file pointer
+    //pass a call_back function(observer) which will give the
+    //return the relevant error message to the dependency analyser
+    //or may be it can only take the relevant error message and put that into
+    //log file
+    //
+    pParser->PPAnalyzeMacroDependency(GetLogFile());
+    //
+    //dependency analyzer should do the analysis and then put the analysis
+    //result into the log_file
 }
 
 void Overseer::PrintTotalOrder()
 {
-  //call the dep_analyzer to print the total order
-  //to the file_pointer passed to the dependency_analyzer
+    //call the dep_analyzer to print the total order
+    //to the file_pointer passed to the dependency_analyzer
 }
 
 void Overseer::RunDemacrofier()
 {
-//if(one_file_at_a_time)
-//std::string demac_string = demacrofy(tree_ptr,input_file_ptr)
-//else if(one_macro_at_a_time)
-//std::string demac_string = demacrofy(mac_ptr)
-//else invalid option
-    pParser->Demacrofy(GetStatFile(),configScheme.GetDemacroficationScheme().multipleDefinitions);
+    //if(one_file_at_a_time)
+    //std::string demac_string = demacrofy(tree_ptr,input_file_ptr)
+    //else if(one_macro_at_a_time)
+    //std::string demac_string = demacrofy(mac_ptr)
+    //else invalid option
+    pParser->Demacrofy(GetStatFile(), configScheme.GetDemacroficationScheme().multipleDefinitions);
     UpdateFileManager();
 }
 
 void Overseer::UpdateFileManager()
 {
-  //std::cout<<output_file;
-  pFileManager->UpdateFile(*this);
+    //std::cout<<output_file;
+    pFileManager->UpdateFile(*this);
 }
 
 /// @brief called by the FileManager class to update the file
 void Overseer::WriteOutputFile(std::ostream& os) const
 {
-  pParser->GetDemacrofiedFile(os);
+    pParser->GetDemacrofiedFile(os);
 }
 
 std::ostream& Overseer::GetLogFile()
 {
-  return pFileManager->GetLogFile();
+    return pFileManager->GetLogFile();
 }
 
 std::ostream& Overseer::GetMacroStatFile()
 {
-  return pFileManager->GetMacroStatFile();
+    return pFileManager->GetMacroStatFile();
 }
 
 std::ostream& Overseer::GetStatFile()
 {
-  return pFileManager->GetDemacrofiedMacroStatFile();
+    return pFileManager->GetDemacrofiedMacroStatFile();
 }
 
 DemacroficationScheme& Overseer::GetDemacroficationScheme()
 {
-  return configScheme.GetDemacroficationScheme();
+    return configScheme.GetDemacroficationScheme();
 }
 
 FileManagerScheme& Overseer::GetFileManagerScheme()
 {
-  return configScheme.GetFileManagerScheme();
+    return configScheme.GetFileManagerScheme();
 }
 
 void Overseer::GenerateExternalASTHandler(const std::string& filename)
 {
-  /// generally the function definitions are not in header files. This has been done to make things faster and minimize
-  /// clang errors. As there are cases where header files are not self contained e.g. poco-1.4.3p1/XML$ vi src/xmlrole.h
-  ///
-  if(general_utilities::header_file(filename)) {
-    return;
-}
-  clang::CompilerInstance ci;
-  //InvocationStat_t inv_stat;
-  pASTConsumer = new MyASTConsumer;
-  MyASTConsumer& ASTConsumer = *pASTConsumer;
+    /// generally the function definitions are not in header files. This has been done to make things faster and minimize
+    /// clang errors. As there are cases where header files are not self contained e.g. poco-1.4.3p1/XML$ vi src/xmlrole.h
+    ///
+    if(general_utilities::header_file(filename))
+    {
+        return;
+    }
+    clang::CompilerInstance ci;
+    //InvocationStat_t inv_stat;
+    pASTConsumer = new MyASTConsumer;
+    MyASTConsumer& ASTConsumer = *pASTConsumer;
 
-  ASTConsumer.InitializeCI(ci, pFileManager->GetSearchPaths());
+    ASTConsumer.InitializeCI(ci, pFileManager->GetSearchPaths());
 
-  ASTConsumer.DumpContent(filename);
+    ASTConsumer.DumpContent(filename);
 
-  //ASTConsumer.PrintStats();
-  ASTConsumer.VerifyMacroScope(true);
-  ASTMacroStat = ASTConsumer.GetMacroStat();
-  //inv_stat = ASTConsumer.GetInvocationStat();
+    //ASTConsumer.PrintStats();
+    ASTConsumer.VerifyMacroScope(true);
+    ASTMacroStat = ASTConsumer.GetMacroStat();
+    //inv_stat = ASTConsumer.GetInvocationStat();
 }
 
 /*
