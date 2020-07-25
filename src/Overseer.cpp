@@ -172,7 +172,7 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
     /// generally the function definitions are not in header files. This has been done to make things faster and minimize
     /// clang errors. As there are cases where header files are not self contained e.g. poco-1.4.3p1/XML$ vi src/xmlrole.h
     ///
-    if(general_utilities::header_file(filename))
+    if(general_utilities::isHeaderFile(filename))
     {
         return;
     }
