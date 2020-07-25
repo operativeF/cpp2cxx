@@ -316,12 +316,9 @@ void Parser::ParseMacros(MacroList_t& macro_list)
         case boost::wave::T_PP_INCLUDE:
         case boost::wave::T_PP_QHEADER:
         case boost::wave::T_PP_HHEADER:
-            break;
         case boost::wave::T_PP_ERROR:
             //what happens if #error is followed by #define in the same line
-            break;
         case boost::wave::T_PP_LINE:
-            break;
         case boost::wave::T_PP_PRAGMA:
             break;
         case boost::wave::T_PP_UNDEF:
