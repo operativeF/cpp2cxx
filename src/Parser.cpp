@@ -706,7 +706,10 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     PairMacroIter_t pm_iter;
 
     Demacrofier::ReadyQueue_t::iterator post_demac_iter;
-    // @TOOD: Initialize this.
+
+    // @TODO: Initialize this.
+    int defn_counter;
+
     while(it != it_end)
     {
         id = boost::wave::token_id(*it);

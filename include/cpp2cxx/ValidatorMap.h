@@ -39,6 +39,7 @@ class ValidatorMap
 {
 public:
     // @TODO: Change this to a constructor for initialization.
+    void InitValidatorMap(std::string const& v_file)
     {
         validator_file = v_file;
         std::ifstream p_file(validator_file);

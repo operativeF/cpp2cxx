@@ -362,6 +362,7 @@ std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro* m_ptr) cons
 }
 
 // @TODO: I don't think this is a sane implementation.
+bool Demacrofier::IsDemacrofiable(PPMacro const& mac)
 {
     bool demacrofiable = false;
     RlTokType token_cat = mac.get_replacement_list().get_replacement_list_token_type();
@@ -472,14 +473,17 @@ std::string Demacrofier::GetFunctionArgs(const PPMacro* m_ptr)
     // identifier parameters iterator
     auto ip_iter = m_ptr->get_identifier_parameters().begin();
     // @TODO: Make this a lambda
-    arg_string << dtype << *invok_iter << ") " << ip_iter->first.get_value();
-
-    while(++ip_iter != m_ptr->get_identifier_parameters().end())
+    if(!m_ptr->get_identifier_parameters().empty())
     {
-        arg_string << ", " << dtype << *(++invok_iter) << ") " << ip_iter->first.get_value();
+        arg_string << dtype << *invok_iter << ") " << ip_iter->first.get_value();
+
+        while(++ip_iter != m_ptr->get_identifier_parameters().end())
+        {
+            arg_string << ", " << dtype << *(++invok_iter) << ") " << ip_iter->first.get_value();
+        }
     }
-}
-return arg_string.str();
+
+    return arg_string.str();
 }
 
 std::string Demacrofier::GetFunctionBody(const PPMacro* m_ptr)

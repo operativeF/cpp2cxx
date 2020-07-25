@@ -24,37 +24,24 @@ limitations under the License.
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
-/**
- *  @file FileManager.h
- *  @brief maintains the files, directories.
- *  acts as an interface which can be used to get input files one by one
- *  or all at a time. also provides the interface to write to an output file
- *  @version 1.0
- *  @author Aditya Kumar
- *  @note
- *  compiles with g++-4.5 or higher,
- *  for compiling pass -std=c++0x to the compiler
- */
-
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
-
 //depending upon the demacrofication scheme the demacrofier should
 //return to the subject class which should call the FileManager for file handling
 /**
- * @class FileManagerScheme
+ * @struct FileManagerScheme
  * @brief forward declaration
  */
-class FileManagerScheme;
+struct FileManagerScheme;
 
 /**
   * @class DemacroficationScheme
   * @brief forward declaration
   */
-class DemacroficationScheme;
+struct DemacroficationScheme;
 
 /**
  * @class OverSeer

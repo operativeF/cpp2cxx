@@ -72,6 +72,7 @@ void FileManager::UpdateFile(std::ostream& fp, std::string const& file_str)
 }
 
 // TODO: Make this more robust with filesystem
+void FileManager::UpdateFile(std::string const& file_str)
 {
     std::string output_file = GetOutputFile();
     if(output_file.length() != 0u)
@@ -148,6 +149,7 @@ std::string FileManager::GetOutputFile()
 }
 
 // @TODO: Replace with filesystem paths
+std::vector<std::string> const& FileManager::GetSearchPaths() const
 {
     return fileManagerScheme.searchPaths;
 }

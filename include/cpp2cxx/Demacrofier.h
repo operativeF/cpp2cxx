@@ -64,7 +64,8 @@ public:
 
     /// when cleanup = false, translations are put with #ifdef conditionals
     /// and by default they are disabled; the macros are enabled.
-    // @TODO: Replace bools in the function.
+    // @TODO: Replace bools in this function.
+    std::string Translate(PPMacro const* m_ptr, std::ostream& stat, bool cleanup, bool demacrofy);
 
     void SetMacroInvocationStat(InvocationStat_t* pInvocationStat);
     void SetASTStat(ASTMacroStat_t* pASTMacroStat);

@@ -518,7 +518,9 @@ void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceL
 void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
 {
     // @TODO: Initialize this.
+    clang::CompilerInstance& ci = *pci;
     ParsedDeclInfo inf;
+    clang::SourceManager& sm = ci.getSourceManager();
     // @TODO: Check fd for nullness?
     clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
