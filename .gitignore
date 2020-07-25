@@ -1,7 +1,15 @@
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
+# Executables
 *.o
 *.a
 *.so
+*.dll
+*.lib
+*.exe
+
+# Debugging files
+*.ilk
+*.pdb
 
 # Folders
 _obj
@@ -9,8 +17,10 @@ _test
 build
 dummy_test
 cpp2cxx-cppcheck-build-dir
+.vs
+.vscode
 
-# Temporaru files
+# Temporary files
 *.*~
 *.tmp
 *.swp
