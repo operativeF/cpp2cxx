@@ -82,6 +82,7 @@ struct Node {
       //put the macro in the free store
     void PushBackMacro(PPMacro& mac)
     {
+        // @TODO: Replace with smart pointer?
       PPMacro* m = new PPMacro(mac);
       //*m = mac;
       vecMacro.push_back(m);
@@ -164,6 +165,7 @@ class MacTree {
     MacTree()
     :nodeIndex(0),depGraph(1)
     {
+        // @TODO: Replace with smart pointer?
       Node* pn = new Node;
       //currVertex is dummy here
       NodeMap_t::iterator nodeMap_iter =

@@ -20,6 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// @TODO: Replace filesystem stuff
+
 #include "cpp2cxx/Overseer.h" //observable
 #include "cpp2cxx/FileManager.h"
 #include "cpp2cxx/FileManagerScheme.h"
@@ -71,7 +73,7 @@ void FileManager::UpdateFile(std::ostream& fp, std::string const& file_str)
   fp<<file_str;
 }
 
-void FileManager::UpdateFile(std::string const& file_str)
+// TODO: Make this more robust with filesystem
 {
   std::string output_file =  GetOutputFile();
   if(output_file.length() != 0u){
@@ -141,7 +143,7 @@ std::string FileManager::GetOutputFile()
   return output_file_name;
 }
 
-std::vector<std::string> const& FileManager::GetSearchPaths() const
+// @TODO: Replace with filesystem paths
 {
   return fileManagerScheme.searchPaths;
 }
@@ -165,6 +167,8 @@ void FileManager::WriteLog(std::string const& str)
 void FileManager::PrepareDemacrofiedMacroStatFile()
 {
   std::string header;
+
+  // @TODO: Replace with a lambda
   if(demacroficationScheme.performCleanup){
     header = "###################################################################\n"
         "#This file contains the details of each macro processed by the demacrofier\n"

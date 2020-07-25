@@ -287,6 +287,7 @@ void DepAnalyzer<Vertex_t>::MakeEdges()
   typename DepList_t::const_iterator dl_iter;
   //iterator to the map of vertex to vertex descriptor
   typename MapVertexVd_t::iterator pm_iter = mapVertexVd.begin();
+  // @TODO: Initialize these.
   Vd_t u,v;//ordered pair (u,v)
   for(dl_iter = depList.begin(); dl_iter != depList.end(); dl_iter++) {
     //find the iterator to the mapVertex where macro is

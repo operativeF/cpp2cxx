@@ -6,6 +6,7 @@ Copyrights remain with the original copyright holders.
 Use of this material is by permission and/or license.
 
 Copyright [2012] Aditya Kumar, Andrew Sutton, Bjarne Stroustrup
+          [2020] Thomas Figueroa
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,6 +30,7 @@ limitations under the License.
 
 #include <cctype> //for islower
 
+// @TODO: Replace with smart pointer
 PPMacro::PPMacro(std::ostream& log_file)
 :identifier(boost::wave::T_UNKNOWN),
  m_cat(MacroCategory::none),
@@ -182,6 +184,7 @@ void PPMacro::AnalyzeIdentifier() const
   */
 }
 
+// @TODO: Replace this with better function.
 bool PPMacro::HasLowerCase() const
 {
   unsigned int i = 0;
@@ -293,6 +296,7 @@ PPMacro::get_replacement_list_dep_idlist() const
   //iterator for the ReplacementList tokens
   std::vector<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
   //remove all those identifiers which are in the function argument
+  // @TODO: Replace this with stdlib stuff.
   iter_args = identifier_parameters.begin();
   for(;iter_args != identifier_parameters.end();iter_args++) {
     iter_rl_idlist = dep_idlist.begin();

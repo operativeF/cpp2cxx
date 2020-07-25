@@ -1,6 +1,8 @@
 #include "clang_interface/TrackMacro.hpp"
 #include "general_utilities/debug.h"
 
+// @TODO: Replace with filesystem
+
 std::ostream& operator<<(std::ostream& os, const CollectedMacroInfo& cmi)
 {
   os<<"::";
@@ -65,6 +67,7 @@ void TrackMacro::MacroExpands(const Token &MacroNameTok, const MacroInfo* MI,
 /// PPCallback
 void TrackMacro::MacroDefined(const Token &MacroNameTok, const MacroDirective *MD)
 {
+  // @TODO: Check MD for nullness?
   const MacroInfo* MI = MD->getMacroInfo();
   //if(MacroIsLocal(MI->getDefinitionLoc())) {
   CollectedMacroInfo cmi;
@@ -125,7 +128,7 @@ void TrackMacro::SetFileName(const std::string & f)
 
 }
 
-/// @todo not a good design choice
+/// @TODO: Use make_unique
 void TrackMacro::InitializeMacroInvocationStat()
 {
   m_istat = new InvocationStat_t;

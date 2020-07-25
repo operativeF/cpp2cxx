@@ -82,10 +82,13 @@ bool MacTree::IsRoot(Vertex_t const vd) const
 bool MacTree::MakeSibling(Node& rn)
 {
   DEBUG_TREE(dbgs()<<"\nMaking sibling: "<<rn.key.get_value()<<"\t"<<rn.key.get_position().get_line()<<"\n";);
+  // @TODO: Initialize this.
   Vertex_t v_dummy;//faking
+  // @TODO: Replace with smart pointer?
   Node* pn = new Node;
   *pn = rn;
   if(IsRoot(currVertex)) {
+      // @TODO: Remove this.
     ExceptionHandler("No sibling for root vertex.\n");
 }
   //this line should be after the previous assignment of *pn=rn !
@@ -115,7 +118,9 @@ bool MacTree::MakeSibling(Node& rn)
 bool MacTree::MakeChild(Node& rn)
 {
   DEBUG_TREE(dbgs()<<"\nMaking child: "<<rn.key.get_value()<<"\t"<<rn.key.get_position().get_line()<<"\n";);
+  // @TODO: Initialize this.
   Vertex_t v_dummy;//faking
+  // @TODO: Replace with smart pointer?
   Node* pn = new Node;
   *pn = rn;
   //this line should be after the previous one!

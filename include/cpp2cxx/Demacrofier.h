@@ -54,7 +54,7 @@ class Parser;
 class Demacrofier {
   public:
     Demacrofier();
-    /// @todo change pointer to const ref
+    /// @TODO change pointer to const ref
     /// when cleaning up, the translations are put without any conditionals
     /// The \e Translate function will generate the demacrofication without
     /// any conditionals wrapped around it. The code generated will have
@@ -62,7 +62,7 @@ class Demacrofier {
 
     /// when cleanup = false, translations are put with #ifdef conditionals
     /// and by default they are disabled; the macros are enabled.
-    std::string Translate(PPMacro const* m_ptr, std::ostream& stat, bool cleanup, bool demacrofy);
+    // @TODO: Replace bools in the function.
 
     void SetMacroInvocationStat(InvocationStat_t* pInvocationStat);
     void SetASTStat(ASTMacroStat_t*  pASTMacroStat);

@@ -2,6 +2,7 @@
 
 #include "general_utilities/debug.h"
 
+// TODO: Remove this abomination.
 std::ostream *dbg_stream = &std::cout;
 
 auto dbgs() -> std::ostream&

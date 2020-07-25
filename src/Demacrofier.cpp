@@ -301,6 +301,7 @@ return demacrofied_line.str();
 
 std::string Demacrofier::DemacrofyObjectLike(PPMacro const* m_ptr)
 {
+    // @TODO: Check m_ptr for nullness?
   std::stringstream demacrofied_line;
 /*  std::stringstream template_arg;
   std::stringstream arg_str;
@@ -346,8 +347,8 @@ std::string Demacrofier::DemacrofyObjectLike(PPMacro const* m_ptr)
      return demacrofied_line.str();
   }*/
 
-  // do constexpr only for integer literals.
-  // figure out how to identify integer literals
+  // @TODO: do constexpr only for integer literals.
+  // figure out how to identify integer literals...
   demacrofied_line << "constexpr auto "  //auto then space
                    << m_ptr->get_identifier_str()
                    << " = "
@@ -377,7 +378,7 @@ std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro *m_ptr) cons
   return demacrofied_line.str();
 }
 
-bool Demacrofier::IsDemacrofiable(PPMacro const& mac)
+// @TODO: I don't think this is a sane implementation.
 {
   bool demacrofiable = false;
   RlTokType token_cat =
@@ -488,7 +489,7 @@ std::string Demacrofier::GetFunctionArgs(const PPMacro *m_ptr)
       m_ptr->get_use_case_string().begin();
   // identifier parameters iterator
   auto ip_iter = m_ptr->get_identifier_parameters().begin();
-  if(!m_ptr->get_identifier_parameters().empty()) {
+  // @TODO: Make this a lambda
     arg_string << dtype
                << *invok_iter
                << ") "
@@ -517,7 +518,7 @@ std::string Demacrofier::GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
   std::stringstream m_switch;
   std::string file_name = m_ptr->get_identifier().get_position().get_file().c_str();
 
-  // i think move semantics should be able to optimize this
+  // @TODO: Use an algorithm.
   file_name = general_utilities::keep_alpha_numeric(file_name);
 
   m_switch << "USE"
@@ -571,7 +572,6 @@ void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden,
   }
 }
 
-//move semantics should optimize return by value
 bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
 {
   bool postponed = false;

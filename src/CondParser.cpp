@@ -34,15 +34,19 @@ CondParser::CondParser(const std::string& file_global_macros)
 {
   const unsigned int line_width = 2048;
   //putting line_width instead of 256 gives an error why??
+  // @TODO: Initialize these
   char fc[line_width];
   char sc[line_width];
   std::ifstream gMacros(file_global_macros);
   if(!gMacros.is_open()) {
     return;
 }
+
+  // @TODO: Replace with filesystem
   gMacros.seekg(0,std::ios::beg);
 
   //to ignore the newline at the end of the file
+  // @TODO: No array decay.
   gMacros.getline(fc,line_width);
   gMacros.getline(sc,line_width);
   while(gMacros.good()) {

@@ -24,6 +24,7 @@ limitations under the License.
 
 #include <algorithm>
 
+// @TODO: Replace with smart pointer
 ConfigScheme::ConfigScheme()
 {
   pFileManagerScheme = new FileManagerScheme;
@@ -31,6 +32,7 @@ ConfigScheme::ConfigScheme()
   pBuildScheme = new BuildScheme;
 }
 
+// @TODO: Get rid of manual memory management
 ConfigScheme::~ConfigScheme()
 {
   delete pFileManagerScheme;

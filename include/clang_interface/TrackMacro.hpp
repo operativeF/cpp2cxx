@@ -38,6 +38,7 @@ namespace clang
       :m_istat(NULL)
     {}
 
+    // @TODO: Get rid of manual memory usage
     ~TrackMacro()
     { delete m_istat; }
 

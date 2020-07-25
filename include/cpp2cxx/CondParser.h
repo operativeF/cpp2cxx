@@ -57,6 +57,7 @@ class CondParser {
 
     bool Match(boost::wave::token_id id);
 
+    // @TODO: Replace this with a better state machine.
     void Assignment();
     void Expression();
     void Expression1();

@@ -40,6 +40,7 @@ inline std::string remove_char(std::string const& str, char c)
   return s_new;
 }
 
+// @TODO: Replace with better function.
 inline std::string keep_alpha_numeric(std::string const& str)
 {
   std::string::size_type i = 0;

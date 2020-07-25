@@ -448,11 +448,13 @@ auto MyASTConsumer::InitializeCI(clang::CompilerInstance& ci,
 
     clang::InitializePreprocessor(PP, PPOpts, PCHHR, FEOpts);
 
+    // @TODO: Use make_unique
     std::unique_ptr<ASTConsumer> Consumer(new MyASTConsumer);
     ci.setASTConsumer(std::move(Consumer));
     ci.createASTContext();
 
     // Pass the callback function to PP and it will manage the memory.
+    // @TODO: Use make_unique
     track_macro = new clang::TrackMacro;
     track_macro->SetCompilerInstance(&ci);
     PP.addPPCallbacks(std::unique_ptr<clang::PPCallbacks>(track_macro));
@@ -465,7 +467,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
   clang::CompilerInstance& ci = *pci;
   current_file = file_name;
 
-  // Kind is C_User for now because I do not know how to set the righ option,
+  // Kind is C_User for now because I do not know how to set the right option,
   // this does not matter so much, I think it is only used to selectively
   // emit/ignore compiler warnings.
   clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
@@ -499,9 +501,9 @@ void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceL
 
 void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
 {
-  clang::CompilerInstance& ci = *pci;
+  // @TODO: Initialize this.
   ParsedDeclInfo inf;
-  clang::SourceManager& sm = ci.getSourceManager();
+  // @TODO: Check fd for nullness?
   clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
   if(current_file == presumed.getFilename()) {
@@ -535,8 +537,6 @@ void MyASTConsumer::VerifyMacroScope(bool use_fast)
     track_macro->VerifyMacroScope(FunctionInfo);
 }
 
-/// relying on move semantics. returning by value
-/// May not be true ^^^
 ASTMacroStat_t MyASTConsumer::GetMacroStat()
 {
   return track_macro->GetMacroStat();

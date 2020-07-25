@@ -60,19 +60,22 @@ Parser::Parser(DemacroficationScheme const& demacrofication_scheme,
     ReadGlobalMacros(fileGlobalMacros);
   }
   else {
-    /// @todo supply the file name of formatted global macros
+    /// @TODO supply the file name of formatted global macros
     /// from the main function, hardcoding the name here is not a good idea
-    /// @todo check:: previously the file name was gMacros.dat. I've changed it.
+    /// @TODO check:: previously the file name was gMacros.dat. I've changed it.
     fileGlobalMacros = "gConditions.h";
     ParseNewGlobalMacros(pDemacroficationScheme->globalMacrosRaw);
   }
   // passing the file containing global macros so that it can make a list
   // which is useful in determining if a conditional macro uses global macros
+  // @TODO: Replace with smart pointer
   cp = new CondParser(fileGlobalMacros);
   rp = new RlParser(demacrofication_scheme,log_file);
   demac = new Demacrofier;
 }
 
+// @TODO: Get rid of manual memory management
+// @TODO: This is not exception safe.
 Parser::~Parser()
 {
   //after parsing localMacros contains all the macros parsed
@@ -133,6 +136,7 @@ void Parser::ReadGlobalMacros(std::string const& global_macro_file_name)
   try {
     globalMacros.clear();
     const unsigned int line_width = 2048;
+    // @TODO: Initialize these.
     char fc[line_width];
     char sc[line_width];
     std::ifstream gMacros(global_macro_file_name);
@@ -140,13 +144,17 @@ void Parser::ReadGlobalMacros(std::string const& global_macro_file_name)
       logFile << "  - error: " << global_macro_file_name << " couldn't be opened\n";
       throw ExceptionHandler("global macro file could not be opened");
     }
+
+    // @TODO: Replace with filesystem
     gMacros.seekg(0,std::ios::beg);
 
     //to ignore the newline at the end of the file
+    // @TODO: No array decay.
     gMacros.getline(fc,line_width);
     gMacros.getline(sc,line_width);
     while(gMacros.good())
     {
+        // @TODO: No array decay.
       //put the macro identifier and the replacement_list into some data structure
       globalMacros.insert(std::make_pair(fc,sc));
       //logFile<<fc<<"\t"<<sc<<"\n";
@@ -647,6 +655,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
   demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
   std::stringstream err_msg;
+  // @TODO: Initialize these.
   boost::wave::token_id id;
   std::string demacrofied_string;
   it = it_begin;
@@ -657,8 +666,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
   PairMacroIter_t pm_iter;
 
   Demacrofier::ReadyQueue_t::iterator post_demac_iter;
-
-  int defn_counter;
+      // @TOOD: Initialize this.
   while(it != it_end) {
     id = boost::wave::token_id(*it);
     defn_counter=0;

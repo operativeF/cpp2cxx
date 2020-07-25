@@ -14,13 +14,14 @@ using ValidMacros_t = std::set<std::string>;
 class ValidatorMap
 {
 public:
-    void InitValidatorMap(std::string const& v_file)
+    // @TODO: Change this to a constructor for initialization.
     {
         validator_file = v_file;
         std::ifstream p_file(validator_file);
         if(!p_file.is_open())
             throw ExceptionHandler("could not open the validator file");
         std::string dummy;
+        // @TODO: Initialize this
         int val;
         while(p_file.good()){
             std::string macro_id;
