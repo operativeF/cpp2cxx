@@ -36,7 +36,9 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 #include "ConfigScheme.h"
+#include "FileManager.h"
 #include "FileManagerScheme.h"
+#include "Parser.h"
 #include "clang_interface/ASTConsumer.hpp"
 
 
@@ -46,23 +48,6 @@ limitations under the License.
 /// @todo for error handling each place where error is caught
 /// the error message will be sent to the overseer class and this class will
 /// log the error according to the demacrofication scheme
-
-/**
- * @class ConfigScheme
- * forward declaration
- */
-//class ConfigScheme;
-/**
- * @class FileManager
- * forward declaration
- */
-class FileManager;
-
-/**
-  * @class Parser
-  * forward declaration
-  */
-class Parser;
 
 /**
  * @class MacTree
@@ -80,7 +65,6 @@ class Overseer
 {
 public:
     Overseer(ConfigScheme& config_scheme);
-    ~Overseer();
 
     void ConfigureFileManager();
     /**
@@ -117,10 +101,8 @@ public:
 
 private:
     ConfigScheme& configScheme;
-    FileManager* pFileManager;
-    Parser* pParser;
-    MacTree const* pMacTree;
-    MyASTConsumer* pASTConsumer;
+    std::unique_ptr<FileManager> pFileManager;
+    std::unique_ptr<Parser> pParser;
     /// \brief holds information returned from clang AST
     ASTMacroStat_t ASTMacroStat;
 };

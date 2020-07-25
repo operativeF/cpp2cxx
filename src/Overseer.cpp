@@ -28,21 +28,18 @@ limitations under the License.
 
 #include "general_utilities/file_type.hpp"
 
-Overseer::Overseer(ConfigScheme& config_scheme) : configScheme(config_scheme)
+Overseer::Overseer(ConfigScheme& config_scheme)
+        : configScheme(config_scheme),
+          pFileManager(std::make_unique<FileManager>(
+                  GetFileManagerScheme(), GetDemacroficationScheme())),
+          pParser(std::make_unique<Parser>(
+                  GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile()))
 {
-    pFileManager = new FileManager(GetFileManagerScheme(), GetDemacroficationScheme());
-    pParser = new Parser(GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile());
 }
 
 void Overseer::ConfigureFileManager()
 {
     pFileManager->Configure(configScheme.GetFileManagerScheme());
-}
-
-Overseer::~Overseer()
-{
-    delete pFileManager;
-    delete pParser;
 }
 
 /**
@@ -180,6 +177,7 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
     clang::CompilerInstance ci;
 
     //InvocationStat_t inv_stat;
+    // @TODO: lol, Where is this memory going?
     pASTConsumer = new MyASTConsumer;
     MyASTConsumer& ASTConsumer = *pASTConsumer;
 
