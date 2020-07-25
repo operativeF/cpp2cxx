@@ -28,7 +28,10 @@ limitations under the License.
 #include "general_utilities/debug.h"
 
 #include <algorithm>
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 RlParser::RlParser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file)
         : pDemacroficationScheme(&demacrofication_scheme), logFile(log_file)

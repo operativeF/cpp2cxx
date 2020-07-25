@@ -24,8 +24,8 @@ limitations under the License.
 #include "cpp2cxx/MacroStat.h"
 #include "cpp2cxx/Macro.h"
 
-#include <algorithm>
 #include <iomanip>
+#include <ostream>
 
 static unsigned int macro_count = 0;
 std::ostream& operator<<(std::ostream& os, MacroStat const& m_stat)

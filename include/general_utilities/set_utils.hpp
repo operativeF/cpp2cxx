@@ -9,9 +9,9 @@
  *  for terms and conditions.
  */
 
-
-#include <iostream>
+#include <algorithm>
 #include <iterator>
+#include <ostream>
 #include <set>
 
 namespace general_utilities

@@ -51,7 +51,10 @@ limitations under the License.
 #include "clang/Parse/ParseAST.h"
 #include "clang/Parse/Parser.h"
 
+#include <map>
+#include <ostream>
 #include <string>
+#include <vector>
 
 /******************************************************************************
  *

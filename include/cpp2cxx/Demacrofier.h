@@ -39,7 +39,8 @@ limitations under the License.
 #include "ValidatorMap.h"
 #include "clang_interface/FunctionInfo.h"
 
-
+#include <iosfwd>
+#include <map>
 #include <string>
 
 /**

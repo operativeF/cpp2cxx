@@ -10,7 +10,7 @@
  */
 
 
-#include <iostream>
+#include <ostream>
 #include <map>
 
 namespace general_utilities

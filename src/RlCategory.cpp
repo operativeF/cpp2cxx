@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "cpp2cxx/RlCategory.h"
 
+#include <ostream>
 
 //TODO: have to change the nomenclature at every place
 //

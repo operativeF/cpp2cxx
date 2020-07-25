@@ -36,7 +36,8 @@ limitations under the License.
 #include <clang/Lex/Preprocessor.h>
 #include <clang/Lex/Token.h>
 
-#include <iostream>
+#include <map>
+#include <string>
 
 using namespace general_utilities;
 /*

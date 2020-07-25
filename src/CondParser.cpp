@@ -28,7 +28,6 @@ limitations under the License.
 #include <algorithm>
 #include <fstream>
 #include <sstream>
-#include <utility>
 
 CondParser::CondParser(const std::string& file_global_macros)
 {

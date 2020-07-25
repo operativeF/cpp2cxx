@@ -45,11 +45,10 @@ limitations under the License.
 #include "clang_interface/FunctionInfo.h"
 
 
-#include <iostream> //for void Parser::GetDemacrofiedFile(std::ostream os)
+#include <iosfwd> //for void Parser::GetDemacrofiedFile(std::ostream os)
 #include <map>
 #include <sstream>
 #include <string>
-#include <tuple>
 #include <vector>
 
 

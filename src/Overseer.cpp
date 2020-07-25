@@ -28,6 +28,9 @@ limitations under the License.
 
 #include "general_utilities/file_type.hpp"
 
+#include <memory>
+#include <string>
+
 Overseer::Overseer(ConfigScheme& config_scheme)
         : configScheme(config_scheme),
           pFileManager(std::make_unique<FileManager>(

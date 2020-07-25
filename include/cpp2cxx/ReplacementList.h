@@ -38,8 +38,6 @@ limitations under the License.
 #include "DemacBoostWaveIncludes.h"
 #include "RlCategory.h"
 
-
-#include <list>
 #include <set>
 #include <string>
 #include <vector>

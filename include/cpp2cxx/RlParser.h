@@ -40,6 +40,7 @@ limitations under the License.
 #include "RlCategory.h"
 
 
+#include <iosfwd>
 #include <set>
 #include <string>
 #include <vector>

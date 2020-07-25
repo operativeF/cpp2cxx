@@ -28,9 +28,14 @@ limitations under the License.
 
 #include "clang/AST/Decl.h"
 
+#include <algorithm>
 #include <iostream>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-auto operator<<(std::ostream& os, const ParsedDeclInfo& inf) -> std::ostream&
+std::ostream& operator<<(std::ostream& os, const ParsedDeclInfo& inf)
 {
     os << inf.start_line;
     os << "\t" << inf.end_line;

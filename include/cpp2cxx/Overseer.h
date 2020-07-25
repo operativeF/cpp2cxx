@@ -41,7 +41,8 @@ limitations under the License.
 #include "Parser.h"
 #include "clang_interface/ASTConsumer.hpp"
 
-
+#include <iosfwd>
+#include <memory>
 #include <string>
 #include <vector>
 

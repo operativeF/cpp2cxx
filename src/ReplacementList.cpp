@@ -26,7 +26,10 @@ limitations under the License.
 #include "general_utilities/debug.h"
 
 #include <algorithm>
+#include <iostream>
 #include <sstream>
+#include <utility>
+#include <vector>
 
 void ReplacementList::set_replacement_list(const token_type& tok)
 {

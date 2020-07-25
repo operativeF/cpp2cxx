@@ -24,8 +24,7 @@ limitations under the License.
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
-#include <fstream>
-#include <iostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 

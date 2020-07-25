@@ -23,6 +23,9 @@ limitations under the License.
 #include "cpp2cxx/ConfigScheme.h"
 
 #include <algorithm>
+#include <ostream>
+#include <string>
+#include <vector>
 
 // @TODO: Replace with smart pointer
 ConfigScheme::ConfigScheme()

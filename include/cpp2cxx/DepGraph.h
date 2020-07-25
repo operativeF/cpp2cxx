@@ -46,17 +46,14 @@ limitations under the License.
 #include "Macro.h"
 #include "UseCaseState.h"
 
-
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/topological_sort.hpp>
 
-
 #include <algorithm>
 #include <map>
 #include <vector>
-
 
 /**
  * @class Node

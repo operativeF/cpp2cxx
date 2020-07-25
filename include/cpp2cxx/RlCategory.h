@@ -37,8 +37,7 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include <iostream>
-
+#include <ostream>
 
 /**
  * @class ReplacementListDependencyCategory

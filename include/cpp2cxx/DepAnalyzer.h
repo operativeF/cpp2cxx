@@ -29,11 +29,11 @@ limitations under the License.
 
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <unordered_map>
+#include <utility>
 
-
-#include <boost/bind.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/topological_sort.hpp>

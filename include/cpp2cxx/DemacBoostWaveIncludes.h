@@ -27,11 +27,8 @@ limitations under the License.
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
 #include <boost/wave/cpplexer/cpp_lex_token.hpp>
 
-
 #include <iostream>
 #include <map>
-#include <vector>
-
 
 using token_type = boost::wave::cpplexer::lex_token<>;
 using token_iterator = boost::wave::cpplexer::lex_iterator<token_type>;

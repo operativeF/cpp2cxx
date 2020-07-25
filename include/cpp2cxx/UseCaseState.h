@@ -28,8 +28,10 @@ limitations under the License.
 #include "Macro.h"
 #include "MacroScopeClassifier.h"
 
-
 #include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 /**
  * @class UseCaseState

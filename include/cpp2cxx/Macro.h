@@ -29,9 +29,9 @@ limitations under the License.
 
 #include "DemacBoostWaveIncludes.h"
 
-#include <list>
-#include <ostream>
+#include <iosfwd>
 #include <string>
+#include <utility>
 #include <vector>
 
 // (c) Copyright

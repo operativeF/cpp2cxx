@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef FILEMANAGERSCHEME_H
 #define FILEMANAGERSCHEME_H
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 

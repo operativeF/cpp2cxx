@@ -11,7 +11,6 @@
 
 #include <iostream>
 
-
 class NoElem
 {
 };

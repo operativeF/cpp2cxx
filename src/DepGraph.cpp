@@ -25,9 +25,9 @@ limitations under the License.
 #include "cpp2cxx/ExceptionHandler.h"
 #include "general_utilities/debug.h"
 
-#include <algorithm> // make_pair
-#include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
 
 Node* MacTree::GetParent(Node* const np)
 {
@@ -42,7 +42,6 @@ Vertex_t MacTree::GetParent(Vertex_t const v)
 
     DEBUG_TREE(dbgs() << "Parent nodeIndex: " << pn->nodeIndex << "\n";);
 
-    //std::map<Node*,Vertex_t,NodeOrder>::iterator nodeMap_iter;
     auto nodeMap_iter = nodeMap.find(pn);
     return nodeMap_iter->second;
 }

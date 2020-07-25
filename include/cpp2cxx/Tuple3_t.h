@@ -24,7 +24,7 @@ limitations under the License.
 #ifndef TUPLE3_T
 #define TUPLE3_T
 
-#include <iostream>
+#include <ostream>
 
 template <typename T1, typename T2, typename T3>
 class Tuple3_t

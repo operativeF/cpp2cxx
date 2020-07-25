@@ -25,7 +25,9 @@ limitations under the License.
 #define MACROSTAT_H
 
 #include "RlCategory.h"
-#include <iostream>
+
+#include <ostream>
+#include <string>
 #include <vector>
 
 

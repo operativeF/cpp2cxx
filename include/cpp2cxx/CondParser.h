@@ -40,10 +40,8 @@ limitations under the License.
 #include "DemacBoostWaveIncludes.h"
 #include "DepGraph.h"
 
-
 #include <map>
 #include <string>
-
 
 using MacroList_t = std::map<std::string, //identifier
         std::string>;                     //replacement text

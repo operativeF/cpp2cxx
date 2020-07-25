@@ -29,8 +29,8 @@ limitations under the License.
 #include "general_utilities/debug.h"
 #include "general_utilities/string_utils.hpp"
 
-#include <fstream>
 #include <iomanip>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <vector>

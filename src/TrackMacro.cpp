@@ -24,6 +24,10 @@ limitations under the License.
 #include "clang_interface/TrackMacro.hpp"
 #include "general_utilities/debug.h"
 
+#include <map>
+#include <ostream>
+#include <string>
+
 // @TODO: Replace with filesystem
 
 std::ostream& operator<<(std::ostream& os, const CollectedMacroInfo& cmi)

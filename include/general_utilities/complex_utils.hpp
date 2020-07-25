@@ -11,7 +11,7 @@
 
 #include <complex>
 #include <iomanip>
-#include <iostream>
+#include <ostream>
 
 
 namespace general_utilities

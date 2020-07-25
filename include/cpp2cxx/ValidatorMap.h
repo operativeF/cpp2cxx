@@ -28,7 +28,6 @@ limitations under the License.
 #include "general_utilities/set_utils.hpp"
 
 #include <fstream>
-#include <iostream>
 #include <set>
 #include <string>
 
@@ -57,11 +56,6 @@ public:
             p_file >> val;      //replacement text
             validated_macros.insert(macro_id);
         }
-        using namespace general_utilities;
-#ifdef DEBUG_VALIDATOR
-        std::cout << "\nMacro switches are:\n";
-        std::cout << validated_macros;
-#endif
     }
 
     ValidMacros_t const& GetValidMacros() const

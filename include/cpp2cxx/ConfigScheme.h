@@ -41,8 +41,7 @@ limitations under the License.
 #include "FileManagerScheme.h"
 
 
-#include <iostream>
-#include <set>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
