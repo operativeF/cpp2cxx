@@ -92,7 +92,7 @@ bool MacTree::MakeSibling(Node& rn)
     if(IsRoot(currVertex))
     {
         // @TODO: Remove this.
-        ExceptionHandler("No sibling for root vertex.\n");
+        throw ExceptionHandler("No sibling for root vertex.\n");
     }
     //this line should be after the previous assignment of *pn=rn !
     Vertex_t u = GetParent(currVertex);
