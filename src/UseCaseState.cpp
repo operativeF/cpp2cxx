@@ -37,7 +37,7 @@ int UseCaseState::PutToken(const token_iterator& tok_iter)
     }
     if(id == boost::wave::T_RIGHTPAREN)
     {
-        if((numParens == 1) && (!arg.str().empty() != 0u))
+        if((numParens == 1) && !arg.str().empty())
         { // if there was only one argument
             argString.push_back(arg.str());
         }

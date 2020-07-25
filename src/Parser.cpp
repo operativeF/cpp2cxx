@@ -55,7 +55,7 @@ Parser::Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream
     /// @todo complete this function
     /// @todo dispatch components of demacrofication_scheme to relevant
     /// classes.
-    if(!pDemacroficationScheme->globalMacrosFormatted.empty() != 0u)
+    if(!pDemacroficationScheme->globalMacrosFormatted.empty())
     {
         fileGlobalMacros = pDemacroficationScheme->globalMacrosFormatted;
         ReadGlobalMacros(fileGlobalMacros);

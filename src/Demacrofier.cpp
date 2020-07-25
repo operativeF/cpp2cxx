@@ -531,8 +531,7 @@ void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden, std::s
 {
     // each macro has an entry in the pASTMacroStat
     auto ast_macro_iter = pASTMacroStat->find(macro_iden.str());
-    if(ast_macro_iter != pASTMacroStat->end()
-            && (!ast_macro_iter->second.invoked_lines.empty() != 0u))
+    if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
     {
         auto line_no = ast_macro_iter->second.invoked_lines[0];
         readyQueue.insert(std::make_pair(line_no, outstr));

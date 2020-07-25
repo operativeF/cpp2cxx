@@ -75,7 +75,8 @@ void FileManager::UpdateFile(std::ostream& fp, std::string const& file_str)
 void FileManager::UpdateFile(std::string const& file_str)
 {
     std::string output_file = GetOutputFile();
-    if(output_file.length() != 0u)
+
+    if(!output_file.empty())
     {
         std::ofstream fp(output_file);
         if(fp.is_open())
@@ -108,7 +109,7 @@ void FileManager::UpdateFile(std::string const& file_str)
 void FileManager::UpdateFile(Overseer const& overseer)
 {
     std::string output_file = GetOutputFile();
-    if(output_file.length() != 0u)
+    if(!output_file.empty())
     {
         std::ofstream fp(output_file);
         if(fp.is_open())

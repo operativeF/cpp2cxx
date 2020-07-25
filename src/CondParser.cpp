@@ -83,7 +83,7 @@ void CondParser::Parser(Node& tree_node, token_iterator t_it)
     }
 }
 
-auto CondParser::Match(boost::wave::token_id id) -> bool
+bool CondParser::Match(boost::wave::token_id id)
 {
     boost::wave::token_id next_id = *it;
     std::stringstream id_value;

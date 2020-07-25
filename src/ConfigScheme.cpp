@@ -76,7 +76,9 @@ void ConfigScheme::SetDemacroficationScheme(std::string const& demac_gran,
     pDemacroficationScheme->performCleanup = cleanup;
 
     if(cleanup)
+    {
         pDemacroficationScheme->validatorMap.InitValidatorMap(pFileManagerScheme->validator_file);
+    }
 }
 
 void ConfigScheme::SetBuildScheme(std::string const& make_command)
