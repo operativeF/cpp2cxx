@@ -31,11 +31,6 @@ limitations under the License.
 FileManager::FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds)
         : fileManagerScheme(fs), demacroficationScheme(ds), inputFileIndex(0), outputFileIndex(0)
 {
-
-    if(!SanityCheck())
-    {
-        throw ExceptionHandler("Failed Sanity Check in the File Manager");
-    }
     PrepareMacroStatFile();
     PrepareDemacrofiedMacroStatFile();
 }
