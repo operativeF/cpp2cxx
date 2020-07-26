@@ -74,6 +74,7 @@ void FileManager::UpdateFile(std::string const& file_str)
     if(!output_file.empty())
     {
         std::ofstream fp(output_file, std::ios_base::out);
+        
         if(fp.is_open())
         {
             UpdateFile(fp, file_str);

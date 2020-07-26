@@ -24,16 +24,24 @@ limitations under the License.
 #include "cpp2cxx/MacroStat.h"
 #include "cpp2cxx/Macro.h"
 
+#include <fmt/ostream.h>
 #include <iomanip>
 #include <ostream>
 
 static unsigned int macro_count = 0;
-std::ostream& operator<<(std::ostream& os, MacroStat const& m_stat)
+
+void PrintMacroStat(std::ostream& aStream, const MacroStat& stat)
 {
-    os << "- macro" << std::setw(sizeof(double)) << std::setfill('0') << macro_count++ << ":\n"
-       << "  - m_id : " << m_stat.id_string << "\n"
-       << "  - m_cat: " << m_stat.m_cat << "\n"
-       << "  - c_cat: " << m_stat.rl_ccat << "\n"
-       << "  - d_cat: " << m_stat.rl_dcat << "\n";
-    return os;
+
+   fmt::print(aStream, "- macro {:d}:\n - m_id: {}\n - m_cat: {}\n - c_cat: {}\n - d_cat: {}\n",
+         macro_count, stat.id_string, stat.m_cat, stat.rl_ccat, stat.rl_dcat);
+   ++macro_count;
+}
+
+void PrintMacroStats(std::ostream& aStream, const std::vector<MacroStat>& stats)
+{
+   for(const auto& stat : stats)
+   {
+      PrintMacroStat(aStream, stat);
+   }
 }

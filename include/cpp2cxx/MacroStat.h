@@ -26,7 +26,7 @@ limitations under the License.
 
 #include "RlCategory.h"
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
@@ -43,6 +43,7 @@ struct MacroStat
     std::string rep_list;
 };
 
-std::ostream& operator<<(std::ostream& os, MacroStat const& m_stat);
-std::ostream& operator<<(std::ostream& os, const std::vector<MacroStat const*>& v);
+void PrintMacroStat(std::ostream& aStream, const MacroStat& stat);
+void PrintMacroStats(std::ostream& aStream, const std::vector<MacroStat>& stats);
+
 #endif // MACROSTAT_H

@@ -17,40 +17,27 @@ namespace general_utilities
 // instead of all these function i can use my mapper
 // and then apply the predicate to each character in the string
 
-/// \brief removes the character pointed to by c_ptr
-/// and returns a new string.
-inline std::string remove_char(std::string const& str, const char* c_ptr)
-{
-    std::string::size_type i = 0;
-    std::string s_new(str, 0, str.size() - 1);
-    for(; i < str.size(); ++i)
-        if(*c_ptr == str[i])
-            break;
-    for(; i < str.size() - 1; ++i)
-        s_new[i] = str[i + i];
-    return s_new;
-}
-
 /// @brief removes all occurences of character c in string str
-inline std::string remove_char(std::string const& str, char c)
+inline std::string remove_char(const std::string& str, char remove_ch)
 {
-    std::string::size_type i = 0;
-    std::string s_new;
-    for(; i < str.size(); ++i)
-        if(str[i] != c)
-            s_new += str[i];
+    std::string s_new = str;
+
+    s_new.erase(std::remove_if(s_new.begin(), s_new.end(),
+                        [remove_ch](unsigned char s_c) { return s_c == remove_ch; }),
+            s_new.end());
+
     return s_new;
 }
 
-// @TODO: Replace with better function.
-inline std::string keep_alpha_numeric(std::string const& str)
+inline std::string keep_alpha_numeric(const std::string& str)
 {
-    std::string::size_type i = 0;
-    std::string s_new;
-    for(; i < str.size(); ++i)
-        if(std::isalnum(str[i]))
-            s_new += str[i];
-    return s_new;
+    std::string alphanum_str = str;
+
+    alphanum_str.erase(std::remove_if(alphanum_str.begin(), alphanum_str.end(),
+                               [](unsigned char c) { return !std::isalnum(c); }),
+            alphanum_str.end());
+
+    return alphanum_str;
 }
 
 struct SortString

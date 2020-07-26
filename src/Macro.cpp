@@ -28,7 +28,8 @@ limitations under the License.
 #include "general_utilities/debug.h"
 #include "general_utilities/vector_utils.hpp"
 
-#include <cctype> //for islower
+#include <algorithm>
+#include <cctype>
 #include <string>
 
 // @TODO: Replace with smart pointer
@@ -188,19 +189,10 @@ void PPMacro::AnalyzeIdentifier() const
   */
 }
 
-// @TODO: Replace this with better function.
 bool PPMacro::HasLowerCase() const
 {
-    unsigned int i = 0;
-    while(i < identifier_str.length())
-    {
-        if(islower(identifier_str[i]) != 0)
-        {
-            return true;
-        }
-        i++;
-    }
-    return false;
+    return std::any_of(identifier_str.begin(), identifier_str.end(),
+            [](unsigned char c) { return std::islower(c) != 0; });
 }
 
 

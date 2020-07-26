@@ -36,6 +36,7 @@ limitations under the License.
 // Read the file name and then look for macros.
 // Take the line and give it to boost_wave for tokenizing.
 
+#include <fmt/ostream.h>
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -77,17 +78,8 @@ Parser::Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream
 }
 
 // @TODO: Get rid of manual memory management
-// @TODO: This is not exception safe.
 Parser::~Parser()
 {
-    //after parsing localMacros contains all the macros parsed
-    //putting all the macros in this file
-    mlFile << "- Total_Macros: " << macro_count << "\n";
-    mlFile << "- Total_Function_Like_Macros: " << function_like_count << "\n";
-    mlFile << "- Total_Object_Like_Macros: " << object_like_count << "\n";
-
-    using namespace general_utilities;
-    mlFile << vec_macro_stat;
     //delete pTree;
     delete cp;
     delete rp;
@@ -96,10 +88,17 @@ Parser::~Parser()
 
 void Parser::Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is)
 {
-    assert(p && "AST doesnot give any information");
+    assert(p && "AST does not give any information");
     pASTMacroStat = p;
     pInvocationStat = is;
     Parse(file_name);
+
+    //after parsing localMacros contains all the macros parsed
+    //putting all the macros in this file
+    fmt::print(mlFile,
+            "- Total_Macros: {}\n- Total_Function_Like_Macros: {}\n- Total_Object_Like_Macros: {}\n",
+            macro_count, function_like_count, object_like_count);
+    PrintMacroStats(mlFile, vec_macro_stat);
 }
 
 /// @todo complete this function

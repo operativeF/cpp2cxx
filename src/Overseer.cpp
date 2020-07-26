@@ -61,7 +61,8 @@ void Overseer::ConfigureFileManager()
   */
 
 void Overseer::StartProcessing(bool demacrofy)
-{ /// @todo after demacrofication maintain a list of all the macro
+{   
+    /// @todo after demacrofication maintain a list of all the macro
     /// identities so that each identifier can be defined in the make file
     /// and subsequently compiled
     try
