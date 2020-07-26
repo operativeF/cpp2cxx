@@ -552,6 +552,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
  * look into the macro_list if the macro is predefined or local,
  * or if the macro was even present or not.
  */
+// @TODO: This does too many things to the input variables.
 std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
     std::stringstream id_value;

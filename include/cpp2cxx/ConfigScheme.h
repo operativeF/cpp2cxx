@@ -56,12 +56,15 @@ public:
             std::string const& output_directory, std::string const& backup_directory,
             std::string const& cleanup_directory, std::string const& validator_file,
             std::ostream* log_file, std::ostream* stat_file, std::ostream* macro_list_file);
+
     /// @todo demacrofication granularity to be implemented
     void SetDemacroficationScheme(std::string const& demac_gran,
             std::vector<std::string> const& mac_prev_demac, bool enable_warning,
             std::string const& global_mac_raw, std::string const& global_mac_formatted,
             bool multiple_definitions, bool cleanup);
+
     void SetBuildScheme(const std::string& make_command);
+    
     FileManagerScheme& GetFileManagerScheme();
     DemacroficationScheme& GetDemacroficationScheme();
     BuildScheme& GetBuildScheme();

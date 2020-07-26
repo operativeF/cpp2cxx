@@ -31,8 +31,6 @@ message(STATUS "Using ClangConfig.cmake in: ${CLANG_CMAKE_DIR}")
 add_definitions(${LLVM_DEFINITIONS})
 add_definitions(${CLANG_DEFINITIONS})
 
-llvm_map_components_to_libnames(llvm_libs)
-
 # @TODO: Determine method of detecting stdlib version of FMT
 # when it becomes available.
 find_package(fmt CONFIG REQUIRED)

@@ -14,11 +14,8 @@ target_include_directories(ASTConsumer PUBLIC
   )
 
 target_link_libraries(ASTConsumer
-  # Output of llvm-config.
-  ${llvm_libs}
-  # Clang frontend tools.
-  clangFrontendTool clangFrontend clangDriver clangSerialization clangCodeGen clangParse clangSema clangAnalysis clangEdit clangAST clangLex clangBasic
-  # system libraries.
+  clangAST
+  clangFrontend
   )
 
 add_library(cpp2cxx-core
@@ -45,18 +42,6 @@ target_link_libraries(cpp2cxx-core
   Boost::system
   Boost::wave
   Boost::program_options
-  clangFrontendTool
-  clangFrontend
-  clangDriver
-  clangSerialization
-  clangCodeGen
-  clangParse
-  clangSema
-  clangAnalysis
-  clangEdit
-  clangAST
-  clangLex
-  clangBasic
   fmt::fmt
   )
 

@@ -73,6 +73,7 @@ class PPMacro
 public:
     PPMacro(std::ostream& log_file);
     ~PPMacro();
+    
     void set_identifier(token_type const& tok);
     void put_tokens(std::vector<token_type> const& vec_tokens);
     void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);

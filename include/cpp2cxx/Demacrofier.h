@@ -78,14 +78,6 @@ public:
     void SetValidator(ValidMacros_t const* v_macros);
 
 private:
-    /**
- * #define FXY(X,Y,Z) ((X) + (Y))
- * template <class T1, class T2, class T3>
- * auto FXY(T1 X, T2 Y, T3 Z) -> decltype(((X) + (Y)))
- * {
- *   return ((X) + (Y));
- * }
- */
     std::string DemacrofyFunctionLike(PPMacro const* m_ptr) const;
     /**
      * #define FXY(X,Y,Z) ((X) + (Y))
@@ -97,27 +89,15 @@ private:
      */
     // lambda function transformation
     std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr) const;
+    
     static std::string GetFunctionClosure(const PPMacro* m_ptr);
     static std::string GetFunctionArgs(const PPMacro* m_ptr);
     static std::string GetFunctionBody(const PPMacro* m_ptr);
-    /**
-      * #define shift2 var = var<<2
-      * auto shift2 = [&var]()->void { var = var<<2; }
-      */
+
     std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr) const;
-    /**
- * #define _abc 1000
- * constexpr auto _abc = 1000;
- */
+
     static std::string DemacrofyObjectLike(PPMacro const* m_ptr);
-    /**
- * #define proc(X,Y) {  FXY(X,Y,0);  }
- * template<typename T1, typename T2>
- * void proc(T1 X, T2 Y)
- * {
- *   FXY(X,Y,0);
- * }
- */
+
     static std::string DemacrofyMultipleStatements(PPMacro const* m_ptr);
     static std::string DemacrofyStatementType(PPMacro const* m_ptr);
     static bool IsDemacrofiable(PPMacro const& mac);
