@@ -57,6 +57,7 @@ target_link_libraries(cpp2cxx-core
   clangAST
   clangLex
   clangBasic
+  fmt::fmt
   )
 
 target_include_directories(cpp2cxx-core PUBLIC

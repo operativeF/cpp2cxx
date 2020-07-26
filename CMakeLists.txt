@@ -33,6 +33,14 @@ add_definitions(${CLANG_DEFINITIONS})
 
 llvm_map_components_to_libnames(llvm_libs)
 
+# @TODO: Determine method of detecting stdlib version of FMT
+# when it becomes available.
+find_package(fmt CONFIG REQUIRED)
+message(STATUS "Found fmt ${FMT_PACKAGE_VERSION}")
+
+find_package(Catch2 CONFIG REQUIRED)
+message(STATUS "Found Catch2 library")
+
 add_subdirectory(src)
 
 add_subdirectory(apps)
