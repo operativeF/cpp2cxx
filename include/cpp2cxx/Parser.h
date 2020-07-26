@@ -39,13 +39,18 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
+#include "CondParser.h"
 #include "DemacBoostWaveIncludes.h"
+#include "Demacrofier.h"
 #include "DepGraph.h"
+#include "MacroStat.h"
+#include "RlParser.h"
 #include "Tuple3_t.h"
 #include "clang_interface/FunctionInfo.h"
 
 #include <iosfwd> //for void Parser::GetDemacrofiedFile(std::ostream os)
 #include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -58,29 +63,9 @@ using MacroList_t = std::map<std::string, //identifier
 using Tuple4MacroStat_t = Tuple4_t<std::string, std::string, std::string, MacroCategory>;
 
 /** forward declaration
- * @class CondParser
- */
-class CondParser;
-
-/** forward declaration
- * @class RlParser
- */
-class RlParser;
-
-/** forward declaration
- * @class Demacrofier
- */
-class Demacrofier;
-
-/** forward declaration
- * @class DemacroficationScheme
+ * @struct DemacroficationScheme
  */
 struct DemacroficationScheme;
-
-/** forward declaration
- * @class MacroStat
- */
-class MacroStat;
 
 /** forward declaration
  * @class PPMacro
@@ -94,10 +79,9 @@ class Parser
 {
 
 public:
-    //Parser();
     Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file,
             std::ostream& macro_list_file);
-    ~Parser();
+
     void Parse(const std::string& file_name);
     void Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
 
@@ -145,22 +129,22 @@ private:
 
     /// @brief pointer to the map passed by the Overseer class,
     /// this contains information collected by the clang front end.
-    ASTMacroStat_t* pASTMacroStat {nullptr};
+    ASTMacroStat_t* pASTMacroStat{ nullptr };
 
     /// @brief contains line numbers whre the macros are invoked
-    InvocationStat_t* pInvocationStat {nullptr};
+    InvocationStat_t* pInvocationStat{ nullptr };
 
     /**
      * Variables initialized in the body of the constructor
-     *     @var CondParser* cp;
-     *     @var Demacrofier* demac;
      *     @var token_iterator it;//current token
      *     @var token_iterator it_begin;//first token
      *     @var token_iterator it_end;//one past the last token
      */
-    CondParser* cp;
-    RlParser* rp;
-    Demacrofier* demac;
+
+    std::unique_ptr<CondParser> cp;
+    std::unique_ptr<RlParser> rp;
+    std::unique_ptr<Demacrofier> demac;
+
     token_iterator it;       //current token
     token_iterator it_begin; //first token
     token_iterator it_end;   //one past the last token

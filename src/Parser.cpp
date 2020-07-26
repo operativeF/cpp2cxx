@@ -36,14 +36,16 @@ limitations under the License.
 // Read the file name and then look for macros.
 // Take the line and give it to boost_wave for tokenizing.
 
-#include <fmt/ostream.h>
 #include <algorithm>
 #include <cassert>
+#include <fmt/ostream.h>
 #include <fstream>
 
-Parser::Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file,
+Parser::Parser(const DemacroficationScheme& demacrofication_scheme, std::ostream& log_file,
         std::ostream& macro_list_file)
         : pDemacroficationScheme(&demacrofication_scheme),
+          rp(std::make_unique<RlParser>(demacrofication_scheme, log_file)),
+          demac(std::make_unique<Demacrofier>()),
           logFile(log_file),
           mlFile(macro_list_file),
           nesting_level(0),
@@ -71,19 +73,7 @@ Parser::Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream
     }
     // passing the file containing global macros so that it can make a list
     // which is useful in determining if a conditional macro uses global macros
-    // @TODO: Replace with smart pointer
-    cp = new CondParser(fileGlobalMacros);
-    rp = new RlParser(demacrofication_scheme, log_file);
-    demac = new Demacrofier;
-}
-
-// @TODO: Get rid of manual memory management
-Parser::~Parser()
-{
-    //delete pTree;
-    delete cp;
-    delete rp;
-    delete demac;
+    cp = std::make_unique<CondParser>(fileGlobalMacros);
 }
 
 void Parser::Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is)
