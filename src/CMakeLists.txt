@@ -16,6 +16,7 @@ target_include_directories(ASTConsumer PUBLIC
 target_link_libraries(ASTConsumer
   clangAST
   clangFrontend
+  fmt::fmt
   )
 
 add_library(cpp2cxx-core
