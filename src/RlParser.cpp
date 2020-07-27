@@ -63,7 +63,7 @@ void RlParser::Parse(ReplacementList& rl)
         //replacement_list_temp.push_back(token_type(boost::wave::T_NEWLINE));
     }
     //end = rl.rl_tokens.end();
-    auto beg = replacement_list_temp.begin();
+    const auto beg = replacement_list_temp.begin();
     end = replacement_list_temp.end();
 
     try
@@ -133,7 +133,7 @@ DEBUG_RLPARSER(
 
 bool RlParser::Match(boost::wave::token_id id)
 {
-    boost::wave::token_id next_id = *it;
+    const boost::wave::token_id next_id = *it;
     std::stringstream id_value;
     //while ((next_id = *it) == boost::wave::T_SPACE)
     //  it++;
@@ -209,7 +209,7 @@ void RlParser::Assignment()
     Expression();
     //assignment-- function like only
     std::stringstream id_value;
-    auto id = boost::wave::token_id(*it);
+    const auto id = boost::wave::token_id(*it);
     id_value << it->get_value();
     DEBUG_RLPARSER(std::cout << "\nin Assignment: " << id_value.str(););
     switch(id)
@@ -372,7 +372,7 @@ void RlParser::Expression7()
     using namespace boost::wave;
     Expression8();
     std::stringstream id_value;
-    auto id = boost::wave::token_id(*it);
+    const auto id = boost::wave::token_id(*it);
     DEBUG_RLPARSER(std::cout << "\nin Expression7: " << id_value.str(););
     if(id == T_POUND_POUND || id == T_POUND_POUND_ALT || id == T_POUND_POUND_TRIGRAPH)
     {
@@ -752,7 +752,7 @@ bool RlParser::IsRejectPredefinedMacro(const std::string& str) const
 void RlParser::FillFormattedRL(const token_type& tok)
 {
     using namespace boost::wave;
-    token_id id = tok;
+    const token_id id = tok;
     //rl_str_formatted += tok.get_value().c_str();
     //rl_str_formatted += " ";
     switch(id)

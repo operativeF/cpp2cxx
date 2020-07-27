@@ -397,9 +397,9 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
 
 bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef d)
 {
-    for(auto it = d.begin(); it != d.end(); it++)
+    for(const auto& it : d)
     {
-        auto fd = llvm::dyn_cast<clang::FunctionDecl>(*it);
+        auto* fd = llvm::dyn_cast<clang::FunctionDecl>(it);
         /// can be extended for class declaration
         if(fd != nullptr)
         {
@@ -506,7 +506,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // Kind is C_User for now because I do not know how to set the right option,
     // this does not matter so much, I think it is only used to selectively
     // emit/ignore compiler warnings.
-    clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
+    const clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
 
     DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: " << current_file;);
     const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name.c_str()).get();
@@ -523,9 +523,9 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     ci.getDiagnosticClient().EndSourceFile();
 }
 
-void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceLocation loc)
+void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::SourceLocation loc)
 {
-    clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
+    const clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
     /// print only when the functions are in the current file
     if(current_file == presumed.getFilename())
     {
@@ -534,12 +534,11 @@ void MyASTConsumer::PrintSourceLocation(clang::SourceManager& sm, clang::SourceL
     }
 }
 
-void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
+void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
 {
     // @TODO: Initialize this.
-    clang::CompilerInstance& ci = *pci;
-    ParsedDeclInfo inf;
-    clang::SourceManager& sm = ci.getSourceManager();
+    const clang::CompilerInstance& ci = *pci;
+    const clang::SourceManager& sm = ci.getSourceManager();
     // @TODO: Check fd for nullness?
     clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
@@ -553,6 +552,8 @@ void MyASTConsumer::PrintSourceLocation(clang::FunctionDecl* fd)
     std::cout<<"\nEnd:\t";
     std::cout<<"line: "<<presumed.getLine();
     std::cout<<", column: "<<presumed.getColumn();*/
+        ParsedDeclInfo inf{};
+
         inf.start_line = presumed.getLine();
         presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
         inf.end_line = presumed.getLine();

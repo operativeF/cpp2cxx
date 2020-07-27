@@ -54,9 +54,9 @@ public:
     int InitializeCI(clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths);
 
     void DumpContent(const std::string& file_name);
-    void PrintSourceLocation(clang::FunctionDecl* fd);
-    void PrintSourceLocation(clang::SourceManager& sm, clang::SourceLocation loc);
-    void PrintStats();
+    void PrintSourceLocation(const clang::FunctionDecl* fd);
+    void PrintSourceLocation(const clang::SourceManager& sm, clang::SourceLocation loc);
+    void PrintStats() override;
     void VerifyMacroScope(bool use_fast);
     ASTMacroStat_t GetMacroStat();
     InvocationStat_t* GetInvocationStat()

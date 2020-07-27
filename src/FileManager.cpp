@@ -83,6 +83,7 @@ void FileManager::UpdateFile(const std::string& file_str)
         }
         else
         {
+            // @TODO: Remove unsafe bounds here.
             std::string error_msg = fmt::format("Could not open the file: {} for writing.",
                     fileManagerScheme.outputFiles[outputFileIndex].string());
             WriteLog(error_msg);
@@ -93,6 +94,7 @@ void FileManager::UpdateFile(const std::string& file_str)
     {
         ///For no output file name output shall be
         ///redirected to the standard output";
+        // @TODO: Remove unsafe bounds here.
         std::string log_msg = fmt::format(
                 "No output file was found for input file: {}."
                 "Output shall be redirected to the standard output",
@@ -121,6 +123,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
         {
             /// @brief if output file is null then the output will be
             /// printed on the screen
+            // @TODO: Remove unsafe bounds here.
             std::string error_msg = fmt::format(
                     "Could not open the file {} for writing to output.\n"
                     "Output shall be redirected to the standard output",
@@ -133,6 +136,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
     {
         ///For no output file name output shall be
         ///redirected to the standard output";
+        // @TODO: Remove unsafe bounds here.
         std::string log_msg = fmt::format(
                 "For input file: {} no output file was found.\n"
                 "Output shall be directed to the standard output.",
@@ -145,6 +149,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
 
 std::filesystem::path FileManager::GetCurrentOutputFile()
 {
+    // @TODO: Remove unsafe bounds here.
     auto output_file_name = fileManagerScheme.outputFiles[outputFileIndex];
     // ++outputFileIndex;
     return output_file_name;
@@ -167,12 +172,10 @@ void FileManager::WriteLog(std::string const& str)
 
 void FileManager::PrepareDemacrofiedMacroStatFile()
 {
-    std::string header;
-
-    // @TODO: Replace with a lambda
     if(demacroficationScheme.performCleanup)
     {
-        header = "###################################################################\n"
+        GetDemacrofiedMacroStatFile() <<
+                 "###################################################################\n"
                  "#This file contains the details of each macro processed by the demacrofier\n"
                  "#The file can be read by any yaml parser\n"
                  "#The format is as follows:\n"
@@ -180,10 +183,10 @@ void FileManager::PrepareDemacrofiedMacroStatFile()
                  "#  - id: identifier string\n"
                  "###################################################################\n";
     }
-
     else
     {
-        header = "###################################################################\n"
+        GetDemacrofiedMacroStatFile() <<
+                 "###################################################################\n"
                  "#This file contains the details of each macro processed by the demacrofier\n"
                  "#The file can be read by any yaml parser\n"
                  "#The format is as follows:\n"
@@ -193,13 +196,11 @@ void FileManager::PrepareDemacrofiedMacroStatFile()
                  "#  - header_guard_string: string\n"
                  "###################################################################\n";
     }
-    GetDemacrofiedMacroStatFile() << header;
 }
 
 void FileManager::PrepareMacroStatFile()
 {
-    std::string header;
-    header =
+    GetMacroStatFile() <<
             "###################################################################\n"
             "#This file contains the details of each macro present in the files processed\n"
             "#The file can be read by any yaml parser\n"
@@ -210,9 +211,6 @@ void FileManager::PrepareMacroStatFile()
             "#  - c_cat: if the replacement text maps to C++ expression then c_cat is complete otherwise partial\n"
             "#  - d_cat: if the replacement text contains free variable(s) then d_cat is dependent otherwise closed\n"
             "###################################################################\n";
-
-
-    GetMacroStatFile() << header;
 }
 
 std::ostream& FileManager::GetLogFile()

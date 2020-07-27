@@ -45,8 +45,8 @@ public:
         if(!p_file.is_open())
             throw ExceptionHandler("could not open the validator file");
         std::string dummy;
-        // @TODO: Initialize this
-        int val;
+
+        int val = 0;
         while(p_file.good())
         {
             std::string macro_id;

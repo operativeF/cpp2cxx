@@ -352,7 +352,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     //identifier string
     std::stringstream id_value;
     std::vector<token_type> macro_tokens;
-    token_type dummy_token(boost::wave::T_UNKNOWN);
+    const token_type dummy_token(boost::wave::T_UNKNOWN);
     boost::wave::token_id id;
     //get rid of the space
     while((id = *(++it)) == boost::wave::T_SPACE)
@@ -568,7 +568,7 @@ std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     mac_stmt << it->get_value();
     macro_ref.set_identifier(*it);
     macro_ref.set_identifier_str(id_value.str());
-    MacroCategory m_cat = MacroCategory::null_define; //no replacement list
+    const MacroCategory m_cat = MacroCategory::null_define; //no replacement list
     macro_ref.set_macro_category(m_cat);
     //macro_ref.set_replacement_list_str("");
     return mac_stmt.str();

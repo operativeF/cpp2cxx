@@ -42,7 +42,7 @@ Vertex_t MacTree::GetParent(Vertex_t const v)
 
     DEBUG_TREE(dbgs() << "Parent nodeIndex: " << pn->nodeIndex << "\n";);
 
-    auto nodeMap_iter = nodeMap.find(pn);
+    const auto nodeMap_iter = nodeMap.find(pn);
     return nodeMap_iter->second;
 }
 
@@ -107,7 +107,7 @@ bool MacTree::MakeSibling(Node& rn)
     //return if the edge was created or it was already there
     //add edge returns a pair <edge_descriptor,bool>
     //Vertex_t u = GetParent(currVertex);
-    bool new_edge = boost::add_edge(u, v, depGraph).second;
+    const bool new_edge = boost::add_edge(u, v, depGraph).second;
     currVertex = nodeMap_iter->second;
 
     DEBUG_TREE(
@@ -135,7 +135,7 @@ bool MacTree::MakeChild(Node& rn)
     nodeMap_iter->second = v; //now assigning the vertex descriptor
     //return if the edge was created or it was already there
     //add edge returns a pair <edge_descriptor,bool>
-    bool new_edge = boost::add_edge(currVertex, v, depGraph).second;
+    const bool new_edge = boost::add_edge(currVertex, v, depGraph).second;
     currVertex = nodeMap_iter->second;
     DEBUG_TREE(
             dbgs() << "Node Number: " << depGraph[v]->nodeIndex << "\n";
@@ -184,7 +184,7 @@ const DepList_t& MacTree::BuildMacroDependencyList()
 
         for(const auto& anId : mp_iter->get_replacement_list_dep_idlist())
         {
-            auto tmm_iter = tokenMacroMap.find(anId);
+            const auto tmm_iter = tokenMacroMap.find(anId);
 
             //check if the token was not found
             if(tmm_iter != tokenMacroMap.end())
@@ -239,6 +239,7 @@ bool MacTree::DeleteVertex(Vertex_t v)
     {
         return false;
     }
+
     if(currVertex == v)
     {
         currVertex = GetParent(v); //point to the parent now
@@ -247,6 +248,7 @@ bool MacTree::DeleteVertex(Vertex_t v)
     //will delete the node during destruction via nodeMap
     boost::clear_vertex(v, depGraph);
     boost::remove_vertex(v, depGraph);
+
     return true;
 }
 
@@ -264,7 +266,7 @@ bool MacTree::IsMacro(const token_type& tok)
 //checks the token to get the use case of macro
 void MacTree::CheckToken(const token_iterator& tok_iter)
 {
-    PairMacroIter_t pm_iter = GetMacro(*tok_iter);
+    const PairMacroIter_t pm_iter = GetMacro(*tok_iter);
 
     //if there is no macro corresponding to this token
 
@@ -276,7 +278,7 @@ void MacTree::CheckToken(const token_iterator& tok_iter)
         {
             return;
         }
-
+        else
         {
             macroUseCaseState.PutToken(tok_iter);
         }

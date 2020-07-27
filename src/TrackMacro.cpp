@@ -60,7 +60,7 @@ void TrackMacro::MacroExpands(const Token& MacroNameTok, const MacroInfo* MI, So
     /// so that global macros can be skipped
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
-        PresumedLoc presumed = sm->getPresumedLoc(Range.getBegin());
+        const PresumedLoc presumed = sm->getPresumedLoc(Range.getBegin());
         CLANG_AST_DEBUG(dbgs() << "\nMacro " << MacroNameTok.getIdentifierInfo()->getNameStart()
                                << " has expanded at line# " << presumed.getLine(););
 
@@ -103,7 +103,7 @@ void TrackMacro::MacroDefined(const Token& MacroNameTok, const MacroDirective* M
     CollectedMacroInfo cmi;
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
-        PresumedLoc presumed = sm->getPresumedLoc(MI->getDefinitionLoc());
+        const PresumedLoc presumed = sm->getPresumedLoc(MI->getDefinitionLoc());
 
         CLANG_AST_DEBUG(dbgs() << "Macro " << MacroNameTok.getIdentifierInfo()->getNameStart()
                                << " is defined at line number: " << presumed.getLine() << "\n";);

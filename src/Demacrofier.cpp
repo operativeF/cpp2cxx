@@ -130,7 +130,7 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
     std::vector<std::pair<token_type, unsigned int>>::const_iterator p_it;
     //TODO: make check for function like macro
     //breaks in case when the function doesn't have parameters F(,,,)
-    RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
+    const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
 
     // F(X) {/**/}
     // F(X) X = X+1
@@ -348,14 +348,14 @@ std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro* m_ptr) cons
 bool Demacrofier::IsDemacrofiable(PPMacro const& mac)
 {
     bool demacrofiable = false;
-    RlTokType token_cat = mac.get_replacement_list().get_replacement_list_token_type();
+    const RlTokType token_cat = mac.get_replacement_list().get_replacement_list_token_type();
     //std::cout<<"testing..."<<mac.get_identifier_str()<<"\n";
     //if(mac.get_conditional_category() == CondCategory::local) {
     //std::cout<<"condCat: local\n";
     //std::cout<<"RlCCat: closed\n";
     if(mac.get_replacement_list_closure_category() == RlCCat::closed)
     {
-        MacroCategory m_cat = mac.get_macro_category();
+        const MacroCategory m_cat = mac.get_macro_category();
         /// @brief no demacrofication for null_define, variadic or other types
         if(m_cat == MacroCategory::object_like)
         {
@@ -502,16 +502,14 @@ std::string Demacrofier::GenerateTranslation(std::string const& macro_iden,
 void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden, std::string const& outstr)
 {
     // each macro has an entry in the pASTMacroStat
-    auto ast_macro_iter = pASTMacroStat->find(macro_iden.str());
+    const auto ast_macro_iter = pASTMacroStat->find(macro_iden.str());
     if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
     {
+        // @TODO: Remove unsafe bounds here.
         auto line_no = ast_macro_iter->second.invoked_lines[0];
         readyQueue.insert(std::make_pair(line_no, outstr));
     }
-    else
-    {
-        //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
-    }
+    //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
 }
 
 // @TODO: Remove the out argument.
@@ -534,7 +532,7 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
     }
     else if(m_ptr->is_object_like())
     {
-        RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
+        const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
         // only statement like functions can have the lambda function tx
         if(token_cat.assignment_type || token_cat.statement_type || token_cat.braces_type)
         {

@@ -77,6 +77,7 @@ std::string const& ReplacementList::get_formatted_replacement_list_str() const
 {
     return rl_str_formatted;
 }
+
 //the replacement_list_str contains all the tokens including the comments
 std::string const& ReplacementList::get_replacement_list_str_with_comments() const
 {

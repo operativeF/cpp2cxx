@@ -28,6 +28,8 @@ limitations under the License.
 #include "general_utilities/debug.h"
 #include "general_utilities/vector_utils.hpp"
 
+#include <fmt/ostream.h>
+
 #include <algorithm>
 #include <cctype>
 #include <string>
@@ -87,8 +89,8 @@ void PPMacro::set_replacement_list_str(const std::string& str, RlParser& rl_pars
 {
     rep_list.set_replacement_list_str(str, identifier_parameters);
     //    std::cout<<"repl_string: "<<replacement_list_str<<std::endl;
-    logFile << "  - log: parsing replacement list: '" << str
-            << "' of macro: " << identifier.get_value() << "\n";
+    fmt::print(logFile, " - log: parsing replacement list: '{}' of macro: {}\n", str,
+            identifier.get_value());
     set_replacement_list_category(rl_parser);
 }
 
@@ -124,7 +126,7 @@ void PPMacro::set_macro_scope_category(MacroScopeCategory scat)
     m_scat = scat;
 }
 
-void PPMacro::set_use_case(std::pair<token_iterator, token_iterator>& token_iter_range)
+void PPMacro::set_use_case(const std::pair<token_iterator, token_iterator>& token_iter_range)
 {
     if(!use_case_set)
     {
@@ -135,7 +137,7 @@ void PPMacro::set_use_case(std::pair<token_iterator, token_iterator>& token_iter
 //capturing only the first macro invocation args
 /// @brief if there is a mismatch in the number of arguments
 /// then demacrofication is not done for that macro
-void PPMacro::set_use_case_string(std::vector<std::string>& vec_string)
+void PPMacro::set_use_case_string(const std::vector<std::string>& vec_string)
 {
     if(vec_string.size() != identifier_parameters.size())
     {

@@ -86,7 +86,7 @@ void CondParser::Parser(Node& tree_node, token_iterator t_it)
 
 bool CondParser::Match(boost::wave::token_id id)
 {
-    boost::wave::token_id next_id = *it;
+    const boost::wave::token_id next_id = *it;
     std::stringstream id_value;
     //while ((next_id = *it) == boost::wave::T_SPACE)
     //  it++;
@@ -121,7 +121,7 @@ void CondParser::Assignment()
     using namespace boost::wave;
     Expression();
     //assignment-- function like only
-    auto id = token_id(*it);
+    const auto id = token_id(*it);
 
 #if DEBUG_PARSER
     DEBUG_CONDITIONALS(dbgs() << "\nin Assignment: " << (*it).get_value(););

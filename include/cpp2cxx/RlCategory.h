@@ -70,6 +70,7 @@ enum class ReplacementListClosureCategory
  */
 struct ReplacementListTokenType
 {
+    // @TODO: Default initialize everything, forgoing the constructor declaration.
     ReplacementListTokenType()
     {
         Reset();
