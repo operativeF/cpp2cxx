@@ -28,6 +28,8 @@ limitations under the License.
 #include "cpp2cxx/FileManagerScheme.h"
 #include "cpp2cxx/Overseer.h" //observable
 
+#include <fmt/format.h>
+
 FileManager::FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds)
         : fileManagerScheme(fs), demacroficationScheme(ds), inputFileIndex(0), outputFileIndex(0)
 {
