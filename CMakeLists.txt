@@ -36,6 +36,9 @@ add_definitions(${CLANG_DEFINITIONS})
 find_package(fmt CONFIG REQUIRED)
 message(STATUS "Found fmt ${FMT_PACKAGE_VERSION}")
 
+find_package(CLI11 CONFIG REQUIRED)
+message(STATUS "Found CLI11")
+
 find_package(Catch2 CONFIG REQUIRED)
 message(STATUS "Found Catch2 library")
 

@@ -2,13 +2,12 @@ add_executable(suggest MainSuggest.cpp)
 
 target_link_libraries(suggest
     PUBLIC
-        cpp2cxx-core
         ASTConsumer
+        cpp2cxx-core
         cpp2cxx-debug
         Boost::program_options
         Boost::system
         Boost::wave
-        ${llvm_libs}
     )
 
 target_include_directories(suggest PUBLIC
@@ -25,9 +24,25 @@ target_link_libraries(finalize
         Boost::program_options
         Boost::system
         Boost::wave
-        ${llvm_libs}
     )
 
 target_include_directories(finalize PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     )
+
+add_executable(tems main.cpp)
+
+target_link_libraries(tems
+    PUBLIC
+        cpp2cxx-core
+        ASTConsumer
+        cpp2cxx-debug
+    
+    PRIVATE
+        CLI11::CLI11
+    )
+
+target_include_directories(tems PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+    )
+    
