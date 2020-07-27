@@ -49,7 +49,7 @@ private:
     using VecTokenIter_t = std::vector<token_iterator>;
 
 public:
-    UseCaseState() : numParens(0), done(true)
+    UseCaseState() noexcept : numParens(0), done(true)
     {
     }
 

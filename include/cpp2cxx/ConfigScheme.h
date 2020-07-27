@@ -49,7 +49,7 @@ class ConfigScheme
 {
 
 public:
-    ConfigScheme();
+    ConfigScheme() noexcept;
     ~ConfigScheme();
     void SetFileManagerScheme(const std::vector<std::filesystem::path>& input_files,
             const std::vector<std::filesystem::path>& output_files,

@@ -62,7 +62,7 @@ limitations under the License.
 struct Node
 {
     //public:
-    Node() : key(boost::wave::T_UNKNOWN), nodeIndex(0), condCat(CondCategory::local), parent(NULL)
+    Node() noexcept : key(boost::wave::T_UNKNOWN), nodeIndex(0), condCat(CondCategory::local), parent(nullptr)
     {
     }
     ~Node()
@@ -155,7 +155,7 @@ class MacTree
 {
 
 public:
-    MacTree() : nodeIndex(0), depGraph(1)
+    MacTree() noexcept : nodeIndex(0), depGraph(1)
     {
         // @TODO: Replace with smart pointer?
         Node* pn = new Node;

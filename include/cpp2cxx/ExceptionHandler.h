@@ -39,7 +39,7 @@ limitations under the License.
 class ExceptionHandler : public std::exception
 {
 public:
-    ExceptionHandler() : message("Unknown Exception")
+    ExceptionHandler() noexcept : message("Unknown Exception")
     {
     }
 

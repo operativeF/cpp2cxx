@@ -58,7 +58,7 @@ namespace clang
 class TrackMacro : public PPCallbacks
 {
 public:
-    TrackMacro() : m_istat(NULL)
+    TrackMacro() noexcept : m_istat(nullptr)
     {
     }
 

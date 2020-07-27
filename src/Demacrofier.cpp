@@ -38,7 +38,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-Demacrofier::Demacrofier()
+Demacrofier::Demacrofier() noexcept
         : headerGuard("#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)"), count(0)
 {
 }

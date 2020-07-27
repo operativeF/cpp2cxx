@@ -28,7 +28,7 @@ limitations under the License.
 #include <vector>
 
 // @TODO: Replace with smart pointer
-ConfigScheme::ConfigScheme()
+ConfigScheme::ConfigScheme() noexcept
 {
     pFileManagerScheme = new FileManagerScheme;
     pDemacroficationScheme = new DemacroficationScheme;

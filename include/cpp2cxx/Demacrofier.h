@@ -61,7 +61,7 @@ class PPMacro;
 class Demacrofier
 {
 public:
-    Demacrofier();
+    Demacrofier() noexcept;
     /// @TODO change pointer to const ref
     /// when cleaning up, the translations are put without any conditionals
     /// The \e Translate function will generate the demacrofication without
