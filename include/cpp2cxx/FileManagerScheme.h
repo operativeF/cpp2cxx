@@ -24,6 +24,7 @@ limitations under the License.
 #ifndef FILEMANAGERSCHEME_H
 #define FILEMANAGERSCHEME_H
 
+#include <filesystem>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -37,14 +38,14 @@ struct FileManagerScheme
     std::ostream* pLogFile;
     std::ostream* pDemacrofiedMacroStatFile;
     std::ostream* pMacroStatFile;
-    std::vector<std::string> inputFiles;
-    std::vector<std::string> outputFiles;
-    std::vector<std::string> searchPaths;
-    std::string inputDirectory;
-    std::string outputDirectory;
-    std::string backupDirectory;
-    std::string cleanup_directory;
-    std::string validator_file;
+    std::vector<std::filesystem::path> inputFiles;
+    std::vector<std::filesystem::path> outputFiles;
+    std::vector<std::filesystem::path> searchPaths;
+    std::filesystem::path inputDirectory;
+    std::filesystem::path outputDirectory;
+    std::filesystem::path backupDirectory;
+    std::filesystem::path cleanup_directory;
+    std::filesystem::path validator_file;
 };
 
 #endif // FILEMANAGERSCHEME_H

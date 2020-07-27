@@ -24,6 +24,7 @@ limitations under the License.
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
+#include <filesystem>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -66,10 +67,10 @@ public:
     /// @brief uses the FileManagerScheme to configure the settings
     void Configure(FileManagerScheme const& fs);
     
-    std::vector<std::string> const& OutputFiles();
-    std::vector<std::string> const& InputFiles();
-    std::string const& OutputDirectory();
-    std::string const& InputDirectory();
+    const std::vector<std::filesystem::path>& GetOutputFiles();
+    const std::vector<std::filesystem::path>& GetInputFiles();
+    const std::filesystem::path& GetOutputDirectory();
+    const std::filesystem::path& GetInputDirectory();
 
     //check whether this file is there in the list of output_files or not
     void UpdateFile(std::string const& file_str);
@@ -79,14 +80,14 @@ public:
     void UpdateFile(Overseer const& overseer);
 
     /// @brief returns the list of input files
-    std::vector<std::string> const& GetInputFiles() const;
+    const std::vector<std::filesystem::path>& GetInputFiles() const;
 
     /// @brief returns the output file which will be updated in the
     /// current iteration
-    std::string GetOutputFile();
+    std::filesystem::path GetCurrentOutputFile();
 
     /// @brief returns the search paths
-    std::vector<std::string> const& GetSearchPaths() const;
+    const std::vector<std::filesystem::path>& GetSearchPaths() const;
 
     /// @brief writes the string to the log file fileManagerScheme.pConfigFile
     void WriteLog(std::string const& str);

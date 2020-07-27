@@ -43,11 +43,11 @@ ConfigScheme::~ConfigScheme()
     delete pBuildScheme;
 }
 
-void ConfigScheme::SetFileManagerScheme(std::vector<std::string> const& input_files,
-        std::vector<std::string> const& output_files, std::vector<std::string> const& search_paths,
-        std::string const& input_directory, std::string const& output_directory,
-        std::string const& backup_directory, std::string const& cleanup_directory,
-        std::string const& validator_file, std::ostream* log_file,
+void ConfigScheme::SetFileManagerScheme(const std::vector<std::filesystem::path>& input_files,
+        const std::vector<std::filesystem::path>& output_files, const std::vector<std::filesystem::path>& search_paths,
+        const std::filesystem::path& input_directory, const std::filesystem::path& output_directory,
+        const std::filesystem::path& backup_directory, const std::filesystem::path& cleanup_directory,
+        const std::filesystem::path& validator_file, std::ostream* log_file,
         std::ostream* demacrofied_macro_stat_file, std::ostream* macro_stat_file)
 {
     pFileManagerScheme->inputFiles = input_files;
@@ -80,7 +80,7 @@ void ConfigScheme::SetDemacroficationScheme(std::string const& demac_gran,
 
     if(cleanup)
     {
-        pDemacroficationScheme->validatorMap.InitValidatorMap(pFileManagerScheme->validator_file);
+        pDemacroficationScheme->validatorMap.InitValidatorMap(pFileManagerScheme->validator_file.string());
     }
 }
 

@@ -95,7 +95,7 @@ public:
     std::ostream& GetLogFile();
     std::ostream& GetMacroStatFile();
     std::ostream& GetStatFile();
-    std::vector<std::string> const& GetInputFiles();
+    const std::vector<std::filesystem::path>& GetInputFiles();
     DemacroficationScheme& GetDemacroficationScheme();
     FileManagerScheme& GetFileManagerScheme();
 

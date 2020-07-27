@@ -69,9 +69,9 @@ void Overseer::StartProcessing(bool demacrofy)
     {
         for(const auto& aFile : GetInputFiles())
         {
-            GenerateExternalASTHandler(aFile);
+            GenerateExternalASTHandler(aFile.string());
             //GetInformationFromExternalSource(*v_iter);
-            RunParser(aFile);
+            RunParser(aFile.string());
 
             if(demacrofy)
             {
@@ -87,7 +87,7 @@ void Overseer::StartProcessing(bool demacrofy)
     }
 }
 
-const std::vector<std::string>& Overseer::GetInputFiles()
+const std::vector<std::filesystem::path>& Overseer::GetInputFiles()
 {
     return pFileManager->GetInputFiles();
 }

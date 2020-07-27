@@ -40,22 +40,22 @@ void FileManager::Configure(FileManagerScheme const& fs)
     //fileManagerScheme = fs;
 }
 
-std::vector<std::string> const& FileManager::OutputFiles()
+const std::vector<std::filesystem::path>& FileManager::GetOutputFiles()
 {
     return fileManagerScheme.outputFiles;
 }
 
-std::vector<std::string> const& FileManager::InputFiles()
+const std::vector<std::filesystem::path>& FileManager::GetInputFiles()
 {
     return fileManagerScheme.inputFiles;
 }
 
-std::string const& FileManager::OutputDirectory()
+const std::filesystem::path& FileManager::GetOutputDirectory()
 {
     return fileManagerScheme.outputDirectory;
 }
 
-std::string const& FileManager::InputDirectory()
+const std::filesystem::path& FileManager::GetInputDirectory()
 {
     return fileManagerScheme.inputDirectory;
 }
@@ -66,15 +66,14 @@ void FileManager::UpdateFile(std::ostream& fp, std::string const& file_str)
     fp << file_str;
 }
 
-// TODO: Make this more robust with filesystem
-void FileManager::UpdateFile(std::string const& file_str)
+void FileManager::UpdateFile(const std::string& file_str)
 {
-    std::string output_file = GetOutputFile();
+    auto output_file = GetCurrentOutputFile();
 
     if(!output_file.empty())
     {
         std::ofstream fp(output_file, std::ios_base::out);
-        
+
         if(fp.is_open())
         {
             UpdateFile(fp, file_str);
@@ -82,9 +81,8 @@ void FileManager::UpdateFile(std::string const& file_str)
         }
         else
         {
-            std::string error_msg = "could not open the file "
-                                    + fileManagerScheme.outputFiles[outputFileIndex]
-                                    + " for writing";
+            std::string error_msg = fmt::format("Could not open the file: {} for writing.",
+                    fileManagerScheme.outputFiles[outputFileIndex].string());
             WriteLog(error_msg);
             throw ExceptionHandler(error_msg);
         }
@@ -93,21 +91,25 @@ void FileManager::UpdateFile(std::string const& file_str)
     {
         ///For no output file name output shall be
         ///redirected to the standard output";
-        std::string log_msg;
-        log_msg = "for input file" + fileManagerScheme.inputFiles[outputFileIndex]
-                  + "no output file was found"
-                  + "output shall be redirected to the standard output";
+        std::string log_msg = fmt::format(
+                "No output file was found for input file: {}."
+                "Output shall be redirected to the standard output",
+                fileManagerScheme.inputFiles[outputFileIndex].string());
+
         WriteLog(log_msg);
         UpdateFile(std::cout, file_str);
     }
 }
 
+// @TODO: Figure out where to increment the file index.
 void FileManager::UpdateFile(Overseer const& overseer)
 {
-    std::string output_file = GetOutputFile();
-    if(!output_file.empty())
+    auto output_file = GetCurrentOutputFile();
+
+    if(std::filesystem::exists(output_file))
     {
         std::ofstream fp(output_file, std::ios_base::out);
+
         if(fp.is_open())
         {
             overseer.WriteOutputFile(fp);
@@ -117,9 +119,10 @@ void FileManager::UpdateFile(Overseer const& overseer)
         {
             /// @brief if output file is null then the output will be
             /// printed on the screen
-            std::string error_msg =
-                    "could not open the file " + fileManagerScheme.outputFiles[outputFileIndex]
-                    + " for writing output shall be redirected to the standard output";
+            std::string error_msg = fmt::format(
+                    "Could not open the file {} for writing to output.\n"
+                    "Output shall be redirected to the standard output",
+                    fileManagerScheme.outputFiles[outputFileIndex].string());
             WriteLog(error_msg);
             overseer.WriteOutputFile(std::cout);
         }
@@ -128,30 +131,29 @@ void FileManager::UpdateFile(Overseer const& overseer)
     {
         ///For no output file name output shall be
         ///redirected to the standard output";
-        std::string log_msg;
-        log_msg = "for input file" + fileManagerScheme.inputFiles[outputFileIndex]
-                  + "no output file was found"
-                  + "output shall be redirected to the standard output";
+        std::string log_msg = fmt::format(
+                "For input file: {} no output file was found.\n"
+                "Output shall be directed to the standard output.",
+                fileManagerScheme.inputFiles[outputFileIndex].string());
         WriteLog(log_msg);
         overseer.WriteOutputFile(std::cout);
     }
 }
 
 
-std::string FileManager::GetOutputFile()
+std::filesystem::path FileManager::GetCurrentOutputFile()
 {
-    std::string output_file_name = fileManagerScheme.outputFiles[outputFileIndex];
-    ++outputFileIndex;
+    auto output_file_name = fileManagerScheme.outputFiles[outputFileIndex];
+    // ++outputFileIndex;
     return output_file_name;
 }
 
-// @TODO: Replace with filesystem paths
-std::vector<std::string> const& FileManager::GetSearchPaths() const
+const std::vector<std::filesystem::path>& FileManager::GetSearchPaths() const
 {
     return fileManagerScheme.searchPaths;
 }
 
-std::vector<std::string> const& FileManager::GetInputFiles() const
+const std::vector<std::filesystem::path>& FileManager::GetInputFiles() const
 {
     return fileManagerScheme.inputFiles;
 }

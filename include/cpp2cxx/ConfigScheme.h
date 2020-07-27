@@ -40,6 +40,7 @@ limitations under the License.
 #include "DemacroficationScheme.h"
 #include "FileManagerScheme.h"
 
+#include <filesystem>
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -50,11 +51,11 @@ class ConfigScheme
 public:
     ConfigScheme();
     ~ConfigScheme();
-    void SetFileManagerScheme(std::vector<std::string> const& input_files,
-            std::vector<std::string> const& output_files,
-            std::vector<std::string> const& search_paths, std::string const& input_directory,
-            std::string const& output_directory, std::string const& backup_directory,
-            std::string const& cleanup_directory, std::string const& validator_file,
+    void SetFileManagerScheme(const std::vector<std::filesystem::path>& input_files,
+            const std::vector<std::filesystem::path>& output_files,
+            const std::vector<std::filesystem::path>& search_paths, const std::filesystem::path& input_directory,
+            const std::filesystem::path& output_directory, const std::filesystem::path& backup_directory,
+            const std::filesystem::path& cleanup_directory, const std::filesystem::path& validator_file,
             std::ostream* log_file, std::ostream* stat_file, std::ostream* macro_list_file);
 
     /// @todo demacrofication granularity to be implemented

@@ -32,15 +32,16 @@ limitations under the License.
 
 #include "clang/Parse/ParseAST.h"
 
+#include <filesystem>
 #include <map>
 #include <ostream>
 #include <string>
 #include <vector>
 
 // Forward declarations:
-class clang::CompilerInstance;
-class clang::FunctionDecl;
-class clang::SourceManager;
+class CompilerInstance;
+class FunctionDecl;
+class SourceManager;
 
 /******************************************************************************
  *
@@ -50,7 +51,7 @@ class MyASTConsumer : public clang::ASTConsumer
 
 public:
     virtual bool HandleTopLevelDecl(clang::DeclGroupRef d);
-    int InitializeCI(clang::CompilerInstance& ci, const std::vector<std::string>& search_paths);
+    int InitializeCI(clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths);
 
     void DumpContent(const std::string& file_name);
     void PrintSourceLocation(clang::FunctionDecl* fd);

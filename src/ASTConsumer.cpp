@@ -413,8 +413,8 @@ bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef d)
 /******************************************************************************
  *
  *****************************************************************************/
-auto MyASTConsumer::InitializeCI(
-        clang::CompilerInstance& ci, std::vector<std::string> const& search_paths) -> int
+int MyASTConsumer::InitializeCI(
+        clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths)
 {
     pci = &ci;
     DEBUG_ASTCONSUMER(dbgs() << "\n\nSearch paths output from ASTConsumer:\n" << search_paths;);
@@ -468,8 +468,8 @@ auto MyASTConsumer::InitializeCI(
      * bool IsInternal=false, bool ImplicitExternC=false)
     */
     std::for_each(
-            search_paths.begin(), search_paths.end(), [&HSOpts](const std::string& search_path) {
-                HSOpts.AddPath(search_path, clang::frontend::Angled, false, false);
+            search_paths.begin(), search_paths.end(), [&HSOpts](const std::filesystem::path& search_path) {
+                HSOpts.AddPath(search_path.string(), clang::frontend::Angled, false, false);
             });
 
     // Include header paths for the package.
