@@ -50,7 +50,7 @@ class MyASTConsumer : public clang::ASTConsumer
 {
 
 public:
-    virtual bool HandleTopLevelDecl(clang::DeclGroupRef d);
+    bool HandleTopLevelDecl(clang::DeclGroupRef d) override;
     int InitializeCI(clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths);
 
     void DumpContent(const std::string& file_name);
@@ -65,13 +65,13 @@ public:
     }
 
 private:
-    clang::CompilerInstance* pci;
+    clang::CompilerInstance* pci{ nullptr };
 
     //MyASTConsumer *astConsumer;
     /// \brief clang::TrackMacro is defined by me
     /// the delete operator should not be called on track_macro
     /// because it is added to a reference counted Preprocessor class
-    clang::TrackMacro* track_macro;
+    clang::TrackMacro* track_macro{ nullptr };
 
     std::string current_file;
 

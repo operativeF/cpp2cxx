@@ -73,10 +73,10 @@ public:
             SourceRange Range); //, MacroArgs* Args); in old version of 3.1
 
     /// PPCallback
-    void MacroDefined(const Token& MacroNameTok, const MacroDirective* MD);
+    void MacroDefined(const Token& MacroNameTok, const MacroDirective* MD) override;
 
     /// PPCallback
-    bool FileNotFound(StringRef FileName, SmallVectorImpl<char>& RecoveryPath);
+    bool FileNotFound(StringRef FileName, SmallVectorImpl<char>& RecoveryPath) override;
 
     /// if the macro is local to the current file being processed
     bool MacroIsLocal(SourceLocation loc);
@@ -116,7 +116,7 @@ private:
     // contains the line numbers of all the macro invocations in a file
     InvocationStat_t* m_istat;
     const CompilerInstance* pci;
-    SourceManager* sm;
+    SourceManager* sm{ nullptr };
 };
 } // namespace clang
 #endif //TRACK_MACRO_HPP
