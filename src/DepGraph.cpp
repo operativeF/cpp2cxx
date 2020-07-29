@@ -40,8 +40,6 @@ Vertex_t MacTree::GetParent(Vertex_t const v)
     Node* cn = depGraph[v];
     Node* pn = cn->parent;
 
-    DEBUG_TREE(dbgs() << "Parent nodeIndex: " << pn->nodeIndex << "\n";);
-
     const auto nodeMap_iter = nodeMap.find(pn);
     return nodeMap_iter->second;
 }
@@ -80,9 +78,6 @@ bool MacTree::IsRoot(Vertex_t const vd) const
 //sibling of the currently pointed vertex
 bool MacTree::MakeSibling(Node& rn)
 {
-    DEBUG_TREE(dbgs() << "\nMaking sibling: " << rn.key.get_value() << "\t"
-                      << rn.key.get_position().get_line() << "\n";);
-
     Vertex_t v_dummy{}; //faking
 
     // @TODO: Replace with smart pointer?
@@ -110,18 +105,12 @@ bool MacTree::MakeSibling(Node& rn)
     const bool new_edge = boost::add_edge(u, v, depGraph).second;
     currVertex = nodeMap_iter->second;
 
-    DEBUG_TREE(
-            dbgs() << "Node Number: " << depGraph[v]->nodeIndex << "\n";
-            dbgs() << "n_ptr: allocated: " << pn << "\tinserted: " << nodeMap_iter->first << "\n";);
     return new_edge;
 }
 
 //child to the currently pointed vertex
 bool MacTree::MakeChild(Node& rn)
 {
-    DEBUG_TREE(dbgs() << "\nMaking child: " << rn.key.get_value() << "\t"
-                      << rn.key.get_position().get_line() << "\n";);
-
     Vertex_t v_dummy{}; //faking
     // @TODO: Replace with smart pointer?
     Node* pn = new Node;
@@ -137,16 +126,13 @@ bool MacTree::MakeChild(Node& rn)
     //add edge returns a pair <edge_descriptor,bool>
     const bool new_edge = boost::add_edge(currVertex, v, depGraph).second;
     currVertex = nodeMap_iter->second;
-    DEBUG_TREE(
-            dbgs() << "Node Number: " << depGraph[v]->nodeIndex << "\n";
-            dbgs() << "n_ptr: allocated: " << pn << "\tinserted: " << nodeMap_iter->first << "\n";);
+
     return new_edge;
 }
 
 bool MacTree::MakeChild(Vertex_t parentV, Vertex_t childV)
 {
     currVertex = childV;
-    DEBUG_TREE(dbgs() << "\nMaking child\n";);
     //return if the edge was created or it was already there
     return boost::add_edge(parentV, childV, depGraph).second;
 }
@@ -154,7 +140,6 @@ bool MacTree::MakeChild(Vertex_t parentV, Vertex_t childV)
 bool MacTree::MakeSibling(Vertex_t firstV, Vertex_t secondV)
 {
     currVertex = secondV;
-    DEBUG_TREE(dbgs() << "Making sibling\n";);
     //return if the edge was created or it was already there
     Vertex_t v = GetParent(firstV);
     return boost::add_edge(v, secondV, depGraph).second;
@@ -162,7 +147,6 @@ bool MacTree::MakeSibling(Vertex_t firstV, Vertex_t secondV)
 
 void MacTree::PushBackMacro(PPMacro& mac)
 {
-    DEBUG_TREE(dbgs() << "Pushing Macro: " << mac.get_identifier_str() << "\n";);
     depGraph[currVertex]->PushBackMacro(mac);
     //get the pointer to the macro
     PPMacro* m_ptr = depGraph[currVertex]->vecMacro.back();
@@ -179,8 +163,6 @@ const DepList_t& MacTree::BuildMacroDependencyList()
     {
         //every loop should have a new instance to do away with emptying
         std::vector<PPMacro*> vec_mp;
-
-        DEBUG_TREE(dbgs() << "Processing Macro: " << mp_iter->get_identifier_str() << "\n";);
 
         for(const auto& anId : mp_iter->get_replacement_list_dep_idlist())
         {
@@ -204,10 +186,8 @@ const DepList_t& MacTree::BuildMacroDependencyList()
 
     for(const auto& mmacro : missing_macros)
     {
-        std::string err_msg = "Exception Line Number: " + mmacro.first
-                              + ", No macro found for token: " + mmacro.second + "\n";
-
-        std::cout << err_msg;
+        fmt::print("Exception line number: {}, no macro found for token: {}\n", mmacro.first,
+                mmacro.second);
     }
 
     return macroDepList;
@@ -215,7 +195,6 @@ const DepList_t& MacTree::BuildMacroDependencyList()
 
 void MacTree::GotoParent()
 {
-    DEBUG_TREE(dbgs() << "Going to parent\n";);
     currVertex = GetParent(currVertex);
 }
 
@@ -272,7 +251,6 @@ void MacTree::CheckToken(const token_iterator& tok_iter)
 
     if(pm_iter.first == pm_iter.second)
     {
-        DEBUG_MACRO_USE_CASE(dbgs() << "Putting token into the existing state:\n";);
         //are we collecting tokens in a macro invocation
         if(macroUseCaseState.DoneCollection())
         {

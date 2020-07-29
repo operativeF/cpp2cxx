@@ -51,11 +51,9 @@ std::string Demacrofier::Translate(
     std::stringstream demacrofied_fstream;
     //std::string instr;
     std::string outstr;
-    std::string unique_macro_switch;
+    const std::string unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
     std::stringstream macro_iden;
     std::stringstream err_msg;
-
-    DEBUG_DEMACROFIER(dbgs() << "Inside Demacrofier\n";);
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
@@ -64,15 +62,9 @@ std::string Demacrofier::Translate(
 
     macro_iden << m_ptr->get_identifier().get_value();
 
-    //move semantics should optimize pass by value
-    unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
-
     //during the cleanup phase see if the macro was validated or not
     if(cleanup && (pValidaMacros->find(unique_macro_switch) == pValidaMacros->end()))
     {
-        DEBUG_DEMACROFIER(
-                dbgs() << "\nSearched for macro-switch: " << unique_macro_switch << ", not found.";
-                dbgs() << "\nMacro: \'" << macro_iden.str() << "\' will not be translated\n";);
         demacrofy = false;
     }
 
@@ -85,7 +77,6 @@ std::string Demacrofier::Translate(
     }
     else
     {
-        DEBUG_DEMACROFIER(dbgs() << "replacement_list_closure_category::open";);
         return original_str;
     }
     //endif RlCCat and RlDCat test
@@ -107,8 +98,6 @@ std::string Demacrofier::Translate(
              << "    - header_guard_string: " << unique_macro_switch << "\n";
     }
 
-    DEBUG_DEMACROFIER(dbgs() << "\noriginal_str: " << original_str << "\n";
-                      dbgs() << "demacrofied_str: " << outstr << "\n";);
     if(postponed)
     {
         //std::cout << "\nPutting macro: "
@@ -522,8 +511,6 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
         {
             demacrofied_str = DemacrofyFunctionLikePostponed(m_ptr);
             postponed = true;
-
-            DEBUG_SUGGESTION(dbgs() << "\nThis macro is inside function:\n" << demacrofied_str;);
         }
         else
         {
@@ -545,6 +532,5 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
         }
     }
 
-    DEBUG_SUGGESTION(if(postponed) dbgs() << "\nTranslation postponed for this macro";);
     return postponed;
 }

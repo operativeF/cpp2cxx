@@ -25,7 +25,6 @@ limitations under the License.
 #include "cpp2cxx/ExceptionHandler.h"
 #include "cpp2cxx/MacroStat.h"
 #include "cpp2cxx/RlParser.h"
-#include "general_utilities/debug.h"
 #include "general_utilities/vector_utils.hpp"
 
 #include <fmt/ostream.h>
@@ -56,13 +55,8 @@ void PPMacro::set_identifier(const token_type& tok)
 
 void PPMacro::put_tokens(const std::vector<token_type>& vec_tokens)
 {
-    //macro_tokens will have atleast one element
     macro_tokens = vec_tokens;
-    DEBUG_MACRO_CLASS(
-            std::cout << "Tokens for Macro: " << macro_tokens.begin()->get_value() << "\n\t";
-            std::for_each(macro_tokens.begin(), macro_tokens.end(),
-                    [](token_type tok) { std::cout << tok.get_value(); });
-            std::cout << "\n";);
+    //macro_tokens will have atleast one element
 }
 
 void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int parameter_count)
@@ -98,14 +92,12 @@ void PPMacro::set_replacement_list_str(const std::string& str, RlParser& rl_pars
 void PPMacro::set_operation(PPOperation op)
 {
     operation = op;
-    //    std::cout<<"operations: "<<(*it).get_value()<<std::endl;
 }
 
 
 void PPMacro::set_macro_category(MacroCategory cat)
 {
     m_cat = cat;
-    //    std::cout<<"MacroCategory = "<<m_cat<<std::endl;
 }
 
 
@@ -146,14 +138,10 @@ void PPMacro::set_use_case_string(const std::vector<std::string>& vec_string)
         logFile << "  - log: Not demacrofying: " << identifier_str << "\n";
         rep_list.get_replacement_list_token_type().reject_type = true;
     }
-    /*  assert((vec_string.size() == identifier_parameters.size())
-         && "definition and invocation does not have equal number of args");
-         */
+
     if(!use_case_set)
     {
         invoArgs = vec_string;
-        DEBUG_MACRO_USE_CASE(std::cout << "Use case args for macro: " << identifier_str << ":"
-                                       << invoArgs << "\n";);
         use_case_set = true;
     }
 }
@@ -163,7 +151,7 @@ void PPMacro::AnalyzeIdentifier() const
     bool hasProblems = false;
     std::string warning_msg;
     std::stringstream strm;
-    //warning_msg = "Analyzing...\t";
+
     warning_msg = "  - line number: ";
     strm << identifier.get_position().get_line();
     warning_msg += strm.str();
@@ -185,10 +173,6 @@ void PPMacro::AnalyzeIdentifier() const
         logFile << warning_msg;
         throw ExceptionHandler(warning_msg);
     }
-    /*
-  else
-    throw ExceptionHandler(warning_msg + "No Problems!\n");
-  */
 }
 
 bool PPMacro::HasLowerCase() const
@@ -377,10 +361,7 @@ bool PPMacro::IsEquivalent(const std::pair<token_iterator, token_iterator>& toke
 
   for( ;(this_mac_tok_iter!=this_mac_tok_iter_end) && (first != second);
       ++first,++this_mac_tok_iter) {
-#ifdef DEBUG_MACRO_CLASS
-    std::cout << "Comparing: " << boost::wave::token_id(*first)
-              << "\tand\t" << boost::wave::token_id(*this_mac_tok_iter) << "\n";
-#endif
+
     if(boost::wave::token_id(*first) != boost::wave::token_id(*this_mac_tok_iter))
       return false;
   }

@@ -24,8 +24,6 @@ limitations under the License.
 #include "clang_interface/ASTConsumer.hpp"
 #include "clang_interface/FunctionInfo.h"
 
-#include "general_utilities/debug.h"
-
 #include "llvm/Support/Host.h"
 
 #include "clang/AST/Decl.h"
@@ -417,7 +415,6 @@ int MyASTConsumer::InitializeCI(
         clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths)
 {
     pci = &ci;
-    DEBUG_ASTCONSUMER(dbgs() << "\n\nSearch paths output from ASTConsumer:\n" << search_paths;);
     ci.createDiagnostics(nullptr, true);
     auto Invocation = std::make_shared<clang::CompilerInvocation>();
     ci.setInvocation(Invocation);
@@ -431,9 +428,6 @@ int MyASTConsumer::InitializeCI(
     clang::CompilerInvocation::setLangDefaults(ci.getLangOpts(), clang::Language::CXX,
             llvm::Triple(llvm::Twine(to->Triple)), pci->getPreprocessorOpts(),
             clang::LangStandard::lang_cxx11);
-
-    DEBUG_ASTCONSUMER(
-            if(ci.getInvocation().getLangOpts()->CPlusPlus) dbgs() << "c++ is defined now";);
 
     auto* pti = clang::TargetInfo::CreateTargetInfo(ci.getDiagnostics(), to);
     //ci.getInvocation().TargetOpts);
@@ -508,7 +502,6 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // emit/ignore compiler warnings.
     const clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
 
-    DEBUG_ASTCONSUMER(dbgs() << "Current file name in AST comsumer is: " << current_file;);
     const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name.c_str()).get();
     clang::SourceManager& SourceMgr = ci.getSourceManager();
     SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));

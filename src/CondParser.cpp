@@ -75,13 +75,7 @@ void CondParser::Parser(Node& tree_node, token_iterator t_it)
         (pNode->condStmt).push_back(*it);
     }
 
-    DEBUG_RLPARSER(dbgs() << "\nInside Cond Parser\n";);
-
     Assignment();
-    if(Match(boost::wave::T_NEWLINE))
-    {
-        DEBUG_RLPARSER(dbgs() << "PARSER::cond\n";);
-    }
 }
 
 bool CondParser::Match(boost::wave::token_id id)
@@ -123,10 +117,6 @@ void CondParser::Assignment()
     //assignment-- function like only
     const auto id = token_id(*it);
 
-#if DEBUG_PARSER
-    DEBUG_CONDITIONALS(dbgs() << "\nin Assignment: " << (*it).get_value(););
-#endif
-
     switch(id)
     {
     //comma has the lowest priority
@@ -167,7 +157,6 @@ void CondParser::Expression()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression: " << id_value.str(););
 
     //although the comma has lower priority than the assignment but
     //it has been kept here to facilitate simple parsing
@@ -187,7 +176,6 @@ void CondParser::Expression1()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression1: " << id_value.str(););
 
     while(id == T_EQUAL || id == T_NOTEQUAL || id == T_NOTEQUAL_ALT || id == T_LESS
             || id == T_LESSEQUAL || id == T_GREATER || id == T_GREATEREQUAL)
@@ -205,7 +193,6 @@ void CondParser::Expression2()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression2: " << id_value.str(););
     while(id == T_SHIFTLEFT || id == T_SHIFTRIGHT)
     {
         Match(id);
@@ -221,7 +208,6 @@ void CondParser::Expression3()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression3: " << id_value.str(););
 
     while(id == T_PLUS || id == T_MINUS)
     {
@@ -238,7 +224,6 @@ void CondParser::Expression4()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression4: " << id_value.str(););
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
         Match(id);
@@ -253,7 +238,6 @@ void CondParser::Expression5()
     Expression6();
     std::stringstream id_value;
     auto id = token_id(*it);
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression5: " << id_value.str(););
     while(id == T_DOTSTAR || id == T_ARROWSTAR)
     {
         Match(id);
@@ -268,7 +252,6 @@ void CondParser::Expression6()
     Expression7();
     std::stringstream id_value;
     auto id = token_id(*it);
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression6: " << id_value.str(););
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
         Match(id);
@@ -284,7 +267,6 @@ void CondParser::Expression7()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression7: " << id_value.str(););
     while(id == T_MINUS || id == T_PLUS || id == T_NOT || id == T_NOT_ALT || id == T_COMPL
             || id == T_MINUSMINUS || id == T_PLUSPLUS)
     {
@@ -301,23 +283,17 @@ void CondParser::Expression8()
     std::stringstream id_value;
     auto id = token_id(*it);
     id_value << (*it).get_value();
-    DEBUG_CONDITIONALS(dbgs() << "\nin Expression8: " << id_value.str() << "\n";);
 
     switch(id)
     {
     case T_IDENTIFIER:
-        DEBUG_CONDITIONALS(dbgs() << "\t Expected: " << id_value.str(););
         Match(T_IDENTIFIER);
         //      if(id_value.str().compare("defined")==0) {
         id = token_id(*it);
         id_value.str(std::string());
-        DEBUG_CONDITIONALS(id_value << (*it).get_value();
-                           dbgs() << "\tdefined found: expecting: " << id_value.str() << "\n";
-                           id_value.str(std::string()););
 
         if(id == T_LEFTPAREN)
         {
-            DEBUG_CONDITIONALS(dbgs() << "\tmatch left paren";);
             Match(T_LEFTPAREN);
             //std::cout<<"\ndefined with identifier within parens";
             //capture the identifier(if any) for lookup
@@ -342,7 +318,6 @@ void CondParser::Expression8()
             //even if one of the identifiers is global
             //the CondCategory changes to config
             pNode->condCat = CondCategory::config;
-            DEBUG_CONDITIONALS(dbgs() << "\nconfig_condition: " << id_value.str(););
         } //else pNode->condCat = CondCategory::local;//by default
           //      }//if id_value.str() = defined
         break;
@@ -350,7 +325,6 @@ void CondParser::Expression8()
     case T_DECIMALINT:
     case T_HEXAINT:
     case T_INTLIT:
-        DEBUG_CONDITIONALS(dbgs() << "\nExpecting Num literal_type: " << id_value.str() << "\n";);
         Match(id);
         break;
     case T_LONGINTLIT:
@@ -367,10 +341,8 @@ void CondParser::Expression8()
         Match(id);
         break;
     case T_LEFTPAREN:
-        DEBUG_CONDITIONALS(dbgs() << "\nMatch Left Paren";);
         Match(T_LEFTPAREN);
         Expression();
-        DEBUG_CONDITIONALS(dbgs() << "\nMatch Right Paren";);
         Match(T_RIGHTPAREN);
         break;
 
@@ -527,7 +499,6 @@ void CondParser::Expression8()
         break;
     case T_CCOMMENT: //eliminate before analyzing
     case T_CPPCOMMENT:
-        DEBUG_CONDITIONALS(dbgs() << "\ncomments: " << id_value.str() << "\n";);
         break;
     //may be error
     case T_ANY:
@@ -548,8 +519,6 @@ void CondParser::Expression8()
 
 bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
-    DEBUG_CONDITIONALS(dbgs() << "\nlooking for the identifier: " << id_str << "\n");
-
     return macroList.find(id_str) != macroList.end();
 }
 

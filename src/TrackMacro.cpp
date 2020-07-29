@@ -22,10 +22,9 @@ limitations under the License.
 */
 
 #include "clang_interface/TrackMacro.hpp"
-#include "general_utilities/debug.h"
 
 #include <map>
-#include <ostream>
+#include <iostream>
 #include <string>
 
 // @TODO: Replace with filesystem
@@ -53,16 +52,11 @@ namespace clang
 
 void TrackMacro::MacroExpands(const Token& MacroNameTok, const MacroInfo* MI, SourceRange Range)
 {
-    CLANG_AST_DEBUG(dbgs() << "Macro " << tok::getTokenName(MacroNameTok.getKind())
-                           << " has expanded here\n\t";);
-
     /// Testing if the macro is defined in the same file
     /// so that global macros can be skipped
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
         const PresumedLoc presumed = sm->getPresumedLoc(Range.getBegin());
-        CLANG_AST_DEBUG(dbgs() << "\nMacro " << MacroNameTok.getIdentifierInfo()->getNameStart()
-                               << " has expanded at line# " << presumed.getLine(););
 
         //NOTE PresumedLoc can be modified by the LINE directive
 
@@ -72,11 +66,6 @@ void TrackMacro::MacroExpands(const Token& MacroNameTok, const MacroInfo* MI, So
         // put the line number of invocation in m_istat
         // i think it is not useful anymore
         m_istat->insert(presumed.getLine());
-
-        CLANG_AST_DEBUG(
-                dbgs() << "arguments are:";
-                for(auto arg_it = MI->param_begin(); arg_it != MI->arg_end(); ++arg_it) dbgs()
-                << (*arg_it)->getNameStart() << "\t";);
 
         //if(MacroIsLocal(Range.getBegin())) {
         if(MI->isFunctionLike())
@@ -104,9 +93,6 @@ void TrackMacro::MacroDefined(const Token& MacroNameTok, const MacroDirective* M
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
         const PresumedLoc presumed = sm->getPresumedLoc(MI->getDefinitionLoc());
-
-        CLANG_AST_DEBUG(dbgs() << "Macro " << MacroNameTok.getIdentifierInfo()->getNameStart()
-                               << " is defined at line number: " << presumed.getLine() << "\n";);
 
         cmi.defined_line = presumed.getLine();
         //std::cout<<"Macro "<<tok::getTokenName(MacroNameTok.getKind())<<" is defined here\n\t";
@@ -207,9 +193,6 @@ void TrackMacro::VerifyMacroScopeFast(std::map<std::string, ParsedDeclInfo> cons
     /// collect all the start line numbers of function, and sort them
     for(; fi_iter != FunctionInfo.end(); ++fi_iter)
     {
-        CLANG_AST_DEBUG(dbgs() << "Function: " << fi_iter->first << ", definition range is: ("
-                               << (fi_iter->second).start_line << "," << (fi_iter->second).end_line
-                               << ")\n";);
         FunctionDefinitionRange[(fi_iter->second).start_line] = start;
         FunctionDefinitionRange[(fi_iter->second).end_line] = end;
     }
@@ -225,14 +208,9 @@ void TrackMacro::VerifyMacroScopeFast(std::map<std::string, ParsedDeclInfo> cons
         // no need to check if fdr_iter is FunctionDefinitionRange.end() or not
         // because of an extra entry
 
-        CLANG_AST_DEBUG(dbgs() << "For macro: " << ms->first << ", defined line is: "
-                               << (ms->second).defined_line << ", the range returned is: ("
-                               << fdr_iter->first << "," << fdr_iter->second << ")\n";);
-
         if(fdr_iter->second == end)
         {
             (ms->second).s_cat.inside_function = true;
-            CLANG_AST_DEBUG(dbgs() << "Macro: " << ms->first << ", is inside function\n";);
         }
     }
 }
@@ -250,8 +228,6 @@ void TrackMacro::VerifyMacroScope(std::map<std::string, ParsedDeclInfo> const& F
                     && (ms->second).defined_line < (fi->second).end_line)
             {
                 (ms->second).s_cat.inside_function = true;
-                CLANG_AST_DEBUG(dbgs() << "Macro: " << ms->first << ", is inside function "
-                                       << fi->first << "\n";);
             }
         }
     }

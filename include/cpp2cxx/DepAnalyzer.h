@@ -109,10 +109,6 @@ void DepAnalyzer<Vertex_t>::Analyze(DepList_t const& adjList)
 {
     pDepList = &adjList;
     MakeGraph();
-#ifdef DEBUG_MACRO_DEPENDENCY
-    std::cout << "\nInserting macros to the property map:\n";
-    PrintEdges();
-#endif
     CheckTotalOrder();
 }
 
@@ -144,13 +140,6 @@ void DepAnalyzer<Vertex_t>::DoTopologicalSort(std::vector<Vertex_t*>& v)
     boost::topological_sort(depGraph, std::back_inserter(topo_order));
     std::for_each(topo_order.begin(), topo_order.end(),
             [&v, this](Vd_t vd) { v.push_back(this->depGraph[vd]); });
-#ifdef DEBUG_MACRO_DEPENDENCY
-    std::cout << "Printing the total order:\n";
-    //use the reverse iterator for vector v
-    std::for_each(v.rbegin(), v.rend(), [](Vertex_t* mac_ptr) {
-        std::cout << "-->" << mac_ptr->get_identifier().get_value() << "-->\n";
-    });
-#endif
 }
 
 
@@ -284,9 +273,7 @@ template <typename Vertex_t>
 void DepAnalyzer<Vertex_t>::MakeVertices()
 {
     DepList_t const& depList = *pDepList;
-#ifdef DEBUG_MACRO_DEPENDENCY2
-    std::cout << "Inserting macros to the property map:\n";
-#endif
+
     //add vertices
     typename boost::graph_traits<Graph_t>::vertex_iterator v_iter;
     v_iter = vertices(depGraph).first;
@@ -297,9 +284,6 @@ void DepAnalyzer<Vertex_t>::MakeVertices()
         //vd = boost::add_vertex(map_iter->first,depGraph);
         depGraph[*v_iter] = dl_iter->first;
         mapVertexVd.insert(std::make_pair(dl_iter->first, *v_iter));
-#ifdef DEBUG_MACRO_DEPENDENCY2
-        std::cout << depGraph[*v_iter]->get_identifier_str() << "\n";
-#endif
     }
 }
 
@@ -342,9 +326,6 @@ void DepAnalyzer<Vertex_t>::MakeEdges()
         dt_iter = dl_iter->second.begin();
         for(; dt_iter != dl_iter->second.end(); dt_iter++)
         {
-#ifdef DEBUG_MACRO_DEPENDENCY2
-            std::cout << "Finding the macro: " << (*dt_iter)->get_identifier_str() << "\n";
-#endif
             // the vertex with the out edge in the ordered pair (u,v)
             pm_iter = mapVertexVd.find(*dt_iter);
             if(pm_iter != mapVertexVd.end())
@@ -412,15 +393,6 @@ void Parser::PPBuildMacroDependencyMap(macro const& mac)
   token_type macro_id = mac.get_identifier();
   std::vector<token_type> id_list = mac.get_replacement_list_dep_idlist();
   macroAdjList.insert(std::make_pair(macro_id,id_list));
-#ifdef DEBUG_MACRO_DEPENDENCY
-  std::stringstream val;
-  val<<macro_id.get_value()<<":\n";
-  std::for_each(id_list.begin(),id_list.end(),
-                [&val](token_type tok) {
-    val<<tok.get_value()<<"\t";
-  });
-  std::cout<<val.str()<<"\n";
-#endif
 }
 
 //can be used to generate the statistics about macros
@@ -428,9 +400,6 @@ void Parser::PPBuildMacroDependencyMap(macro const& mac)
 void Parser::PPAnalyzeMacroDependency()
 {
   std::multimap<token_type,std::vector<token_type> >::iterator map_iter;
-#ifdef DEBUG_MACRO_DEPENDENCY
-  std::stringstream strm;
-#endif
   std::stringstream err_msg;
   //std::cout<<"size of adjList = "<<macroAdjList.size();
   //first argument: out-edge, second argument: backbone of adj list
@@ -442,9 +411,7 @@ void Parser::PPAnalyzeMacroDependency()
   boost::graph_traits<graph>::vertex_iterator vi;
   typedef std::multimap<token_type,Vertex> mapTokenVertex;
   mapTokenVertex tok_to_vd;
-#ifdef DEBUG_MACRO_DEPENDENCY
-  std::cout<<"Inserting tokens to the property map:\n";
-#endif
+
 //add vertices
   vi = vertices(dep_graph).first;
   map_iter = macroAdjList.begin();
@@ -453,37 +420,17 @@ void Parser::PPAnalyzeMacroDependency()
     dep_graph[*vi] = map_iter->first;
     //problem is here
     tok_to_vd.insert(std::make_pair(map_iter->first,*vi));
-#ifdef DEBUG_MACRO_DEPENDENCY
-    strm<<dep_graph[*vi].get_value()<<"\n";
-#endif
   }
-#ifdef DEBUG_MACRO_DEPENDENCY
-  std::cout<<strm.str()<<"\n";
-#endif
 
   mapTokenVertex::iterator iter_tok_to_vd;
 
-#ifdef DEBUG_MACRO_DEPENDENCY
-  strm.str(std::string());
-  std::cout<<"O/P from the property_map from token to vertex_descriptor:\n";
-  std::cout<<"property_map size: "<<tok_to_vd.size()<<"\n";
-  iter_tok_to_vd = tok_to_vd.begin();
-  for(;iter_tok_to_vd != tok_to_vd.end();iter_tok_to_vd++) {
-      strm<<(iter_tok_to_vd->first).get_value()<<"\n";
-  }
-  std::cout<<strm.str()<<"\n END PROPERTY MAP\n";
-  strm.str(std::string());
-#endif
 //add edges now
   iter_tok_to_vd = tok_to_vd.begin();//not required actually
   Vertex u,v;//the ordered pair (u,v)
   std::vector<token_type>::iterator tok_iter;
   map_iter = macroAdjList.begin();
   for( ; map_iter != macroAdjList.end(); map_iter++) {
-#ifdef DEBUG_MACRO_DEPENDENCY
-//    strm <<"making edge: ("<< (*map_iter).first.get_value()<<",";
-    std::stringstream v_f,v_s;
-#endif
+
     //the vertex with the out edge in the ordered pair (u,v)
     tok_iter = (map_iter->second).begin();
     for( ; tok_iter != (map_iter->second).end(); tok_iter++) {
@@ -493,15 +440,7 @@ void Parser::PPAnalyzeMacroDependency()
       if(iter_tok_to_vd != tok_to_vd.end()) {
         //get the vertex desctiptor of first vertex
         u = iter_tok_to_vd->second;
-#ifdef DEBUG_MACRO_DEPENDENCY
-          v_f<<"To find: "<<(map_iter->first).get_value()<<"\n";
-          v_s<<"Found token: "<<(iter_tok_to_vd->first).get_value()<<"\n";
-          std::cout<<"Finding the first vertex:\n";
-          std::cout<<v_f.str();
-          std::cout<<v_s.str();
-          v_f.str(std::string());
-          v_s.str(std::string());
-#endif
+
         iter_tok_to_vd = tok_to_vd.begin();//not required actually
         iter_tok_to_vd = std::find_if(tok_to_vd.begin(),tok_to_vd.end(),
                       boost::bind(&mapTokenVertex::value_type::first, _1)
@@ -509,16 +448,7 @@ void Parser::PPAnalyzeMacroDependency()
         if(iter_tok_to_vd != tok_to_vd.end()) {
           //get the vertex desctiptor of second vertex
           v = iter_tok_to_vd->second;
-#ifdef DEBUG_MACRO_DEPENDENCY
-          //assert(*tok_iter == iter_tok_to_vd->first);
-          std::cout<<"Finding the second vertex:\n";
-          v_f<<"To find: "<<tok_iter->get_value()<<"\n";
-          v_s<<"Found token: "<<(iter_tok_to_vd->first).get_value()<<"\n";
-          std::cout<<v_f.str();
-          std::cout<<v_s.str();
-          v_f.str(std::string());
-          v_s.str(std::string());
-#endif
+
           //both vertices are found make the edge now
           //in topological_sort the direction of the edges are reversed
           boost::add_edge(u,v,dep_graph);
@@ -535,32 +465,10 @@ void Parser::PPAnalyzeMacroDependency()
         throw ExceptionHandler(err_msg.str());
       }
     }//iteration over the dependency list of macro in macroAdjList
-#ifdef DEBUG_MACRO_DEPENDENCY
-    strm.str(std::string());
-#endif
+
   }//iteration over the macroAdjList
   //container to hold the totally ordered vertices/macros
   std::vector<graph::vertex_descriptor> topo_order;
   boost::topological_sort(dep_graph,std::back_inserter(topo_order));
-#ifdef DEBUG_MACRO_DEPENDENCY
-  std::cout<<"Printing the identifiers in total order:\n";
-  strm.str(std::string());
-  std::for_each(topo_order.begin(),topo_order.end(),
-    [&strm,&dep_graph](Vertex v) {
-      strm<<dep_graph[v].get_value()<<"\n";
-  });
-  std::cout<<strm.str();
-  strm.str(std::string());
-  std::cout<<"Printing the edges in the graph:\n";
-  //typedef property_map<graph, vertex_index_t>::type IndexMap;
-  //IndexMap index = get(vertex_index, dep_graph);
-  boost::graph_traits<graph>::edge_iterator ei, ei_end;
-
-  for (std::tie(ei, ei_end) = boost::edges(dep_graph); ei != ei_end; ++ei) {
-    strm<<"(" << dep_graph[source(*ei, dep_graph)].get_value() << ","
-        << dep_graph[target(*ei, dep_graph)].get_value() << ")\n";
-  }
-  std::cout << strm.str();
-#endif
 }
 */
