@@ -45,7 +45,6 @@ limitations under the License.
 #include "DepGraph.h"
 #include "MacroStat.h"
 #include "RlParser.h"
-#include "Tuple3_t.h"
 #include "clang_interface/FunctionInfo.h"
 
 #include <iosfwd> //for void Parser::GetDemacrofiedFile(std::ostream os)
@@ -59,8 +58,6 @@ limitations under the License.
 // @TODO: Replace std::map
 using MacroList_t = std::map<std::string, //identifier
         std::string>;                     //replacement text
-
-using Tuple4MacroStat_t = Tuple4_t<std::string, std::string, std::string, MacroCategory>;
 
 /** forward declaration
  * @struct DemacroficationScheme
