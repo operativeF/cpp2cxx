@@ -25,6 +25,9 @@ limitations under the License.
 #include "cpp2cxx/ExceptionHandler.h"
 #include "general_utilities/debug.h"
 
+#include <fmt/core.h>
+#include <fmt/format.h>
+
 #include <string>
 #include <utility>
 #include <vector>
@@ -175,7 +178,7 @@ const DepList_t& MacTree::BuildMacroDependencyList()
             }
             else
             {
-                const auto line_val = std::to_string(anId.get_position().get_line());
+                const auto line_val = fmt::format_int(anId.get_position().get_line()).str();
                 const auto val = std::string(anId.get_value().c_str());
                 missing_macros.emplace_back(std::make_pair(line_val, val));
             }

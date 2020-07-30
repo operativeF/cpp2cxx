@@ -112,7 +112,7 @@ private:
     void PPIfHandler(Node& node, bool def);
     void PPBuildMacroDependencyList(std::ostream& os);
     static token_iterator GoPastMacro(token_iterator it);
-    std::string FillCondTokens(std::vector<token_type> const& cs);
+    //std::string FillCondTokens(std::vector<token_type> const& cs);
 
 private:
     /**

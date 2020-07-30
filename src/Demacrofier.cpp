@@ -36,6 +36,7 @@ limitations under the License.
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 Demacrofier::Demacrofier() noexcept
@@ -326,8 +327,9 @@ std::string Demacrofier::DemacrofyObjectLike(PPMacro const* m_ptr)
 
 std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro* m_ptr) const
 {
-    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n", m_ptr->get_identifier().get_value().c_str(),
-            GetFunctionClosure(m_ptr), GetFunctionBody(m_ptr));
+    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n",
+            m_ptr->get_identifier().get_value().c_str(), GetFunctionClosure(m_ptr),
+            GetFunctionBody(m_ptr));
     // if it already has a semicolon or not
     // if(!(m_ptr->get_replacement_list().get_replacement_list_token_type()).statement_type)
     //  demacrofied_line << ";";
@@ -428,6 +430,7 @@ std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
             closure_str += dep_list_iter->get_value().c_str();
         }
     }
+
     return closure_str;
 }
 
@@ -473,16 +476,15 @@ std::string Demacrofier::GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
             m_ptr->get_identifier().get_position().get_column());
 }
 
-// @TODO: Use {fmt}
-std::string Demacrofier::SuggestTranslation(std::string const& unique_macro_switch,
-        std::string const& demacrofied_fstream, std::string const& original_str) const
+std::string Demacrofier::SuggestTranslation(const std::string_view unique_macro_switch,
+        const std::string_view demacrofied_fstream, const std::string_view original_str) const
 {
-    return headerGuard + " && defined(" + unique_macro_switch + ")\n" + demacrofied_fstream
-           + "#else\n" + original_str + "#endif\n\n";
+    return fmt::format("{} && defined({})\n{}#else\n{}#endif\n\n", headerGuard, unique_macro_switch,
+            demacrofied_fstream, original_str);
 }
 
-std::string Demacrofier::GenerateTranslation(std::string const& macro_iden,
-        std::string const& unique_macro_switch, std::string const& demacrofied_fstream)
+std::string Demacrofier::GenerateTranslation(const std::string_view macro_iden,
+        const std::string_view unique_macro_switch, const std::string_view demacrofied_fstream)
 {
     return fmt::format("\n/** Demacrofication for the macro {} with unique identifier {}*/\n{}",
             macro_iden, unique_macro_switch, demacrofied_fstream);

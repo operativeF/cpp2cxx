@@ -1,0 +1,183 @@
+###################################################################
+#This file contains the details of each macro present in the files processed
+#The file can be read by any yaml parser
+#The format is as follows:
+#macro<count>
+#  - m_id : identifier string
+#  - m_cat: macro_category
+#  - c_cat: if the replacement text maps to C++ expression then c_cat is complete otherwise partial
+#  - d_cat: if the replacement text contains free variable(s) then d_cat is dependent otherwise closed
+###################################################################
+- Total_Macros: 34
+- Total_Function_Like_Macros: 17
+- Total_Object_Like_Macros: 17
+- macro 0:
+ - m_id: depth0
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 1:
+ - m_id: shift2
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 2:
+ - m_id: a
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 3:
+ - m_id: b
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 4:
+ - m_id: INTERFACE_IArchiveUpdateCallback(x)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 5:
+ - m_id: RB1(i, edx, edi)
+ - m_cat: function_like
+ - c_cat: partial
+ - d_cat: dependent
+- macro 6:
+ - m_id: the
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 7:
+ - m_id: the
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 8:
+ - m_id: c
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 9:
+ - m_id: THIS_FILE
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 10:
+ - m_id: depth1
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 11:
+ - m_id: depth2
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 12:
+ - m_id: depth3
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 13:
+ - m_id: CRYPTOPP_X86_ASM_AVAILABLE
+ - m_cat: null_define
+ - c_cat: complete
+ - d_cat: closed
+- macro 14:
+ - m_id: FXY(X,Y,Z)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 15:
+ - m_id: fun()
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 16:
+ - m_id: INSIDE_FUN_SUPER(X,Y)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 17:
+ - m_id: _a(i)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 18:
+ - m_id: _c(i)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 19:
+ - m_id: _b(i, j)
+ - m_cat: function_like
+ - c_cat: partial
+ - d_cat: dependent
+- macro 20:
+ - m_id: _abc
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 21:
+ - m_id: t12
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 22:
+ - m_id: TYPE_CHAR
+ - m_cat: object_like
+ - c_cat: partial
+ - d_cat: dependent
+- macro 23:
+ - m_id: Ptr(X)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 24:
+ - m_id: proc(X,Y)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 25:
+ - m_id: MSB(x)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 26:
+ - m_id: SSB(x)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 27:
+ - m_id: TSB(x)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 28:
+ - m_id: LSB(x)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 29:
+ - m_id: squareRound(text, temp, T0, T1, T2, T3, roundkey)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 30:
+ - m_id: squareFinal(text, temp, S, roundkey)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
+- macro 31:
+ - m_id: shift3
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 32:
+ - m_id: shift4
+ - m_cat: object_like
+ - c_cat: complete
+ - d_cat: dependent
+- macro 33:
+ - m_id: INSIDE_FUN(X)
+ - m_cat: function_like
+ - c_cat: complete
+ - d_cat: closed
