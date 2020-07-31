@@ -67,7 +67,7 @@ void Overseer::StartProcessing(bool demacrofy)
     /// and subsequently compiled
     try
     {
-        for(const auto& aFile : GetInputFiles())
+        for(auto&& aFile : GetInputFiles())
         {
             GenerateExternalASTHandler(aFile.string());
             //GetInformationFromExternalSource(*v_iter);

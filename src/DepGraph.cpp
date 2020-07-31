@@ -43,6 +43,7 @@ Vertex_t MacTree::GetParent(Vertex_t const v)
     Node* cn = depGraph[v];
     Node* pn = cn->parent;
 
+    // FIXME: What if nothing is found here?
     const auto nodeMap_iter = nodeMap.find(pn);
     return nodeMap_iter->second;
 }
@@ -160,12 +161,12 @@ void MacTree::PushBackMacro(PPMacro& mac)
 const DepList_t& MacTree::BuildMacroDependencyList()
 {
     //putting the macros in macroDepList as they occur
-    for(const auto& mp_iter : linearOrder)
+    for(auto&& mp_iter : linearOrder)
     {
         //every loop should have a new instance to do away with emptying
         std::vector<PPMacro*> vec_mp;
 
-        for(const auto& anId : mp_iter->get_replacement_list_dep_idlist())
+        for(auto&& anId : mp_iter->get_replacement_list_dep_idlist())
         {
             const auto tmm_iter = tokenMacroMap.find(anId);
 

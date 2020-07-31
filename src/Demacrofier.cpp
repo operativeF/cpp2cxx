@@ -425,7 +425,7 @@ std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
         // taking all the parameters by reference
         closure_str = "&";
 
-        for(const auto& dep_list_iter : dep_list)
+        for(auto&& dep_list_iter : dep_list)
         {
             fmt::format_to(std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value().c_str());
         }

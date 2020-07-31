@@ -40,7 +40,7 @@ void PrintMacroStat(std::ostream& aStream, const MacroStat& stat)
 
 void PrintMacroStats(std::ostream& aStream, const std::vector<MacroStat>& stats)
 {
-   for(const auto& stat : stats)
+   for(auto&& stat : stats)
    {
       PrintMacroStat(aStream, stat);
    }

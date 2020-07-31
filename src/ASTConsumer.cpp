@@ -395,7 +395,7 @@ static void set_package_specific_paths(clang::HeaderSearchOptions& HSOpts)
 
 bool MyASTConsumer::HandleTopLevelDecl(clang::DeclGroupRef d)
 {
-    for(const auto& it : d)
+    for(auto&& it : d)
     {
         auto* fd = llvm::dyn_cast<clang::FunctionDecl>(it);
         /// can be extended for class declaration
