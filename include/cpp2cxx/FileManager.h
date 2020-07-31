@@ -73,8 +73,8 @@ public:
     const std::filesystem::path& GetInputDirectory();
 
     //check whether this file is there in the list of output_files or not
-    void UpdateFile(const std::string_view file_str);
-    void UpdateFile(std::ostream& fp, const std::string_view file_str);
+    void UpdateFile(std::string_view file_str);
+    void UpdateFile(std::ostream& fp, std::string_view file_str);
 
     /// @brief observer, gets updated whenever a new file is demacrofied
     void UpdateFile(Overseer const& overseer);
@@ -90,7 +90,7 @@ public:
     const std::vector<std::filesystem::path>& GetSearchPaths() const;
 
     /// @brief writes the string to the log file fileManagerScheme.pConfigFile
-    void WriteLog(const std::string_view str);
+    void WriteLog(std::string_view str);
 
     /// @brief writes the header to the stat file
     void PrepareMacroStatFile();

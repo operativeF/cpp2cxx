@@ -102,11 +102,11 @@ private:
     static std::string DemacrofyStatementType(PPMacro const* m_ptr);
     static bool IsDemacrofiable(PPMacro const& mac);
 
-    std::string SuggestTranslation(const std::string_view unique_macro_switch,
-            const std::string_view demacrofied_fstream, const std::string_view original_str) const;
+    std::string SuggestTranslation(std::string_view unique_macro_switch,
+            std::string_view demacrofied_fstream, std::string_view original_str) const;
 
-    static std::string GenerateTranslation(const std::string_view macro_iden,
-            const std::string_view unique_macro_switch, const std::string_view demacrofied_fstream);
+    static std::string GenerateTranslation(std::string_view macro_iden,
+            std::string_view unique_macro_switch, std::string_view demacrofied_fstream);
 
     static std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr);
 

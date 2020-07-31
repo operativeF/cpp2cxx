@@ -63,12 +63,12 @@ const std::filesystem::path& FileManager::GetInputDirectory()
 }
 
 //check whether this file is there in the list of output_files or not
-void FileManager::UpdateFile(std::ostream& fp, const std::string_view file_str)
+void FileManager::UpdateFile(std::ostream& fp, std::string_view file_str)
 {
     fp << file_str;
 }
 
-void FileManager::UpdateFile(const std::string_view file_str)
+void FileManager::UpdateFile(std::string_view file_str)
 {
     auto output_file = GetCurrentOutputFile();
 
@@ -165,7 +165,7 @@ const std::vector<std::filesystem::path>& FileManager::GetInputFiles() const
     return fileManagerScheme.inputFiles;
 }
 
-void FileManager::WriteLog(const std::string_view str)
+void FileManager::WriteLog(std::string_view str)
 {
     *(fileManagerScheme.pLogFile) << str << "\n";
 }
