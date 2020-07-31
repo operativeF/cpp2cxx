@@ -111,6 +111,8 @@ std::string Demacrofier::Translate(
     return outstr;
 }
 
+
+// FIXME: Refactor out repeated code in the functions below.
 std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
 {
     std::stringstream demacrofied_line;
@@ -415,19 +417,17 @@ std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
 {
     std::string closure_str;
 
+    // FIXME: Use std::span.
     std::vector<token_type> dep_list = m_ptr->get_replacement_list_dep_idlist();
-    std::vector<token_type>::const_iterator dep_list_iter = dep_list.begin();
 
     if(!dep_list.empty())
     {
         // taking all the parameters by reference
         closure_str = "&";
-        closure_str += dep_list_iter->get_value().c_str();
 
-        while(++dep_list_iter != dep_list.end())
+        for(const auto& dep_list_iter : dep_list)
         {
-            closure_str += ", &";
-            closure_str += dep_list_iter->get_value().c_str();
+            fmt::format_to(std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value().c_str());
         }
     }
 
@@ -461,11 +461,8 @@ std::string Demacrofier::GetFunctionBody(const PPMacro* m_ptr)
     return m_ptr->get_replacement_list_str();
 }
 
-// @TODO: Use {fmt}
 std::string Demacrofier::GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
 {
-    std::stringstream m_switch;
-
     // @TODO: This gets called everytime, even for the same file.
     // Store the filename so it gets called only once per file.
     std::string file_name = general_utilities::keep_alpha_numeric(

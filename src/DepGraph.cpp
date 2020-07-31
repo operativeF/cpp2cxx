@@ -159,8 +159,6 @@ void MacTree::PushBackMacro(PPMacro& mac)
 
 const DepList_t& MacTree::BuildMacroDependencyList()
 {
-    std::vector<std::pair<std::string, std::string>> missing_macros;
-
     //putting the macros in macroDepList as they occur
     for(const auto& mp_iter : linearOrder)
     {
@@ -178,19 +176,12 @@ const DepList_t& MacTree::BuildMacroDependencyList()
             }
             else
             {
-                const auto line_val = fmt::format_int(anId.get_position().get_line()).str();
-                const auto val = std::string(anId.get_value().c_str());
-                missing_macros.emplace_back(std::make_pair(line_val, val));
+                fmt::print("Exception line number: {}, no macro found for token: {}\n", anId.get_position().get_line(),
+                    anId.get_value().c_str());
             }
         }
 
         macroDepList.push_back(std::make_pair(mp_iter, vec_mp));
-    }
-
-    for(const auto& mmacro : missing_macros)
-    {
-        fmt::print("Exception line number: {}, no macro found for token: {}\n", mmacro.first,
-                mmacro.second);
     }
 
     return macroDepList;
