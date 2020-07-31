@@ -72,7 +72,7 @@ void FileManager::UpdateFile(std::string_view file_str)
 {
     auto output_file = GetCurrentOutputFile();
 
-    if(!output_file.empty())
+    if(std::filesystem::exists(output_file))
     {
         std::ofstream fp(output_file, std::ios_base::out);
 
