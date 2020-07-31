@@ -31,6 +31,7 @@ limitations under the License.
 #include "general_utilities/string_utils.hpp"
 
 #include <fmt/core.h>
+#include <fmt/format.h>
 
 #include <iomanip>
 #include <ostream>
@@ -53,15 +54,13 @@ std::string Demacrofier::Translate(
     //std::string instr;
     std::string outstr;
     const std::string unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
-    std::stringstream macro_iden;
+    const std::string macro_iden = m_ptr->get_identifier().get_value().c_str();
     std::stringstream err_msg;
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
     std::string original_str = fmt::format("#define {} {} \n", m_ptr->get_identifier_str(),
             m_ptr->get_replacement_list_str_with_comments());
-
-    macro_iden << m_ptr->get_identifier().get_value();
 
     //during the cleanup phase see if the macro was validated or not
     if(cleanup && (pValidaMacros->find(unique_macro_switch) == pValidaMacros->end()))
@@ -87,8 +86,8 @@ std::string Demacrofier::Translate(
     if(cleanup)
     {
         outstr = GenerateTranslation(
-                macro_iden.str(), unique_macro_switch, demacrofied_fstream.str());
-        stat << "  - id:" << macro_iden.str() << "\n";
+                macro_iden, unique_macro_switch, demacrofied_fstream.str());
+        stat << "  - id:" << macro_iden << "\n";
     }
     else
     {
@@ -115,13 +114,12 @@ std::string Demacrofier::Translate(
 // FIXME: Refactor out repeated code in the functions below.
 std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
 {
-    std::stringstream demacrofied_line;
     std::stringstream template_arg;
     std::stringstream arg_str;
     int parameter_count = 0;
     vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
-    //breaks in case when the function doesn't have parameters F(,,,)
+    // FIXME: breaks in case when the function doesn't have parameters F(,,,)
     const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
 
     // F(X) {/**/}
@@ -143,10 +141,10 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->count;
+                     << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->count << " " //space
+            arg_str << "_T" << p_it->param_count << " " //space
                     << p_it->arg.get_value();
         }
         //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
@@ -155,26 +153,24 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->count;
+            template_arg << "class _T" << p_it->param_count;
 
             arg_str << ", "; //comma then space
             if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->count << " " //space
+                arg_str << "_T" << p_it->param_count << " " //space
                         << p_it->arg.get_value();
             }
         }
         template_arg << ">";
-        demacrofied_line << template_arg.str();
     }
-    demacrofied_line << "\nauto " //auto then space
-                     << m_ptr->get_identifier().get_value() << "(" << arg_str.str() << ")"
-                     << " -> decltype"
-                     << "(" << m_ptr->get_replacement_list_str() << ")"
-                     << "\n{\n"
-                     << "  return " << m_ptr->get_replacement_list_str() << ";\n}\n";
 
-    return demacrofied_line.str();
+    // FIXME: Use names for variables here.
+    std::string demacrofied_line = fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n",
+            template_arg.str(), m_ptr->get_identifier().get_value().c_str(), arg_str.str(),
+            m_ptr->get_replacement_list_str(), m_ptr->get_replacement_list_str());
+
+    return demacrofied_line;
 }
 
 std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
@@ -191,10 +187,10 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->count;
+                     << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->count << " && " //space
+            arg_str << "_T" << p_it->param_count << " && " //space
                     << p_it->arg.get_value();
         }
 
@@ -203,12 +199,12 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->count;
+            template_arg << "class _T" << p_it->param_count;
 
             arg_str << ", "; //comma then space
             if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->count << " && " //space
+                arg_str << "_T" << p_it->param_count << " && " //space
                         << p_it->arg.get_value();
             }
         }
@@ -242,10 +238,10 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->count;
+                     << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->count << " && " //space
+            arg_str << "_T" << p_it->param_count << " && " //space
                     << p_it->arg.get_value();
         }
         //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
@@ -254,12 +250,12 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->count;
+            template_arg << "class _T" << p_it->param_count;
 
             arg_str << ", "; //comma then space
             if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->count << " && " //space
+                arg_str << "_T" << p_it->param_count << " && " //space
                         << p_it->arg.get_value();
             }
         }
@@ -427,7 +423,8 @@ std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
 
         for(auto&& dep_list_iter : dep_list)
         {
-            fmt::format_to(std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value().c_str());
+            fmt::format_to(
+                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value().c_str());
         }
     }
 
@@ -487,10 +484,10 @@ std::string Demacrofier::GenerateTranslation(std::string_view macro_iden,
             macro_iden, unique_macro_switch, demacrofied_fstream);
 }
 
-void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden, std::string const& outstr)
+void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr)
 {
     // each macro has an entry in the pASTMacroStat
-    const auto ast_macro_iter = pASTMacroStat->find(macro_iden.str());
+    const auto ast_macro_iter = pASTMacroStat->find(macro_iden);
     if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
     {
         // @TODO: Remove unsafe bounds here.
@@ -500,7 +497,7 @@ void Demacrofier::InsertToReadyQueue(std::stringstream const& macro_iden, std::s
     //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
 }
 
-// @TODO: Remove the out argument.
+// @TODO: Remove the out argument, it's confusing.
 bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
 {
     bool postponed = false;

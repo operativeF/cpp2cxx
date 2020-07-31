@@ -496,7 +496,7 @@ int MyASTConsumer::InitializeCI(
 void MyASTConsumer::DumpContent(std::string const& file_name)
 {
     clang::CompilerInstance& ci = *pci;
-    current_file = file_name;
+    m_current_file = file_name;
 
     // Kind is C_User for now because I do not know how to set the right option,
     // this does not matter so much, I think it is only used to selectively
@@ -510,7 +510,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // set file and loc parameters for the track_macro callback
     // placing here is important. It should be after the source manager
     // has created fileid for the file to be processed.
-    track_macro->SetFileName(current_file);
+    track_macro->SetFileName(m_current_file);
     ///////////////////////////////////////////////////////////
     ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(), &ci.getPreprocessor());
     clang::ParseAST(ci.getPreprocessor(), this, ci.getASTContext());
@@ -521,7 +521,7 @@ void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::S
 {
     const clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
     /// print only when the functions are in the current file
-    if(current_file == presumed.getFilename())
+    if(m_current_file == presumed.getFilename())
     {
         fmt::print("line: {}, column: {}", presumed.getLine(), presumed.getColumn());
     }
@@ -529,13 +529,12 @@ void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::S
 
 void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
 {
-    // @TODO: Initialize this.
     const clang::CompilerInstance& ci = *pci;
     const clang::SourceManager& sm = ci.getSourceManager();
     // @TODO: Check fd for nullness?
     clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
     /// print only when the functions are in the current file
-    if(current_file == presumed.getFilename())
+    if(m_current_file == presumed.getFilename())
     {
         /*    std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";
     std::cout<<"Start:\t";

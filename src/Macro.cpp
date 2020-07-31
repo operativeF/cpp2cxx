@@ -66,9 +66,9 @@ void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int para
     identifier_parameters.emplace_back(token_instances(tok, parameter_count));
 }
 
-void PPMacro::set_identifier_str(const std::string& str)
+void PPMacro::set_identifier_str(const std::string& ident_str)
 {
-    identifier_str = str;
+    identifier_str = ident_str;
     //    std::cout<<"iden_string: "<<identifier_str<<std::endl;
 }
 
@@ -79,11 +79,11 @@ void PPMacro::set_replacement_list(const token_type& tok)
     //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
 }
 
-void PPMacro::set_replacement_list_str(const std::string& str, RlParser& rl_parser)
+void PPMacro::set_replacement_list_str(const std::string& replacement_str, RlParser& rl_parser)
 {
-    rep_list.set_replacement_list_str(str, identifier_parameters);
+    rep_list.set_replacement_list_str(replacement_str, identifier_parameters);
     //    std::cout<<"repl_string: "<<replacement_list_str<<std::endl;
-    fmt::print(logFile, " - log: parsing replacement list: '{}' of macro: {}\n", str,
+    fmt::print(logFile, " - log: parsing replacement list: '{}' of macro: {}\n", replacement_str,
             identifier.get_value());
     set_replacement_list_category(rl_parser);
 }

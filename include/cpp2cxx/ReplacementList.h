@@ -56,12 +56,12 @@ struct token_instances
 {
     token_instances(token_type ar, unsigned int cnt) :
         arg(ar),
-        count(cnt)
+        param_count(cnt)
     {
     }
 
     token_type arg;
-    unsigned int count {0};
+    unsigned int param_count {0};
 };
 
 using vpTokInt = std::vector<token_instances>;

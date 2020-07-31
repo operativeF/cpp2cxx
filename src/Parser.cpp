@@ -548,8 +548,7 @@ std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     mac_stmt << it->get_value();
     macro_ref.set_identifier(*it);
     macro_ref.set_identifier_str(id_value.str());
-    const MacroCategory m_cat = MacroCategory::null_define; //no replacement list
-    macro_ref.set_macro_category(m_cat);
+    macro_ref.set_macro_category(MacroCategory::null_define); // no replacement list
     //macro_ref.set_replacement_list_str("");
     return mac_stmt.str();
 }

@@ -73,7 +73,7 @@ private:
     /// because it is added to a reference counted Preprocessor class
     clang::TrackMacro* track_macro{ nullptr };
 
-    std::string current_file;
+    std::string m_current_file;
 
     /// \brief clang::Info is defined by me
     std::map<std::string, ParsedDeclInfo> FunctionInfo;
