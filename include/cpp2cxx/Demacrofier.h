@@ -110,7 +110,7 @@ private:
 
     static std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr);
 
-    void InsertToReadyQueue(std::stringstream const& macro_iden, std::string const& outstr);
+    void InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr);
 
     bool CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const;
 

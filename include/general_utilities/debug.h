@@ -111,7 +111,7 @@
 #endif
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 
 // This is llvm style debug printer.

@@ -41,8 +41,9 @@ limitations under the License.
 #include "clang/Lex/Preprocessor.h"
 #include "clang/Parse/ParseAST.h"
 
+#include <fmt/format.h>
+
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
@@ -522,8 +523,7 @@ void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::S
     /// print only when the functions are in the current file
     if(current_file == presumed.getFilename())
     {
-        std::cout << "line: " << presumed.getLine();
-        std::cout << ", column: " << presumed.getColumn();
+        fmt::print("line: {}, column: {}", presumed.getLine(), presumed.getColumn());
     }
 }
 
@@ -557,7 +557,7 @@ void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
 void MyASTConsumer::PrintStats()
 {
     using namespace general_utilities;
-    std::cout << FunctionInfo;
+    //fmt::print("{}", FunctionInfo);
     track_macro->PrintStats();
 }
 

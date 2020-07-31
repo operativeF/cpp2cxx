@@ -658,7 +658,6 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     demac->SetMacroInvocationStat(pInvocationStat);
     demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
-    std::stringstream err_msg;
     // @TODO: Initialize these.
     boost::wave::token_id id;
     std::string demacrofied_string;
@@ -700,9 +699,8 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
             // if there was no match then throw error, although it is unlikely
             if(m_ptr == nullptr)
             {
-                err_msg << "  - error: "
-                        << "no macro with identifier: " << it->get_value() << " found\n";
-                throw ExceptionHandler(err_msg.str());
+                std::string err_msg = fmt::format("  - error: no macro with identifier: {} found.\n", it->get_value());
+                throw ExceptionHandler(err_msg);
             }
             /// multiple definitions should not actually matter
             /// because if they are not in the conditionals that means

@@ -27,7 +27,6 @@ limitations under the License.
 #include "cpp2cxx/ReplacementList.h"
 
 #include <algorithm>
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -150,8 +149,7 @@ bool RlParser::Match(boost::wave::token_id id)
             rl_str_formatted += it->get_value().c_str();
             ++it;
         }
-        id_value << it->get_value();
-        //std::cout<<"\nNext_id: "<<id_value.str();
+
         return true;
     }
 
@@ -164,9 +162,9 @@ bool RlParser::Match(boost::wave::token_id id)
     {
         rl_ccat = RlCCat::open;
         /// @brief also writes a log when there is an unmatching semicolon in a macro.
-        logFile << "  - note: PARSER_ERROR: RlCCat::open \'" << id_value.str() << "\'\n";
+        //logFile << "  - note: PARSER_ERROR: RlCCat::open \'" << id_value.str() << "\'\n";
     }
-    //throw "Invalid expression";
+
     return false;
 }
 
@@ -626,7 +624,7 @@ void RlParser::Expression8()
         // assuming a syntactically corrent macro,
         // semicolon marks end of a statement
         rl_ttype.statement_type = true;
-        std::cout << "\nfound semi colon: \n";
+        //std::cout << "\nfound semi colon: \n";
         break;
     case T_DOT:
     case T_ARROW:

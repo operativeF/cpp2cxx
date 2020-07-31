@@ -28,6 +28,7 @@ limitations under the License.
 #include "cpp2cxx/FileManagerScheme.h"
 #include "cpp2cxx/Overseer.h" //observable
 
+#include <fmt/ostream.h>
 #include <fmt/format.h>
 
 FileManager::FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds)
@@ -167,7 +168,7 @@ const std::vector<std::filesystem::path>& FileManager::GetInputFiles() const
 
 void FileManager::WriteLog(std::string_view str)
 {
-    *(fileManagerScheme.pLogFile) << str << "\n";
+    fmt::print(*(fileManagerScheme.pLogFile), "{}\n", str);
 }
 
 void FileManager::PrepareDemacrofiedMacroStatFile()
