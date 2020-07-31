@@ -51,15 +51,28 @@ class RlParser;
  * @brief class to keep all the details of replacement list of a macro
  * This class is a member variable of the PPMacro class
  */
+
+struct token_instances
+{
+    token_instances(token_type ar, unsigned int cnt) :
+        arg(ar),
+        count(cnt)
+    {
+    }
+
+    token_type arg;
+    unsigned int count {0};
+};
+
+using vpTokInt = std::vector<token_instances>;
+
 class ReplacementList
 {
 
 public:
-    using vpTokInt = std::vector<std::pair<token_type, unsigned int>>;
-
     //use token_iterator const&
     void set_replacement_list(const token_type& tok);
-    void set_replacement_list_str(std::string const& str, vpTokInt argId);
+    void set_replacement_list_str(std::string const& str, const vpTokInt& argId);
     void set_replacement_list_category(RlParser& rl_parser);
     /// set by the dependency analyzer at a later stage
     void set_replacement_list_dependency_category(bool c);

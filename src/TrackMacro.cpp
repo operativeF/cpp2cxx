@@ -24,7 +24,6 @@ limitations under the License.
 #include "clang_interface/TrackMacro.hpp"
 
 #include <map>
-#include <iostream>
 #include <string>
 
 // @TODO: Replace with filesystem
@@ -174,10 +173,11 @@ void TrackMacro::PrintStats()
     std::map<std::string, CollectedMacroInfo>::const_iterator i = ASTMacroStat.begin();
     for(; i != ASTMacroStat.end(); ++i)
     {
-        std::cout << i->first;
-        std::cout << "\t";
-        std::cout << i->second;
-        std::cout << "\n";
+        // FIXME: Replace with fmt::print
+        // std::cout << i->first;
+        // std::cout << "\t";
+        // std::cout << i->second;
+        // std::cout << "\n";
     }
     //std::cout<<MacroStat;
 }

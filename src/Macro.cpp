@@ -63,7 +63,7 @@ void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int para
 {
     //token mytoken(it);
     //std::cout<<"identifier_parameter iD: "<<tok.get_name()<<std::endl;
-    identifier_parameters.push_back(std::make_pair(tok, parameter_count));
+    identifier_parameters.emplace_back(token_instances(tok, parameter_count));
 }
 
 void PPMacro::set_identifier_str(const std::string& str)
@@ -235,7 +235,7 @@ const std::string& PPMacro::get_replacement_list_str_with_comments() const
 }
 
 
-const std::vector<std::pair<token_type, unsigned int>>& PPMacro::get_identifier_parameters() const
+const vpTokInt& PPMacro::get_identifier_parameters() const
 {
     return identifier_parameters;
 }
@@ -305,18 +305,15 @@ std::vector<token_type> PPMacro::get_replacement_list_dep_idlist() const
     }
 
     //iterator over function_like PPMacro's arguments
-    std::vector<std::pair<token_type, unsigned int>>::const_iterator iter_args;
     //iterator for the ReplacementList tokens
     std::vector<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
     //remove all those identifiers which are in the function argument
-    // @TODO: Replace this with stdlib stuff.
-    iter_args = identifier_parameters.begin();
-    for(; iter_args != identifier_parameters.end(); iter_args++)
+    for(const auto& id : identifier_parameters)
     {
         iter_rl_idlist = dep_idlist.begin();
         for(; iter_rl_idlist != dep_idlist.end();)
         {
-            if(iter_args->first == *iter_rl_idlist)
+            if(id.arg == *iter_rl_idlist)
             {
                 //remove the identifiers which are in the function argument
                 iter_rl_idlist = dep_idlist.erase(iter_rl_idlist);

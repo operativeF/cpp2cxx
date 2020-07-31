@@ -25,7 +25,6 @@ limitations under the License.
 #include "cpp2cxx/RlParser.h"
 
 #include <algorithm>
-#include <iostream>
 #include <sstream>
 #include <utility>
 #include <vector>
@@ -36,13 +35,13 @@ void ReplacementList::set_replacement_list(const token_type& tok)
     //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
 }
 
-void ReplacementList::set_replacement_list_str(std::string const& str, vpTokInt argId)
+void ReplacementList::set_replacement_list_str(const std::string& str, const vpTokInt& argId)
 {
     rl_str = str;
     if(!argId.empty())
     {
-        std::for_each(argId.begin(), argId.end(), [this](const std::pair<token_type, int>& p_ti) {
-            this->funArgId.push_back(p_ti.first);
+        std::for_each(argId.begin(), argId.end(), [this](const auto& p_ti) {
+            this->funArgId.push_back(p_ti.arg);
         });
     }
     //    std::cout<<"repl_string: "<<replacement_list_str<<std::endl;

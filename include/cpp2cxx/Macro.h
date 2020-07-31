@@ -99,7 +99,7 @@ public:
     std::string get_replacement_list_str() const;
     std::string const& get_formatted_replacement_list_str() const;
     std::string const& get_replacement_list_str_with_comments() const;
-    std::vector<std::pair<token_type, unsigned int>> const& get_identifier_parameters() const;
+    const vpTokInt& get_identifier_parameters() const;
 
     ReplacementList& get_replacement_list();
     ReplacementList const& get_replacement_list() const;
@@ -148,7 +148,6 @@ private:
     bool HasLeadingUnderscore() const;
 
 private:
-    using vpTokInt = std::vector<std::pair<token_type, unsigned int>>;
     // the macro identifier token
     token_type identifier;
     //the complete macro -- operation + identifier +(args)opt + rep_text

@@ -117,7 +117,7 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
     std::stringstream template_arg;
     std::stringstream arg_str;
     int parameter_count = 0;
-    std::vector<std::pair<token_type, unsigned int>>::const_iterator p_it;
+    vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
     //breaks in case when the function doesn't have parameters F(,,,)
     const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
@@ -141,11 +141,11 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->second;
-        if(p_it->first != boost::wave::T_EOF)
+                     << "class _T" << p_it->count;
+        if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->second << " " //space
-                    << p_it->first.get_value();
+            arg_str << "_T" << p_it->count << " " //space
+                    << p_it->arg.get_value();
         }
         //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
         //for the 2nd till the last argument in the function like macro
@@ -153,13 +153,13 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->second;
+            template_arg << "class _T" << p_it->count;
 
             arg_str << ", "; //comma then space
-            if(p_it->first != boost::wave::T_EOF)
+            if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->second << " " //space
-                        << p_it->first.get_value();
+                arg_str << "_T" << p_it->count << " " //space
+                        << p_it->arg.get_value();
             }
         }
         template_arg << ">";
@@ -181,7 +181,7 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
     std::stringstream template_arg;
     std::stringstream arg_str;
     int parameter_count = 0;
-    std::vector<std::pair<token_type, unsigned int>>::const_iterator p_it;
+    vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
@@ -189,11 +189,11 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->second;
-        if(p_it->first != boost::wave::T_EOF)
+                     << "class _T" << p_it->count;
+        if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->second << " && " //space
-                    << p_it->first.get_value();
+            arg_str << "_T" << p_it->count << " && " //space
+                    << p_it->arg.get_value();
         }
 
         //for the 2nd till the last argument in the function like macro
@@ -201,13 +201,13 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->second;
+            template_arg << "class _T" << p_it->count;
 
             arg_str << ", "; //comma then space
-            if(p_it->first != boost::wave::T_EOF)
+            if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->second << " && " //space
-                        << p_it->first.get_value();
+                arg_str << "_T" << p_it->count << " && " //space
+                        << p_it->arg.get_value();
             }
         }
 
@@ -232,7 +232,7 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
     std::stringstream template_arg;
     std::stringstream arg_str;
     int parameter_count = 0;
-    std::vector<std::pair<token_type, unsigned int>>::const_iterator p_it;
+    vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
@@ -240,11 +240,11 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
         p_it = m_ptr->get_identifier_parameters().begin();
         parameter_count++;
         template_arg << "template <"
-                     << "class _T" << p_it->second;
-        if(p_it->first != boost::wave::T_EOF)
+                     << "class _T" << p_it->count;
+        if(p_it->arg != boost::wave::T_EOF)
         {
-            arg_str << "_T" << p_it->second << " && " //space
-                    << p_it->first.get_value();
+            arg_str << "_T" << p_it->count << " && " //space
+                    << p_it->arg.get_value();
         }
         //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
         //for the 2nd till the last argument in the function like macro
@@ -252,13 +252,13 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
         {
             //  parameter_count++;
             template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->second;
+            template_arg << "class _T" << p_it->count;
 
             arg_str << ", "; //comma then space
-            if(p_it->first != boost::wave::T_EOF)
+            if(p_it->arg != boost::wave::T_EOF)
             {
-                arg_str << "_T" << p_it->second << " && " //space
-                        << p_it->first.get_value();
+                arg_str << "_T" << p_it->count << " && " //space
+                        << p_it->arg.get_value();
             }
         }
         template_arg << "> "; // '>' then space
@@ -445,11 +445,11 @@ std::string Demacrofier::GetFunctionArgs(const PPMacro* m_ptr)
     // @TODO: Make this a lambda
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        arg_string << dtype << *invok_iter << ") " << ip_iter->first.get_value();
+        arg_string << dtype << *invok_iter << ") " << ip_iter->arg.get_value();
 
         while(++ip_iter != m_ptr->get_identifier_parameters().end())
         {
-            arg_string << ", " << dtype << *(++invok_iter) << ") " << ip_iter->first.get_value();
+            arg_string << ", " << dtype << *(++invok_iter) << ") " << ip_iter->arg.get_value();
         }
     }
 
