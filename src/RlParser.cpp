@@ -123,10 +123,7 @@ void RlParser::Parser(std::vector<token_type>::iterator beg, std::vector<token_t
 bool RlParser::Match(boost::wave::token_id id)
 {
     const boost::wave::token_id next_id = *it;
-    std::stringstream id_value;
-    //while ((next_id = *it) == boost::wave::T_SPACE)
-    //  it++;
-    id_value << it->get_value();
+
     if(id == next_id)
     {
         if(id == boost::wave::T_NEWLINE || id == boost::wave::T_CPPCOMMENT)
@@ -138,9 +135,7 @@ bool RlParser::Match(boost::wave::token_id id)
         FillFormattedRL(*it);
         ++it; //increment to get to the next token
 
-
         //condStmt.push_back(*it);
-        id_value.str(std::string());
 
         /// @todo all the space is already consumed so no need of this,
         /// but check it first
@@ -190,9 +185,7 @@ void RlParser::Assignment()
     using namespace boost::wave;
     Expression();
     //assignment-- function like only
-    std::stringstream id_value;
     const auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     switch(id)
     {
     //comma has the lowest priority
@@ -231,9 +224,7 @@ void RlParser::Expression()
     using namespace boost::wave;
     //bool expr_valid = false;
     Expression1();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     //although the comma has lower priority than the assignment but
     //it has been kept here to facilitate simple parsing
     while(id == T_AND || id == T_XOR || id == T_OR || id == T_ANDAND || id == T_OROR
@@ -250,9 +241,7 @@ void RlParser::Expression1()
 {
     using namespace boost::wave;
     Expression2();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     while(id == T_EQUAL || id == T_NOTEQUAL || id == T_NOTEQUAL_ALT || id == T_LESS
             || id == T_LESSEQUAL || id == T_GREATER || id == T_GREATEREQUAL)
     {
@@ -267,9 +256,7 @@ void RlParser::Expression2()
 {
     using namespace boost::wave;
     Expression3();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     while(id == T_SHIFTLEFT || id == T_SHIFTRIGHT)
     {
         Match(id);
@@ -283,9 +270,7 @@ void RlParser::Expression3()
 {
     using namespace boost::wave;
     Expression4();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     while(id == T_PLUS || id == T_MINUS)
     {
         Match(id);
@@ -299,9 +284,7 @@ void RlParser::Expression4()
 {
     using namespace boost::wave;
     Expression5();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
-    id_value << it->get_value();
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
         Match(id);
@@ -315,7 +298,6 @@ void RlParser::Expression5()
 {
     using namespace boost::wave;
     Expression6();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
     while(id == T_DOTSTAR || id == T_ARROWSTAR)
     {
@@ -330,7 +312,6 @@ void RlParser::Expression6()
 {
     using namespace boost::wave;
     Expression7();
-    std::stringstream id_value;
     auto id = boost::wave::token_id(*it);
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
@@ -345,7 +326,6 @@ void RlParser::Expression7()
 {
     using namespace boost::wave;
     Expression8();
-    std::stringstream id_value;
     const auto id = boost::wave::token_id(*it);
     if(id == T_POUND_POUND || id == T_POUND_POUND_ALT || id == T_POUND_POUND_TRIGRAPH)
     {
@@ -592,6 +572,7 @@ void RlParser::Expression8()
             }
             Match(id);
         } while(brace_count != 0);
+        
         if(brace_count != 0)
         {
             rl_ccat = RlCCat::open;
