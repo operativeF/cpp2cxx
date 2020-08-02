@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "cpp2cxx/DepGraph.h"
 #include "cpp2cxx/ExceptionHandler.h"
-#include "general_utilities/debug.h"
 
 #include <fmt/core.h>
 #include <fmt/format.h>

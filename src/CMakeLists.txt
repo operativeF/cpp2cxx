@@ -50,12 +50,4 @@ target_include_directories(cpp2cxx-core PUBLIC
   ${CMAKE_SOURCE_DIR}/include
   )
 
-add_library(cpp2cxx-debug
-  STATIC
-    debug.cpp
-)
-
-target_include_directories(cpp2cxx-debug
-  PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-)
+target_precompile_headers(cpp2cxx-core REUSE_FROM ASTConsumer)
