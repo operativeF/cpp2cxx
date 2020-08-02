@@ -83,7 +83,7 @@ void Overseer::StartProcessing(bool demacrofy)
     catch(ExceptionHandler& e)
     {
         //std::cout<<"There was some error in start processing";
-        GetLogFile() << "Error: " << e.GetMessage() << "\n";
+        GetLogFile() << "Error: " << e.GetExMessage() << "\n";
     }
 }
 

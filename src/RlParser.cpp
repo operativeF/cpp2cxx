@@ -92,7 +92,7 @@ void RlParser::Parse(ReplacementList& rl)
         //set the reject type and the demacrofier will take care of it
         rl_ccat = RlCCat::open;
         rl_ttype.reject_type = true;
-        logFile << e.GetMessage() << "\n";
+        logFile << e.GetExMessage() << "\n";
     }
     /*if the replacement text was modified?
   if(rl_modified){

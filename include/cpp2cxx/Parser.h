@@ -83,7 +83,7 @@ public:
     void Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
 
     void ParseNewGlobalMacros(std::string const& raw_global_macro_file_name);
-    void ReadGlobalMacros(std::string const& global_macro_file_name);
+    void ReadGlobalMacros(const std::filesystem::path& global_macro_file_name);
     //Parser(std::string instr, position_type pos);
 
     MacTree const* GetMacTree();
@@ -178,7 +178,7 @@ private:
      * @var std::string fileGlobalMacros;
      * @details file containing global macros
      */
-    std::string fileGlobalMacros;
+    std::filesystem::path fileGlobalMacros;
 
     /**
      * Other Variables:

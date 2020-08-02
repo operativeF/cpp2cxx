@@ -472,7 +472,7 @@ int main(int argc, char* argv[])
     }
     catch(ExceptionHandler& e)
     {
-        std::cerr << "Exception Handler: " << e.GetMessage();
+        std::cerr << "Exception Handler: " << e.GetExMessage();
     }
     catch(const boost::program_options::multiple_occurrences& e)
     {

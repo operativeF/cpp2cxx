@@ -29,7 +29,7 @@ limitations under the License.
 #include <fstream>
 #include <sstream>
 
-CondParser::CondParser(const std::string& file_global_macros)
+CondParser::CondParser(const std::filesystem::path& file_global_macros)
 {
     std::ifstream gMacros(file_global_macros, std::ios_base::in);
     
@@ -38,29 +38,17 @@ CondParser::CondParser(const std::string& file_global_macros)
         return;
     }
 
-    // @TODO: Replace with filesystem
     gMacros.seekg(0, std::ios::beg);
 
-    const unsigned int line_width = 2048;
-
-    // @TODO: Initialize these
-    char fc[line_width];
-    char sc[line_width];
-
-    //to ignore the newline at the end of the file
-    // @TODO: No array decay.
-    gMacros.getline(fc, line_width);
-    gMacros.getline(sc, line_width);
-    while(gMacros.good())
+    for(std::string fc, sc; std::getline(gMacros, fc), std::getline(gMacros, sc); )
     {
-        macroList.insert(std::make_pair(fc, sc));
-        gMacros.getline(fc, line_width);
-        gMacros.getline(sc, line_width);
+        macroList.push_back({fc, sc});
     }
+
     gMacros.close();
 }
 
-void CondParser::Parser(Node& tree_node, token_iterator t_it)
+void CondParser::ParseConditions(Node& tree_node, token_iterator t_it)
 {
     pNode = &tree_node;
     it = t_it;
@@ -81,11 +69,8 @@ void CondParser::Parser(Node& tree_node, token_iterator t_it)
 bool CondParser::Match(boost::wave::token_id id)
 {
     const boost::wave::token_id next_id = *it;
-    std::stringstream id_value;
     //while ((next_id = *it) == boost::wave::T_SPACE)
     //  it++;
-    id_value << (*it).get_value();
-
     if(id == next_id)
     {
         (pNode->condStmt).push_back(*it);
@@ -94,15 +79,10 @@ bool CondParser::Match(boost::wave::token_id id)
             return true;
         }
 
-        //std::cout<<"\t\tSymbol Matched: "<<id_value.str();
-        id_value.str(std::string());
         while(*(++it) == boost::wave::T_SPACE)
         {
             (pNode->condStmt).push_back(*it);
         }
-
-        id_value << (*it).get_value();
-        //std::cout<<"\nNext_id: "<<id_value.str();
 
         return true;
     }
@@ -154,9 +134,7 @@ void CondParser::Expression()
     using namespace boost::wave;
     //bool expr_valid = false;
     Expression1();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
 
     //although the comma has lower priority than the assignment but
     //it has been kept here to facilitate simple parsing
@@ -173,9 +151,7 @@ void CondParser::Expression1()
 {
     using namespace boost::wave;
     Expression2();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
 
     while(id == T_EQUAL || id == T_NOTEQUAL || id == T_NOTEQUAL_ALT || id == T_LESS
             || id == T_LESSEQUAL || id == T_GREATER || id == T_GREATEREQUAL)
@@ -190,9 +166,8 @@ void CondParser::Expression2()
 {
     using namespace boost::wave;
     Expression3();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
+
     while(id == T_SHIFTLEFT || id == T_SHIFTRIGHT)
     {
         Match(id);
@@ -205,9 +180,7 @@ void CondParser::Expression3()
 {
     using namespace boost::wave;
     Expression4();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
 
     while(id == T_PLUS || id == T_MINUS)
     {
@@ -221,9 +194,8 @@ void CondParser::Expression4()
 {
     using namespace boost::wave;
     Expression5();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
+
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
         Match(id);
@@ -236,8 +208,8 @@ void CondParser::Expression5()
 {
     using namespace boost::wave;
     Expression6();
-    std::stringstream id_value;
     auto id = token_id(*it);
+
     while(id == T_DOTSTAR || id == T_ARROWSTAR)
     {
         Match(id);
@@ -250,8 +222,8 @@ void CondParser::Expression6()
 {
     using namespace boost::wave;
     Expression7();
-    std::stringstream id_value;
     auto id = token_id(*it);
+
     while(id == T_STAR || id == T_DIVIDE || id == T_PERCENT)
     {
         Match(id);
@@ -264,9 +236,8 @@ void CondParser::Expression7()
 {
     using namespace boost::wave;
     Expression8();
-    std::stringstream id_value;
     auto id = token_id(*it);
-    id_value << (*it).get_value();
+
     while(id == T_MINUS || id == T_PLUS || id == T_NOT || id == T_NOT_ALT || id == T_COMPL
             || id == T_MINUSMINUS || id == T_PLUSPLUS)
     {
@@ -519,7 +490,7 @@ void CondParser::Expression8()
 
 bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
-    return macroList.find(id_str) != macroList.end();
+    return std::find_if(macroList.begin(), macroList.end(), [&id_str](auto&& mac){ return mac.id == id_str; }) != macroList.end();
 }
 
 token_iterator CondParser::GetTokenPosition()

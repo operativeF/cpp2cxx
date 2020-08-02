@@ -73,7 +73,7 @@ public:
     message = err_msg.str();
   }
 */
-    inline const std::string& GetMessage() const
+    inline const std::string& GetExMessage() const
     {
         return message;
     }

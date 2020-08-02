@@ -120,7 +120,7 @@ void Parser::Parse(const std::string& file_name)
 //from the file formattedGlobalMacroList
 //initializing the variable condCat is just for namesake at this point
 //because while assigning the condCat the gMacros is checked
-void Parser::ReadGlobalMacros(std::string const& global_macro_file_name)
+void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_name)
 {
     //first parse the global macros and put into a file which can be used by
     //conditional parser for looking up the list of global macros
@@ -202,7 +202,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
         std::ofstream gMacros(fileGlobalMacros, std::ios_base::out);
         if(!gMacros.is_open())
         {
-            throw ExceptionHandler("file: " + fileGlobalMacros + " couldn't be opened\n");
+            throw ExceptionHandler("file: " + fileGlobalMacros.string() + " couldn't be opened\n");
         }
         std::for_each(globalMacros.begin(), globalMacros.end(),
                 [&gMacros](const std::pair<std::string, std::string>& gm) {

@@ -40,11 +40,20 @@ limitations under the License.
 #include "DemacBoostWaveIncludes.h"
 #include "DepGraph.h"
 
+#include <filesystem>
 #include <map>
 #include <string>
 
 using MacroList_t = std::map<std::string, //identifier
         std::string>;                     //replacement text
+
+struct global_macro_t
+{
+    std::string id;
+    std::string rep_txt;
+};
+
+using MacroVec_t = std::vector<global_macro_t>;
 
 /**
  * @class CondParser
@@ -54,8 +63,8 @@ class CondParser
 {
 
 public:
-    CondParser(const std::string& file_global_macros);
-    void Parser(Node& tree_node, token_iterator t_it);
+    CondParser(const std::filesystem::path& file_global_macros);
+    void ParseConditions(Node& tree_node, token_iterator t_it);
 
     bool Match(boost::wave::token_id id);
 
@@ -79,7 +88,7 @@ private:
     //std::vector<token_type> condStmt;
     Node* pNode {nullptr};
     token_iterator it;
-    MacroList_t macroList;
+    MacroVec_t macroList;
 };
 
 #endif /*CONDPARSER_H*/
