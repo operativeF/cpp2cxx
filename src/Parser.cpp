@@ -158,7 +158,7 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
     }
     catch(ExceptionHandler& e)
     {
-        logFile << "  - error: " << e.GetMessage() << "\n";
+        logFile << "  - error: " << e.GetExMessage() << "\n";
         throw;
     }
     //should be after parsing the global macros
@@ -212,7 +212,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     }
     catch(ExceptionHandler& e)
     {
-        logFile << "  - error: " << e.GetMessage() << "\n";
+        logFile << "  - error: " << e.GetExMessage() << "\n";
         throw;
     }
 }
@@ -436,7 +436,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     }
     catch(ExceptionHandler& e)
     {
-        logFile << "  - error: " << e.GetMessage() << "\n";
+        logFile << "  - error: " << e.GetExMessage() << "\n";
     }
     //skip spaces until we find the replacement text
     while((id = *it) == boost::wave::T_SPACE)
@@ -562,7 +562,7 @@ void Parser::PPIfHandler(Node& node)
 {
     //asking the parser to parse the condition statement
     //provide the it positions etc. and put the condition statement into node
-    cp->Parser(node, it);
+    cp->ParseConditions(node, it);
     it = cp->GetTokenPosition();
 }
 
@@ -635,7 +635,7 @@ void Parser::PPBuildMacroDependencyList(std::ostream& os)
     }
     catch(ExceptionHandler& e)
     {
-        logFile << "  - error: " << e.GetMessage() << "\n";
+        logFile << "  - error: " << e.GetExMessage() << "\n";
     }
 }
 
@@ -647,6 +647,7 @@ void Parser::GetDemacrofiedFile(std::ostream& os)
 
 /// @todo when the multiple_definitions variable is already
 /// then what is the use of passing it as a separate parameter
+// FIXME: Move this function out of Parser.
 void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
 {
     /// @note put the file name, when putting stat

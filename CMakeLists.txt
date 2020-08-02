@@ -39,8 +39,8 @@ message(STATUS "Found fmt ${FMT_PACKAGE_VERSION}")
 find_package(CLI11 CONFIG REQUIRED)
 message(STATUS "Found CLI11")
 
-find_package(Catch2 CONFIG REQUIRED)
-message(STATUS "Found Catch2 library")
+find_package(doctest CONFIG REQUIRED)
+message(STATUS "Found doctest library")
 
 add_subdirectory(src)
 
