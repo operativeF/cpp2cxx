@@ -41,8 +41,70 @@ limitations under the License.
 #include <vector>
 
 Demacrofier::Demacrofier() noexcept
-        : headerGuard("#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)"), count(0)
+        : count(0)
 {
+}
+
+void Demacrofier::SetMacroInvocationStat(InvocationStat_t* stat)
+{
+    pInvocationStat = stat;
+}
+
+void Demacrofier::SetASTStat(ASTMacroStat_t* stat)
+{
+    pASTMacroStat = stat;
+}
+
+void Demacrofier::SetValidator(ValidMacros_t const* v_macros)
+{
+    pValidaMacros = v_macros;
+}
+
+// @TODO: Remove the out argument, it's confusing.
+bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
+{
+    bool postponed = false;
+    if(m_ptr->is_function_like())
+    {
+        if(m_ptr->get_macro_scope_category().inside_function)
+        {
+            demacrofied_str = DemacrofyFunctionLikePostponed(m_ptr);
+            postponed = true;
+        }
+        else
+        {
+            demacrofied_str = DemacrofyFunctionLike(m_ptr);
+        }
+    }
+    else if(m_ptr->is_object_like())
+    {
+        const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
+        // only statement like functions can have the lambda function tx
+        if(token_cat.assignment_type || token_cat.statement_type || token_cat.braces_type)
+        {
+            demacrofied_str = DemacrofyObjectLikePostponed(m_ptr);
+            postponed = true;
+        }
+        else
+        {
+            demacrofied_str = DemacrofyObjectLike(m_ptr);
+        }
+    }
+
+    return postponed;
+}
+
+void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr)
+{
+    // each macro has an entry in the pASTMacroStat
+    const auto ast_macro_iter = pASTMacroStat->find(macro_iden);
+    if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
+    {
+        // @TODO: Remove unsafe bounds here.
+        auto line_no = ast_macro_iter->second.invoked_lines[0];
+        readyQueue.insert(std::make_pair(line_no, outstr));
+    }
+    //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
 }
 
 std::string Demacrofier::Translate(
@@ -55,7 +117,6 @@ std::string Demacrofier::Translate(
     std::string outstr;
     const std::string unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
     const std::string macro_iden = m_ptr->get_identifier().get_value().c_str();
-    std::stringstream err_msg;
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
@@ -112,7 +173,7 @@ std::string Demacrofier::Translate(
 
 
 // FIXME: Refactor out repeated code in the functions below.
-std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
+std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
     std::stringstream template_arg;
     std::stringstream arg_str;
@@ -173,7 +234,7 @@ std::string Demacrofier::DemacrofyFunctionLike(PPMacro const* m_ptr) const
     return demacrofied_line;
 }
 
-std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
+std::string DemacrofyStatementType(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
     std::stringstream template_arg;
@@ -224,7 +285,7 @@ std::string Demacrofier::DemacrofyStatementType(PPMacro const* m_ptr)
 }
 
 
-std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
+std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
     std::stringstream template_arg;
@@ -270,7 +331,7 @@ std::string Demacrofier::DemacrofyMultipleStatements(PPMacro const* m_ptr)
     return demacrofied_line.str();
 }
 
-std::string Demacrofier::DemacrofyObjectLike(PPMacro const* m_ptr)
+std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 {
     // @TODO: Check m_ptr for nullness?
     /*  std::stringstream template_arg;
@@ -323,7 +384,7 @@ std::string Demacrofier::DemacrofyObjectLike(PPMacro const* m_ptr)
             m_ptr->get_replacement_list_str());
 }
 
-std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro* m_ptr) const
+std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]()->void {{ {}; }};\n",
             m_ptr->get_identifier().get_value().c_str(), GetFunctionClosure(m_ptr),
@@ -334,7 +395,7 @@ std::string Demacrofier::DemacrofyObjectLikePostponed(const PPMacro* m_ptr) cons
 }
 
 // @TODO: I don't think this is a sane implementation.
-bool Demacrofier::IsDemacrofiable(PPMacro const& mac)
+bool IsDemacrofiable(PPMacro const& mac)
 {
     bool demacrofiable = false;
     const RlTokType token_cat = mac.get_replacement_list().get_replacement_list_token_type();
@@ -387,29 +448,14 @@ bool Demacrofier::IsDemacrofiable(PPMacro const& mac)
     return demacrofiable;
 }
 
-void Demacrofier::SetMacroInvocationStat(InvocationStat_t* stat)
-{
-    pInvocationStat = stat;
-}
-
-void Demacrofier::SetASTStat(ASTMacroStat_t* stat)
-{
-    pASTMacroStat = stat;
-}
-
-void Demacrofier::SetValidator(ValidMacros_t const* v_macros)
-{
-    pValidaMacros = v_macros;
-}
-
-std::string Demacrofier::DemacrofyFunctionLikePostponed(const PPMacro* m_ptr) const
+std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]({}) {{ return {}; }};\n",
             m_ptr->get_identifier().get_value().c_str(), GetFunctionClosure(m_ptr),
             GetFunctionArgs(m_ptr), GetFunctionBody(m_ptr));
 }
 
-std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
+std::string GetFunctionClosure(const PPMacro* m_ptr)
 {
     std::string closure_str;
 
@@ -431,7 +477,7 @@ std::string Demacrofier::GetFunctionClosure(const PPMacro* m_ptr)
     return closure_str;
 }
 
-std::string Demacrofier::GetFunctionArgs(const PPMacro* m_ptr)
+std::string GetFunctionArgs(const PPMacro* m_ptr)
 {
     std::string dtype = "decltype(";
     std::stringstream arg_string;
@@ -453,12 +499,12 @@ std::string Demacrofier::GetFunctionArgs(const PPMacro* m_ptr)
     return arg_string.str();
 }
 
-std::string Demacrofier::GetFunctionBody(const PPMacro* m_ptr)
+std::string GetFunctionBody(const PPMacro* m_ptr)
 {
     return m_ptr->get_replacement_list_str();
 }
 
-std::string Demacrofier::GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
+std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
 {
     // @TODO: This gets called everytime, even for the same file.
     // Store the filename so it gets called only once per file.
@@ -470,63 +516,17 @@ std::string Demacrofier::GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
             m_ptr->get_identifier().get_position().get_column());
 }
 
-std::string Demacrofier::SuggestTranslation(std::string_view unique_macro_switch,
-        std::string_view demacrofied_fstream, std::string_view original_str) const
+std::string SuggestTranslation(std::string_view unique_macro_switch,
+        std::string_view demacrofied_fstream, std::string_view original_str)
 {
-    return fmt::format("{} && defined({})\n{}#else\n{}#endif\n\n", headerGuard, unique_macro_switch,
+    // FIXME: Not sane access, change this.
+    return fmt::format("{} && defined({})\n{}#else\n{}#endif\n\n", Demacrofier::headerGuard, unique_macro_switch,
             demacrofied_fstream, original_str);
 }
 
-std::string Demacrofier::GenerateTranslation(std::string_view macro_iden,
+std::string GenerateTranslation(std::string_view macro_iden,
         std::string_view unique_macro_switch, std::string_view demacrofied_fstream)
 {
     return fmt::format("\n/** Demacrofication for the macro {} with unique identifier {}*/\n{}",
             macro_iden, unique_macro_switch, demacrofied_fstream);
-}
-
-void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr)
-{
-    // each macro has an entry in the pASTMacroStat
-    const auto ast_macro_iter = pASTMacroStat->find(macro_iden);
-    if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
-    {
-        // @TODO: Remove unsafe bounds here.
-        auto line_no = ast_macro_iter->second.invoked_lines[0];
-        readyQueue.insert(std::make_pair(line_no, outstr));
-    }
-    //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
-}
-
-// @TODO: Remove the out argument, it's confusing.
-bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
-{
-    bool postponed = false;
-    if(m_ptr->is_function_like())
-    {
-        if(m_ptr->get_macro_scope_category().inside_function)
-        {
-            demacrofied_str = DemacrofyFunctionLikePostponed(m_ptr);
-            postponed = true;
-        }
-        else
-        {
-            demacrofied_str = DemacrofyFunctionLike(m_ptr);
-        }
-    }
-    else if(m_ptr->is_object_like())
-    {
-        const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
-        // only statement like functions can have the lambda function tx
-        if(token_cat.assignment_type || token_cat.statement_type || token_cat.braces_type)
-        {
-            demacrofied_str = DemacrofyObjectLikePostponed(m_ptr);
-            postponed = true;
-        }
-        else
-        {
-            demacrofied_str = DemacrofyObjectLike(m_ptr);
-        }
-    }
-
-    return postponed;
 }

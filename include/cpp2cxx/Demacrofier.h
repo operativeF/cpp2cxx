@@ -78,7 +78,6 @@ public:
     void SetValidator(ValidMacros_t const* v_macros);
 
 private:
-    std::string DemacrofyFunctionLike(PPMacro const* m_ptr) const;
     /**
      * #define FXY(X,Y,Z) ((X) + (Y))
      * auto FXY = [](decltype(i) X, decltype(j) Y, decltype(k) Z)
@@ -88,30 +87,8 @@ private:
      * for statement like macros use void function
      */
     // lambda function transformation
-    std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr) const;
-    
-    static std::string GetFunctionClosure(const PPMacro* m_ptr);
-    static std::string GetFunctionArgs(const PPMacro* m_ptr);
-    static std::string GetFunctionBody(const PPMacro* m_ptr);
-
-    std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr) const;
-
-    static std::string DemacrofyObjectLike(PPMacro const* m_ptr);
-
-    static std::string DemacrofyMultipleStatements(PPMacro const* m_ptr);
-    static std::string DemacrofyStatementType(PPMacro const* m_ptr);
-    static bool IsDemacrofiable(PPMacro const& mac);
-
-    std::string SuggestTranslation(std::string_view unique_macro_switch,
-            std::string_view demacrofied_fstream, std::string_view original_str) const;
-
-    static std::string GenerateTranslation(std::string_view macro_iden,
-            std::string_view unique_macro_switch, std::string_view demacrofied_fstream);
-
-    static std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr);
 
     void InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr);
-
     bool CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const;
 
 private:
@@ -130,8 +107,26 @@ private:
     //pointer to the container having all the valid macros
     //to be used only when the cleanup is in process
     ValidMacros_t const* pValidaMacros;
-    std::string headerGuard;
     int count;
+    // FIXME: Add getter / setter.
+public:
+    static constexpr std::string_view headerGuard = "#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)";
 };
+
+std::string DemacrofyFunctionLike(const PPMacro* m_ptr);
+std::string GetFunctionClosure(const PPMacro* m_ptr);
+std::string GetFunctionArgs(const PPMacro* m_ptr);
+std::string GetFunctionBody(const PPMacro* m_ptr);
+std::string DemacrofyObjectLike(const PPMacro* m_ptr);
+std::string DemacrofyMultipleStatements(const PPMacro* m_ptr);
+std::string DemacrofyStatementType(const PPMacro* m_ptr);
+std::string GenerateUniqueMacroSwitch(const PPMacro* m_ptr);
+std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr);
+std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr);
+std::string SuggestTranslation(std::string_view unique_macro_switch,
+            std::string_view demacrofied_fstream, std::string_view original_str);
+std::string GenerateTranslation(std::string_view macro_iden,
+            std::string_view unique_macro_switch, std::string_view demacrofied_fstream);
+bool IsDemacrofiable(PPMacro const& mac);
 
 #endif /*DEMACROFIER*/
