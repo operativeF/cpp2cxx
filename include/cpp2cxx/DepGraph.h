@@ -134,7 +134,7 @@ using NodeMap_t = std::map<Node*, Vertex_t, NodeOrder>;
 //also defined in the DepAnalyzer.h
 using DepList_t = std::vector<std::pair<PPMacro*, std::vector<PPMacro*>>>;
 
-//not used rite now
+//not used right now
 class DFSVisitor : public boost::default_dfs_visitor
 {
 public:
@@ -165,6 +165,7 @@ public:
         nodeMap_iter->second = currVertex;
         startVertex = currVertex;
     }
+
     ~MacTree()
     {
         DeleteNodes();

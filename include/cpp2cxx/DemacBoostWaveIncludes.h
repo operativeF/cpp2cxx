@@ -24,13 +24,24 @@ limitations under the License.
 #ifndef DEMACBOOSTWAVEINCLUDES_H
 #define DEMACBOOSTWAVEINCLUDES_H
 
-#include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
-#include <boost/wave/cpplexer/cpp_lex_token.hpp>
+// #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
+// #include <boost/wave/cpplexer/cpp_lex_token.hpp>
+
+#include "cpp_tokens.hpp"
+
+#include <boost/wave.hpp>
+
+#include "slex_iterator.hpp"
+#include "slex_token.hpp"
 
 #include <map>
 
-using token_type = boost::wave::cpplexer::lex_token<>;
-using token_iterator = boost::wave::cpplexer::lex_iterator<token_type>;
+// using token_type = boost::wave::cpplexer::slex_token<>;
+// using token_iterator = boost::wave::cpplexer::slex::slex_iterator<token_type>;
+// using position_type = token_type::position_type;
+
+using token_type = boost::wave::cpplexer::slex_token<>;
+using token_iterator = boost::wave::cpplexer::slex::slex_iterator<token_type>;
 using position_type = token_type::position_type;
 
 /**

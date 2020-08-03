@@ -24,7 +24,6 @@ limitations under the License.
 #ifndef DEPANALYZER_H
 #define DEPANALYZER_H
 
-#include "DemacBoostWaveIncludes.h"
 #include "ExceptionHandler.h"
 
 #include <algorithm>

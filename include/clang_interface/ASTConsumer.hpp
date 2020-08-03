@@ -48,7 +48,6 @@ class SourceManager;
  *****************************************************************************/
 class MyASTConsumer : public clang::ASTConsumer
 {
-
 public:
     bool HandleTopLevelDecl(clang::DeclGroupRef d) override;
     int InitializeCI(clang::CompilerInstance& ci, const std::vector<std::filesystem::path>& search_paths);

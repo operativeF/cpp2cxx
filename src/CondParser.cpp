@@ -486,7 +486,7 @@ void CondParser::Expression8()
     }
 }
 
-
+// FIXME: Replace with flat map
 bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
     return std::find_if(macroList.begin(), macroList.end(), [&id_str](auto&& mac){ return mac.id == id_str; }) != macroList.end();

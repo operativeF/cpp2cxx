@@ -34,13 +34,13 @@ limitations under the License.
 
 struct ParsedDeclInfo
 {
-    std::size_t start_line;
-    std::size_t end_line;
+    std::size_t start_line {0};
+    std::size_t end_line {0};
 };
 
 struct CollectedMacroInfo
 {
-    std::size_t defined_line;
+    std::size_t defined_line {0};
     std::vector<std::size_t> invoked_lines;
     PPOperation op;
     MacroCategory m_cat;

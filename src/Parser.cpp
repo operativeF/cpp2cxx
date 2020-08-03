@@ -450,7 +450,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     while(id != boost::wave::T_NEWLINE)
     {
 
-        //when c comment or cpp commnet stop putting the tokens into
+        //when c comment or cpp comment stop putting the tokens into
         //replacement text and put a newline at the end of the replacement text
         if(id == boost::wave::T_CONTLINE)
         {
@@ -604,7 +604,8 @@ void Parser::ParseLocalMacros(std::string ifileStr, const position_type& pos)
     //logFile<<"Parsing local Macros:\n";
     it = token_iterator(ifileStr.begin(), ifileStr.end(), pos,
             boost::wave::language_support(
-                    boost::wave::support_cpp | boost::wave::support_option_long_long));
+                    boost::wave::support_cpp |
+                    boost::wave::support_option_long_long));
     it_begin = it;
     it_end = token_iterator();
 
