@@ -42,12 +42,15 @@ limitations under the License.
 
 #include <boost/program_options.hpp>
 
-namespace po = boost::program_options;
+#include <fmt/core.h>
+#include <fmt/ostream.h>
+#include <fmt/ranges.h>
 
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
 
+namespace po = boost::program_options;
 
 /**
   * @main
@@ -186,10 +189,11 @@ int main(int argc, char* argv[])
 
         if(vm.count("help"))
         {
-            std::cout << "usage: <Executable> [options]\natleast input file is a must.\n";
-            std::cout << "If no output file is specified then the output "
-                      << "will be redirected to the standard output\n";
-            std::cout << config_file_options;
+            fmt::print(
+                    "usage: <Executable> [options]\natleast input file is a must.\n"
+                    "If no output file is specified then the output "
+                    "will be redirected to the standard output\n{}",
+                    config_file_options);
             return 0;
         }
 
@@ -197,14 +201,15 @@ int main(int argc, char* argv[])
         {
             if(no_translate)
             {
-                std::cout << "processing the macros for just analysis\n"
-                          << "-- if you want to translate, set option no-translate to false\n";
+                fmt::print(
+                        "Processing the macros just for analysis.\n"
+                        "-- If you want to translate, set option no-translate to false.\n");
             }
             else
             {
-                std::cout
-                        << "processing and translating the macros\n"
-                        << "-- if you don\'t want to translate, set option no-translate to true\n";
+                fmt::print(
+                        "Processing and translating the macros.\n"
+                        "-- if you don't want to translate, set option no-translate to true.\n");
             }
         }
 
@@ -244,12 +249,19 @@ int main(int argc, char* argv[])
                     [input_directory](std::filesystem::path& input_file) {
                         input_file = input_directory / input_file;
                     });
-            std::cout << "input files are:\n" << input_files << "\n";
+            fmt::print("Input files are:\n");
+
+            for(auto&& input_file : input_files)
+            {
+                fmt::print("{}\n", input_file.string());
+            }
+
+            //fmt::print("Input files are:\n{}\n", input_files);
         }
         else
         {
-            std::cerr << "error: no input file specified. exiting...\n";
-            std::cerr << config_file_options;
+            fmt::print(std::cerr, "Error: no input file specified. Exiting...\n{}",
+                    config_file_options);
             return -1;
         }
 
@@ -261,7 +273,7 @@ int main(int argc, char* argv[])
             //should be equal to the total number of input files
             if(!input_files.empty() && (input_files.size() != output_files.size()))
             {
-                std::cerr << "Number of input files and output files are not equal";
+                fmt::print(std::cerr, "Number of input files and output files are not equal.\n");
                 return -1;
             }
 
@@ -276,83 +288,102 @@ int main(int argc, char* argv[])
                     [output_directory](std::filesystem::path& output_file) {
                         output_file = output_directory / output_file;
                     });
-
-            //std::cout << "Output files are: "
-            //          << vm["output-file"].as<std::vector<std::string> >() << "\n";
-            std::cout << "output files are:\n" << output_files << "\n";
+                    
+            fmt::print("Output files are:\n");
+            for(auto&& output_file : output_files)
+            {
+                fmt::print("{}\n", output_file.string());
+            }
+            //fmt::print("Output files are:\n{}\n", output_files);
         }
         else
         {
-            std::cout << "warning: no output filename specified.";
-            std::cout << "output shall be redirected to the standard output\n";
+            fmt::print("warning: no output filename specified."
+                       "output shall be redirected to the standard output\n");
             output_files.resize(input_files.size());
         }
 
         if(vm.count("search-path"))
         {
-            std::cout << "search paths:\n" << search_paths;
+            // FIXME: Overload for vector of paths.
+            fmt::print("Search paths:\n");
+
+            for(auto&& path : search_paths)
+            {
+                fmt::print("{}\n", path.string());
+            }
+            //fmt::print("Search paths:\n{}", search_paths);
         }
         else
         {
-            std::cerr << "no search path provided the tool will look only"
-                      << " in the present directory\n";
+            fmt::print(std::cerr,
+                    "No search path provided the tool will search only"
+                    " in the present directory\n");
         }
 
         if(vm.count("macro-stat-file"))
         {
             macro_list_file = output_directory / macro_list_file;
-            mac_stat_file.open(macro_list_file);
+            mac_stat_file.open(macro_list_file, std::ios_base::out);
             if(!mac_stat_file.is_open())
             {
-                std::cerr << "file to list macros: " << macro_list_file << " could not be opened, "
-                          << "redirecting the list to std::cerr";
+                fmt::print(std::cerr,
+                        "File to list macros: {} could not be opened."
+                        "Redirecting the list to std::cerr.",
+                        macro_list_file.string());
             }
         }
 
         if(vm.count("log-file"))
         {
             log_file = output_directory / log_file;
-            plog_file.open(log_file);
+            plog_file.open(log_file, std::ios_base::out);
             if(plog_file.is_open())
             {
                 err_outstream = &plog_file;
             }
             else
             {
-                std::cerr << "log-file: " << log_file << " could not be opened, "
-                          << "redirecting the errors/warnings to std:cerr";
+                fmt::print(std::cerr,
+                        "log-file: {} could not be opened."
+                        "Redirecting the errors / warnings to std::cerr.",
+                        log_file.string());
             }
         }
 
         if(vm.count("stat-file"))
         {
             stat_file = output_directory / stat_file;
-            pstat_file.open(stat_file);
+            pstat_file.open(stat_file, std::ios_base::out);
             if(pstat_file.is_open())
             {
                 stat_outstream = &pstat_file;
             }
             else
             {
-                std::cerr << "stat-file: " << stat_file << " could not be opened, "
-                          << "redirecting the errors/warnings to std::cerr";
+                fmt::print(std::cerr,
+                        "stat-file: {} could not be opened."
+                        "Redirecting the errors / warnings to std::cerr.",
+                        stat_file);
             }
         }
 
         if(vm.count("validator-file"))
         {
             // if reading of validator_file is successful
-            std::cout << "the validator-file is: " << validator_file << "\n";
+            fmt::print("The validator file is: {}\n", validator_file.string());
         }
 
         if(vm.count("global-macros-raw"))
         {
             //global_macros_raw = vm["global-macros-raw"].as<std::string>();
-            std::cout << "file containing global macro is: " << global_macros_raw
-                      << "\nthe global macros after being parsed will be kept"
-                      << "in file gMacros.dat in a formatted form, this file can be"
-                      << "used later to avoid parsing of global macros all the time"
-                      << "when no new global macros are added.\n";
+            fmt::print(
+                    "File containing the global macros is: {}"
+                    "\nThe global macros will be kept after being parsed in"
+                    "file gMacros.dat in a formatted form. This file can be"
+                    "used later to avoid parsing of global macros after every run"
+                    "when no new global macro have been added.\n",
+                    global_macros_raw);
         }
 
 #ifdef BUILD_NEW_MACRO_LIST
@@ -369,8 +400,7 @@ int main(int argc, char* argv[])
         if(vm.count("global-macros-formatted"))
         {
             //global_macros_formatted = vm["global-macros-formatted"].as<std::string>();
-            std::cout << "file containing formatted global macro is: " << global_macros_formatted
-                      << "\n";
+            fmt::print("File containing formatted global macros is: {}\n", global_macros_formatted);
         }
 
 #ifndef BUILD_NEW_MACRO_LIST
@@ -387,54 +417,59 @@ int main(int argc, char* argv[])
         if(vm.count("input-directory"))
         {
             //input_directory = vm["input-directory"].as<std::string>();
-            std::cout << "files to be taken from directory: " << input_directory << "\n";
+            fmt::print("Files are to be taken from directory: {}\n", input_directory.string());
         }
 
         if(vm.count("output-directory"))
         {
             //output_directory = vm["output-directory"].as<std::string>();
-            std::cout << "files to be put to directory: " << output_directory << "\n";
+            fmt::print("Files will be placed in directory: {}\n", output_directory.string());
         }
 
-        if(vm.count("verbose"))
-        {
-            std::cout << "verbosity enabled.  Level is " << vm["verbose"].as<int>() << "\n";
-        }
+        // FIXME: No implemented.
+        // if(vm.count("verbose"))
+        // {
+        //     std::cout << "verbosity enabled.  Level is " << vm["verbose"].as<int>() << "\n";
+        // }
 
         if(vm.count("ignore-macros"))
         {
-            std::cout << "macros to prevent demacrofication are:\n"
-                      << macros_preventing_demacrofication << "\n";
+            fmt::print("Macros to prevent demacrofication are:\n{}\n",
+                    macros_preventing_demacrofication);
         }
+        
         if(vm.count("backup-directory"))
         {
-            std::cout << "backup directory: " << backup_directory << "\n";
+            fmt::print("Backup directory: {}\n", backup_directory.string());
         }
 
         if(vm.count("cleanup-directory"))
         {
-            std::cout << "cleanup directory: " << cleanup_directory << "\n";
+            fmt::print("Cleanup directory: {}\n", cleanup_directory.string());
         }
 
         if(vm.count("make-command"))
         {
-            std::cout << "make command: " << make_command << "\n";
+            fmt::print("Make command: {}\n", make_command);
         }
         else
         {
-            std::cout << "no make command/script provided. "
-                      << "default command `make` will be used\n";
+            fmt::print(
+                    "No make command/script provided. "
+                    "default command `make` will be used\n");
         }
+
         if(vm.count("demacrofication-granularity"))
         {
             if((demacrofication_granularity != "OneFileAtATime")
                     && (demacrofication_granularity != "OneMacroAtATime"))
             {
-                std::cerr << "error: invalid value for demacrofication_granularity\n"
-                          << config_file_options;
+                fmt::print(std::cerr, "Error: invalid value for demacrofication granularity.\n{}",
+                        config_file_options);
                 return -1;
             }
-            std::cout << "demacrofying: " << demacrofication_granularity << "\n";
+
+            fmt::print("Demacrofying: {}\n", demacrofication_granularity);
         }
 
         /**     ***********     END PRORAM OPTIONS   ************/
@@ -464,27 +499,27 @@ int main(int argc, char* argv[])
         ///@todo when global_macros_formatted is provided use that one
         plog_file.close();
         pstat_file.close();
-        //    delete pConfigScheme;
     }
     catch(const char* s)
     {
-        std::cerr << "Error:" << s << std::endl;
+        fmt::print(std::cerr, "Error: {}\n", s);
     }
     catch(ExceptionHandler& e)
     {
-        std::cerr << "Exception Handler: " << e.GetExMessage();
+        fmt::print(std::cerr, "Exception Handler: {}", e.GetExMessage());
     }
     catch(const boost::program_options::multiple_occurrences& e)
     {
-        std::cerr << e.what() << " from option: " << e.get_option_name() << "\n";
+        fmt::print(std::cerr, "{} from option: {}\n", e.what(), e.get_option_name());
     }
     catch(std::exception& e)
     {
-        std::cerr << "std::exception: " << e.what();
+        fmt::print(std::cerr, "std::exception: {}", e.what());
     }
     catch(...)
     {
-        std::cerr << "unknown error in the program\n";
+        fmt::print(std::cerr, "Unknown error in the program\n");
     }
+
     return 0;
 }
