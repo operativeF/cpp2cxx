@@ -61,7 +61,6 @@ class PPMacro;
 class Demacrofier
 {
 public:
-    Demacrofier() noexcept;
     /// @TODO change pointer to const ref
     /// when cleaning up, the translations are put without any conditionals
     /// The \e Translate function will generate the demacrofication without
@@ -107,7 +106,7 @@ private:
     //pointer to the container having all the valid macros
     //to be used only when the cleanup is in process
     ValidMacros_t const* pValidaMacros;
-    int count;
+    int count {0};
     // FIXME: Add getter / setter.
 public:
     static constexpr std::string_view headerGuard = "#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)";

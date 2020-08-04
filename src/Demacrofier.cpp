@@ -39,11 +39,6 @@ limitations under the License.
 #include <string_view>
 #include <vector>
 
-Demacrofier::Demacrofier() noexcept
-        : count(0)
-{
-}
-
 void Demacrofier::SetMacroInvocationStat(InvocationStat_t* stat)
 {
     pInvocationStat = stat;
