@@ -15,9 +15,9 @@
 
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include <boost/assert.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
 
 #include <boost/wave/language_support.hpp>
@@ -94,7 +94,7 @@ public:
 #endif
 
 private:
-    boost::shared_ptr<lex_input_interface<TokenT> > functor_ptr;
+    std::shared_ptr<lex_input_interface<TokenT> > functor_ptr;
 };
 
 #if 0 != __COMO_VERSION__ || !BOOST_WORKAROUND(BOOST_MSVC, <= 1310)
