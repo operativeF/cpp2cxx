@@ -19,6 +19,24 @@ target_link_libraries(ASTConsumer
   fmt::fmt
   )
 
+add_library(cpp_slexer
+  STATIC
+    instantiate_cpp_exprgrammar.cpp
+    instantiate_cpp_grammar.cpp
+    instantiate_cpp_literalgrs.cpp
+    instantiate_defined_grammar.cpp
+    instantiate_slex_lexer.cpp
+  )
+
+target_link_libraries(cpp_slexer
+  PRIVATE
+    Boost::system
+)
+
+target_include_directories(cpp_slexer PUBLIC
+  ${CMAKE_SOURCE_DIR}/include
+  )
+
 add_library(cpp2cxx-core
   STATIC
     RlCategory.cpp
@@ -36,18 +54,18 @@ add_library(cpp2cxx-core
     ConfigScheme.cpp
   )
 
-add_dependencies(cpp2cxx-core ASTConsumer)
+add_dependencies(cpp2cxx-core ASTConsumer cpp_slexer)
 
 target_link_libraries(cpp2cxx-core
-  ASTConsumer
-  Boost::system
-  Boost::wave
-  Boost::program_options
-  fmt::fmt
+  PRIVATE
+    ASTConsumer
+    Boost::program_options
+    Boost::system
+    Boost::wave
+    cpp_slexer
+    fmt::fmt
   )
 
 target_include_directories(cpp2cxx-core PUBLIC
   ${CMAKE_SOURCE_DIR}/include
   )
-
-target_precompile_headers(cpp2cxx-core REUSE_FROM ASTConsumer)

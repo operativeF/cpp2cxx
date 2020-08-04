@@ -39,7 +39,6 @@ limitations under the License.
 #include "FileManager.h"
 #include "FileManagerScheme.h"
 #include "Parser.h"
-#include "clang_interface/ASTConsumer.hpp"
 
 #include <iosfwd>
 #include <memory>
@@ -55,6 +54,8 @@ limitations under the License.
  * forward declaration
  */
 class MacTree;
+
+class MyASTConsumer;
 
 /**
  * @class Overseer

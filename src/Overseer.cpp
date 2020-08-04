@@ -20,6 +20,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "clang_interface/ASTConsumer.hpp"
+
 #include "cpp2cxx/Overseer.h"
 #include "cpp2cxx/DepGraph.h"
 #include "cpp2cxx/ExceptionHandler.h"

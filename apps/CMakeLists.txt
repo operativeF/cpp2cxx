@@ -1,12 +1,10 @@
 add_executable(suggest MainSuggest.cpp)
 
 target_link_libraries(suggest
-    PUBLIC
-        ASTConsumer
+    PRIVATE
         cpp2cxx-core
         Boost::program_options
         Boost::system
-        Boost::wave
     )
 
 target_include_directories(suggest PUBLIC
@@ -16,12 +14,10 @@ target_include_directories(suggest PUBLIC
 add_executable(finalize MainFinalize.cpp)
 
 target_link_libraries(finalize
-    PUBLIC
+    PRIVATE
         cpp2cxx-core
-        ASTConsumer
         Boost::program_options
         Boost::system
-        Boost::wave
     )
 
 target_include_directories(finalize PUBLIC
