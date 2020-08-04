@@ -336,7 +336,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     std::stringstream id_value;
     std::vector<token_type> macro_tokens;
     const token_type dummy_token(boost::wave::T_UNKNOWN);
-    boost::wave::token_id id;
+    boost::wave::token_id id{};
     //get rid of the space
     while((id = *(++it)) == boost::wave::T_SPACE)
     {
@@ -539,7 +539,7 @@ std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     std::stringstream mac_stmt;
     mac_stmt << it->get_value();
     macro_ref.set_operation(PPOperation::undef);
-    boost::wave::token_id id;
+    boost::wave::token_id id{};
     while((id = *(++it)) == boost::wave::T_SPACE)
     {
         mac_stmt << it->get_value();
@@ -570,7 +570,7 @@ void Parser::PPIfHandler(Node& node)
 void Parser::PPIfHandler(Node& node, bool def)
 {
     std::stringstream id_value;
-    boost::wave::token_id id;
+    boost::wave::token_id id{};
     condStmt.push_back(*it);
 
     while((id = *(++it)) == boost::wave::T_SPACE)
@@ -605,7 +605,8 @@ void Parser::ParseLocalMacros(std::string ifileStr, const position_type& pos)
     it = token_iterator(ifileStr.begin(), ifileStr.end(), pos,
             boost::wave::language_support(
                     boost::wave::support_cpp |
-                    boost::wave::support_option_long_long));
+                    boost::wave::support_option_long_long |
+                    boost::wave::support_option_emit_contnewlines));
     it_begin = it;
     it_end = token_iterator();
 
@@ -660,7 +661,7 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
     // @TODO: Initialize these.
-    boost::wave::token_id id;
+    boost::wave::token_id id{};
     std::string demacrofied_string;
     it = it_begin;
     PPMacro* m_ptr = nullptr;

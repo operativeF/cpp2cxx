@@ -51,7 +51,7 @@ void CondParser::ParseConditions(Node& tree_node, token_iterator t_it)
 {
     pNode = &tree_node;
     it = t_it;
-    boost::wave::token_id id;
+    boost::wave::token_id id{};
     //it = beg;
     //end = term;
     //put the condition statement into node

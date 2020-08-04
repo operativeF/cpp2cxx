@@ -32,7 +32,11 @@ limitations under the License.
 #include <vector>
 
 RlParser::RlParser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file)
-        : pDemacroficationScheme(&demacrofication_scheme), logFile(log_file)
+        : pDemacroficationScheme(&demacrofication_scheme),
+          logFile(log_file),
+          rl_ccat(RlCCat::closed),
+          rl_dcat(RlDCat::independent)
+
 {
 }
 
@@ -572,7 +576,7 @@ void RlParser::Expression8()
             }
             Match(id);
         } while(brace_count != 0);
-        
+
         if(brace_count != 0)
         {
             rl_ccat = RlCCat::open;
