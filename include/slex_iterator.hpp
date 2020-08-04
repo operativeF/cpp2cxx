@@ -59,9 +59,9 @@ public:
 
 // interface to the boost::spirit::classic::iterator_policies::functor_input 
 // policy
-    typedef TokenT result_type;
-    typedef slex_iterator_functor_shim unique;
-    typedef lex_input_interface<TokenT>* shared;
+    using result_type = TokenT;
+    using unique = slex_iterator_functor_shim;
+    using shared = lex_input_interface<TokenT>*;
 
     BOOST_WAVE_EOF_PREFIX result_type const eof;
 

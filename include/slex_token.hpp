@@ -41,8 +41,8 @@ template <typename PositionT>
 class slex_token 
 {
 public:
-    typedef BOOST_WAVE_STRINGTYPE   string_type;
-    typedef PositionT               position_type;
+    using string_type = BOOST_WAVE_STRINGTYPE;
+    using position_type = PositionT;
 
     slex_token()
     :   id(T_EOI)

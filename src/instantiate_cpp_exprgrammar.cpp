@@ -34,7 +34,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef boost::wave::cpplexer::slex_token<> token_type;
+using token_type = boost::wave::cpplexer::slex_token<>;
 
 template struct boost::wave::grammars::expression_grammar_gen<token_type>;
 

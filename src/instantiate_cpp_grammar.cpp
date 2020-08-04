@@ -34,10 +34,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef boost::wave::cpplexer::slex_token<> token_type;
-typedef boost::wave::cpplexer::slex::slex_iterator<token_type> lexer_type;
-typedef std::list<token_type, boost::fast_pool_allocator<token_type> > 
-    token_sequence_type;
+using token_type = boost::wave::cpplexer::slex_token<>;
+using lexer_type =boost::wave::cpplexer::slex::slex_iterator<token_type>;
+using token_sequence_type = std::list<token_type, boost::fast_pool_allocator<token_type> >;
     
 template struct boost::wave::grammars::cpp_grammar_gen<lexer_type, token_sequence_type>;
 
