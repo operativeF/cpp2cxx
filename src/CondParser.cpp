@@ -41,7 +41,7 @@ CondParser::CondParser(const std::filesystem::path& file_global_macros)
 
     for(std::string fc, sc; std::getline(gMacros, fc), std::getline(gMacros, sc); )
     {
-        macroList.push_back({fc, sc});
+        macroList.insert({fc, sc});
     }
 
     gMacros.close();
@@ -486,10 +486,9 @@ void CondParser::Expression8()
     }
 }
 
-// FIXME: Replace with flat map
 bool CondParser::PPCheckIdentifier(const std::string& id_str)
 {
-    return std::find_if(macroList.begin(), macroList.end(), [&id_str](auto&& mac){ return mac.id == id_str; }) != macroList.end();
+    return macroList.contains(id_str);
 }
 
 token_iterator CondParser::GetTokenPosition()

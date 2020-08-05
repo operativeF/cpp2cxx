@@ -47,14 +47,6 @@ limitations under the License.
 using MacroList_t = std::map<std::string, //identifier
         std::string>;                     //replacement text
 
-struct global_macro_t
-{
-    std::string id;
-    std::string rep_txt;
-};
-
-using MacroVec_t = std::vector<global_macro_t>;
-
 /**
  * @class CondParser
  * To parse the tokens of the preprocessing conditional statements
@@ -88,7 +80,7 @@ private:
     //std::vector<token_type> condStmt;
     Node* pNode {nullptr};
     token_iterator it;
-    MacroVec_t macroList;
+    MacroList_t macroList;
 };
 
 #endif /*CONDPARSER_H*/
