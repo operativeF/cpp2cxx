@@ -77,12 +77,12 @@ struct Node
         return condStmt;
     }
     //put the macro in the free store
-    void PushBackMacro(PPMacro& mac)
+    PPMacro* PushBackMacro(PPMacro& mac)
     {
         // @TODO: Replace with smart pointer?
         PPMacro* m = new PPMacro(mac);
         //*m = mac;
-        vecMacro.push_back(m);
+        return vecMacro.emplace_back(m);
     }
     bool operator==(Node& n)
     {

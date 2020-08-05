@@ -150,11 +150,9 @@ bool MacTree::MakeSibling(Vertex_t firstV, Vertex_t secondV)
 
 void MacTree::PushBackMacro(PPMacro& mac)
 {
-    depGraph[currVertex]->PushBackMacro(mac);
-    //get the pointer to the macro
-    PPMacro* m_ptr = depGraph[currVertex]->vecMacro.back();
+    PPMacro* m_ptr = depGraph[currVertex]->PushBackMacro(mac);
     linearOrder.push_back(m_ptr);
-    tokenMacroMap.insert(std::pair<token_type, PPMacro*>(m_ptr->get_identifier(), m_ptr));
+    tokenMacroMap.insert({m_ptr->get_identifier(), m_ptr});
 }
 
 const DepList_t& MacTree::BuildMacroDependencyList()
