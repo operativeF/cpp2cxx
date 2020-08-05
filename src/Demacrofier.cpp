@@ -171,7 +171,6 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
     std::stringstream template_arg;
     std::stringstream arg_str;
-    int parameter_count = 0;
     vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
     // FIXME: breaks in case when the function doesn't have parameters F(,,,)
@@ -194,7 +193,6 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
     {
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        parameter_count++;
         template_arg << "template <"
                      << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
@@ -206,7 +204,6 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
         //for the 2nd till the last argument in the function like macro
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            //  parameter_count++;
             template_arg << ", "; //comma then space
             template_arg << "class _T" << p_it->param_count;
 
@@ -231,16 +228,14 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 std::string DemacrofyStatementType(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
-    std::stringstream template_arg;
     std::stringstream arg_str;
-    int parameter_count = 0;
     vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
+        std::stringstream template_arg;
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        parameter_count++;
         template_arg << "template <"
                      << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
@@ -252,7 +247,6 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
         //for the 2nd till the last argument in the function like macro
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            //  parameter_count++;
             template_arg << ", "; //comma then space
             template_arg << "class _T" << p_it->param_count;
 
@@ -284,14 +278,12 @@ std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
     std::stringstream demacrofied_line;
     std::stringstream template_arg;
     std::stringstream arg_str;
-    int parameter_count = 0;
     vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        parameter_count++;
         template_arg << "template <"
                      << "class _T" << p_it->param_count;
         if(p_it->arg != boost::wave::T_EOF)
@@ -303,7 +295,6 @@ std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
         //for the 2nd till the last argument in the function like macro
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            //  parameter_count++;
             template_arg << ", "; //comma then space
             template_arg << "class _T" << p_it->param_count;
 
@@ -403,31 +394,18 @@ bool IsDemacrofiable(PPMacro const& mac)
         /// @brief no demacrofication for null_define, variadic or other types
         if(m_cat == MacroCategory::object_like)
         {
-            if(token_cat.keyword_type
-                    || (token_cat.assignment_type
-                            && !mac.get_macro_scope_category().inside_function)
-                    || token_cat.braces_type || token_cat.reject_type || token_cat.special_type
-                    || token_cat.unknown_type || token_cat.out_of_order_dependent_type)
-            {
-                demacrofiable = false;
-            }
-            else
-            {
-                demacrofiable = true;
-            }
+            demacrofiable = !(token_cat.keyword_type
+                              || (token_cat.assignment_type
+                                      && !mac.get_macro_scope_category().inside_function)
+                              || token_cat.braces_type || token_cat.reject_type
+                              || token_cat.special_type || token_cat.unknown_type
+                              || token_cat.out_of_order_dependent_type);
         }
         else if(m_cat == MacroCategory::function_like)
         {
             //demacrofy braces type for the function like PPMacro
-            if(token_cat.reject_type || token_cat.unknown_type
-                    || token_cat.out_of_order_dependent_type)
-            { // || token_cat.braces_type
-                demacrofiable = false;
-            }
-            else
-            {
-                demacrofiable = true;
-            }
+            demacrofiable = !(token_cat.reject_type || token_cat.unknown_type
+                              || token_cat.out_of_order_dependent_type);
             /// @brief if we couldnot capture any use case then
             /// it is not possible to apply the lambda function txform
             if(mac.get_macro_scope_category().inside_function && mac.get_use_case_string().empty())
