@@ -660,7 +660,6 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     demac->SetMacroInvocationStat(pInvocationStat);
     demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
-    // @TODO: Initialize these.
     boost::wave::token_id id{};
     std::string demacrofied_string;
     it = it_begin;

@@ -39,6 +39,33 @@ limitations under the License.
 #include <string_view>
 #include <vector>
 
+template <>
+struct fmt::formatter<token_instances>
+{
+    constexpr auto parse(format_parse_context& ctx)
+    {
+        // Parse the presentation format and store it in the formatter:
+        auto it = ctx.begin(), end = ctx.end();
+
+        // Check if reached the end of the range:
+        if(it != end && *it != '}')
+            throw format_error("invalid format");
+
+        // Return an iterator past the end of the parsed range:
+        return it;
+    }
+
+    // Formats the point p using the parsed format specification (presentation)
+    // stored in this formatter.
+    template <typename FormatContext>
+    auto format(const token_instances& p, FormatContext& ctx)
+    {
+        // auto format(const point &p, FormatContext &ctx) -> decltype(ctx.out()) // c++11
+        // ctx.out() is an output iterator to write to.
+        return format_to(ctx.out(), "{}", p.param_count);
+    }
+};
+
 void Demacrofier::SetMacroInvocationStat(InvocationStat_t* stat)
 {
     pInvocationStat = stat;
@@ -140,8 +167,7 @@ std::string Demacrofier::Translate(
     // as the previous one tests for boolean demacrofy.
     if(cleanup)
     {
-        outstr = GenerateTranslation(
-                macro_iden, unique_macro_switch, demacrofied_fstream.str());
+        outstr = GenerateTranslation(macro_iden, unique_macro_switch, demacrofied_fstream.str());
         stat << "  - id:" << macro_iden << "\n";
     }
     else
@@ -169,7 +195,6 @@ std::string Demacrofier::Translate(
 // FIXME: Refactor out repeated code in the functions below.
 std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
-    std::stringstream template_arg;
     std::stringstream arg_str;
     vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
@@ -189,38 +214,32 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
         return DemacrofyStatementType(m_ptr);
     }
 
+    std::string template_arg {""};
+
     if(!m_ptr->get_identifier_parameters().empty())
     {
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        template_arg << "template <"
-                     << "class _T" << p_it->param_count;
-        if(p_it->arg != boost::wave::T_EOF)
-        {
-            arg_str << "_T" << p_it->param_count << " " //space
-                    << p_it->arg.get_value();
-        }
-        //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
-        //for the 2nd till the last argument in the function like macro
+
+        arg_str << "_T" << p_it->param_count << " " //space
+                << p_it->arg.get_value();
+
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->param_count;
-
-            arg_str << ", "; //comma then space
-            if(p_it->arg != boost::wave::T_EOF)
-            {
-                arg_str << "_T" << p_it->param_count << " " //space
-                        << p_it->arg.get_value();
-            }
+            arg_str << ", ";
+            arg_str << "_T" << p_it->param_count << " " << p_it->arg.get_value();
         }
-        template_arg << ">";
+
+        template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+
     }
 
+
     // FIXME: Use names for variables here.
-    std::string demacrofied_line = fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n",
-            template_arg.str(), m_ptr->get_identifier().get_value().c_str(), arg_str.str(),
-            m_ptr->get_replacement_list_str(), m_ptr->get_replacement_list_str());
+    std::string demacrofied_line =
+            fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n",
+                    template_arg, m_ptr->get_identifier().get_value().c_str(), arg_str.str(),
+                    m_ptr->get_replacement_list_str(), m_ptr->get_replacement_list_str());
 
     return demacrofied_line;
 }
@@ -233,33 +252,23 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        std::stringstream template_arg;
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        template_arg << "template <"
-                     << "class _T" << p_it->param_count;
-        if(p_it->arg != boost::wave::T_EOF)
-        {
-            arg_str << "_T" << p_it->param_count << " && " //space
-                    << p_it->arg.get_value();
-        }
+
+        arg_str << "_T" << p_it->param_count << " && " //space
+                << p_it->arg.get_value();
 
         //for the 2nd till the last argument in the function like macro
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->param_count;
-
             arg_str << ", "; //comma then space
-            if(p_it->arg != boost::wave::T_EOF)
-            {
-                arg_str << "_T" << p_it->param_count << " && " //space
-                        << p_it->arg.get_value();
-            }
+            arg_str << "_T" << p_it->param_count << " && " //space
+                    << p_it->arg.get_value();
         }
 
-        template_arg << "> "; // '>' then space
-        demacrofied_line << template_arg.str();
+        std::string template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+
+        demacrofied_line << template_arg;
     }
 
     demacrofied_line << "\nvoid " //auto then space
@@ -276,7 +285,6 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
 std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
-    std::stringstream template_arg;
     std::stringstream arg_str;
     vpTokInt::const_iterator p_it;
 
@@ -284,29 +292,21 @@ std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
     {
         //for the first argument in the function like macro
         p_it = m_ptr->get_identifier_parameters().begin();
-        template_arg << "template <"
-                     << "class _T" << p_it->param_count;
-        if(p_it->arg != boost::wave::T_EOF)
-        {
-            arg_str << "_T" << p_it->param_count << " && " //space
-                    << p_it->arg.get_value();
-        }
+
+        arg_str << "_T" << p_it->param_count << " && " //space
+                << p_it->arg.get_value();
+
         //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
         //for the 2nd till the last argument in the function like macro
         while(++p_it != m_ptr->get_identifier_parameters().end())
         {
-            template_arg << ", "; //comma then space
-            template_arg << "class _T" << p_it->param_count;
-
             arg_str << ", "; //comma then space
-            if(p_it->arg != boost::wave::T_EOF)
-            {
-                arg_str << "_T" << p_it->param_count << " && " //space
-                        << p_it->arg.get_value();
-            }
+            arg_str << "_T" << p_it->param_count << " && " //space
+                    << p_it->arg.get_value();
         }
-        template_arg << "> "; // '>' then space
-        demacrofied_line << template_arg.str();
+
+        std::string template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+        demacrofied_line << template_arg;
     }
 
     demacrofied_line << "\nvoid " //auto then space
@@ -492,12 +492,12 @@ std::string SuggestTranslation(std::string_view unique_macro_switch,
         std::string_view demacrofied_fstream, std::string_view original_str)
 {
     // FIXME: Not sane access, change this.
-    return fmt::format("{} && defined({})\n{}#else\n{}#endif\n\n", Demacrofier::headerGuard, unique_macro_switch,
-            demacrofied_fstream, original_str);
+    return fmt::format("{} && defined({})\n{}#else\n{}#endif\n\n", Demacrofier::headerGuard,
+            unique_macro_switch, demacrofied_fstream, original_str);
 }
 
-std::string GenerateTranslation(std::string_view macro_iden,
-        std::string_view unique_macro_switch, std::string_view demacrofied_fstream)
+std::string GenerateTranslation(std::string_view macro_iden, std::string_view unique_macro_switch,
+        std::string_view demacrofied_fstream)
 {
     return fmt::format("\n/** Demacrofication for the macro {} with unique identifier {}*/\n{}",
             macro_iden, unique_macro_switch, demacrofied_fstream);
