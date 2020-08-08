@@ -503,7 +503,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // emit/ignore compiler warnings.
     const clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
 
-    const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name.c_str()).get();
+    const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name).get();
     clang::SourceManager& SourceMgr = ci.getSourceManager();
     SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));
 
