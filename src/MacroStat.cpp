@@ -28,14 +28,14 @@ limitations under the License.
 #include <iomanip>
 #include <ostream>
 
-static unsigned int macro_count = 0;
+unsigned int MacroStat::macro_count {0};
 
 void PrintMacroStat(std::ostream& aStream, const MacroStat& stat)
 {
 
    fmt::print(aStream, "- macro {:d}:\n - m_id: {}\n - m_cat: {}\n - c_cat: {}\n - d_cat: {}\n",
-         macro_count, stat.id_string, stat.m_cat, stat.rl_ccat, stat.rl_dcat);
-   ++macro_count;
+         MacroStat::macro_count, stat.id_string, stat.m_cat, stat.rl_ccat, stat.rl_dcat);
+   ++MacroStat::macro_count;
 }
 
 void PrintMacroStats(std::ostream& aStream, const std::vector<MacroStat>& stats)

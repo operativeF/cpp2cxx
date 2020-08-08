@@ -36,6 +36,8 @@ enum class MacroCategory;
 /// use a smart pointer for resource management
 struct MacroStat
 {
+    static unsigned int macro_count;
+
     MacroCategory m_cat;
     RlDCat rl_dcat;
     RlCCat rl_ccat;
