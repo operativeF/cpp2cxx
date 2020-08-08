@@ -36,8 +36,7 @@ Overseer::Overseer(ConfigScheme& config_scheme)
           pFileManager(std::make_unique<FileManager>(
                   GetFileManagerScheme(), GetDemacroficationScheme())),
           pParser(std::make_unique<Parser>(
-                  GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile())),
-          pASTConsumer(std::make_unique<MyASTConsumer>())
+                  GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile()))
 {
 }
 
@@ -182,14 +181,14 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
     clang::CompilerInstance ci(std::make_shared<clang::PCHContainerOperations>(), nullptr);
 
     //InvocationStat_t inv_stat;
-    
-    pASTConsumer->InitializeCI(ci, pFileManager->GetSearchPaths());
 
-    pASTConsumer->DumpContent(filename);
+    pASTConsumer.InitializeCI(ci, pFileManager->GetSearchPaths());
+
+    pASTConsumer.DumpContent(filename);
 
     //ASTConsumer.PrintStats();
-    pASTConsumer->VerifyMacroScope(true);
-    ASTMacroStat = pASTConsumer->GetMacroStat();
+    pASTConsumer.VerifyMacroScope(true);
+    ASTMacroStat = pASTConsumer.GetMacroStat();
     //inv_stat = ASTConsumer.GetInvocationStat();
 }
 

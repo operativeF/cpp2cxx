@@ -106,7 +106,7 @@ private:
     std::unique_ptr<FileManager> pFileManager;
     std::unique_ptr<Parser> pParser;
     const MacTree* pMacTree {nullptr};
-    std::unique_ptr<MyASTConsumer> pASTConsumer;
+    MyASTConsumer pASTConsumer;
     /// \brief holds information returned from clang AST
     ASTMacroStat_t ASTMacroStat;
 };
