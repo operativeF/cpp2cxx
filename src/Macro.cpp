@@ -40,11 +40,6 @@ PPMacro::PPMacro(std::ostream& log_file)
           logFile(log_file),
           use_case_set(false)
 {
-    m_stat = new MacroStat;
-}
-
-PPMacro::~PPMacro()
-{ /*delete m_stat;*/
 }
 
 void PPMacro::set_identifier(const token_type& tok)
@@ -366,16 +361,16 @@ return true;
 */
 }
 
-void PPMacro::set_macro_stat()
+void PPMacro::SetMacroStat()
 {
-    m_stat->id_string = identifier_str;
-    m_stat->rep_list = rep_list.get_replacement_list_str();
-    m_stat->m_cat = m_cat;
-    m_stat->rl_ccat = rep_list.get_replacement_list_closure_category();
-    m_stat->rl_dcat = rep_list.get_replacement_list_dependency_category();
+    m_stat.id_string = identifier_str;
+    m_stat.rep_list = rep_list.get_replacement_list_str();
+    m_stat.m_cat = m_cat;
+    m_stat.rl_ccat = rep_list.get_replacement_list_closure_category();
+    m_stat.rl_dcat = rep_list.get_replacement_list_dependency_category();
 }
 
-MacroStat const* PPMacro::get_macro_stat()
+MacroStat PPMacro::GetMacroStat() const
 {
     return m_stat;
 }

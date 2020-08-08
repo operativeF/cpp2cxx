@@ -25,6 +25,7 @@ limitations under the License.
 #define MACRO_HPP
 
 #include "MacroScopeClassifier.h"
+#include "MacroStat.h"
 #include "ReplacementList.h"
 #include "RlCategory.h"
 
@@ -72,8 +73,7 @@ class PPMacro
 {
 public:
     PPMacro(std::ostream& log_file);
-    ~PPMacro();
-    
+
     void set_identifier(token_type const& tok);
     void put_tokens(std::vector<token_type> const& vec_tokens);
     void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);
@@ -135,8 +135,8 @@ public:
     static bool IsEquivalent(const std::pair<token_iterator, token_iterator>& token_iter_range);
     void AnalyzeIdentifier() const;
     /// @brief keeps important details about macro for printing to a file
-    void set_macro_stat();
-    MacroStat const* get_macro_stat();
+    void SetMacroStat();
+    MacroStat GetMacroStat() const;
 
     bool operator==(PPMacro const& mac) const;
     //bool operator==(token_type const& tok) const;
@@ -156,18 +156,18 @@ private:
     std::string identifier_str;
     //keep the function_like PPMacro's arguments and their position
     vpTokInt identifier_parameters;
-    PPOperation operation {PPOperation::unknown};     //define or undefine etc...
-    MacroCategory m_cat;       //function like or object like etc...
-    MacroScopeCategory m_scat; // inside function, inside class, etc...
+    PPOperation operation{ PPOperation::unknown }; //define or undefine etc...
+    MacroCategory m_cat;                           //function like or object like etc...
+    MacroScopeCategory m_scat;                     // inside function, inside class, etc...
     //log file to store all the errors and warnings etc.
     std::ostream& logFile;
     ReplacementList rep_list;
-    CondCategory condCat {CondCategory::config};
+    CondCategory condCat{ CondCategory::config };
     // keep only the first use case
     std::pair<token_iterator, token_iterator> use_case;
     std::vector<std::string> invoArgs;
     bool use_case_set;
-    MacroStat* m_stat;
+    MacroStat m_stat;
 };
 
 /**
