@@ -2,6 +2,7 @@ add_executable(suggest MainSuggest.cpp)
 
 target_link_libraries(suggest
     PRIVATE
+        ASTConsumer
         cpp2cxx-core
         Boost::program_options
         Boost::system
@@ -15,6 +16,7 @@ add_executable(finalize MainFinalize.cpp)
 
 target_link_libraries(finalize
     PRIVATE
+        ASTConsumer
         cpp2cxx-core
         Boost::program_options
         Boost::system

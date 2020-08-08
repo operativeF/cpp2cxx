@@ -20,8 +20,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "clang_interface/ASTConsumer.hpp"
-
 #include "cpp2cxx/Overseer.h"
 #include "cpp2cxx/DepGraph.h"
 #include "cpp2cxx/ExceptionHandler.h"
@@ -38,7 +36,8 @@ Overseer::Overseer(ConfigScheme& config_scheme)
           pFileManager(std::make_unique<FileManager>(
                   GetFileManagerScheme(), GetDemacroficationScheme())),
           pParser(std::make_unique<Parser>(
-                  GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile()))
+                  GetDemacroficationScheme(), GetLogFile(), GetMacroStatFile())),
+          pASTConsumer(std::make_unique<MyASTConsumer>())
 {
 }
 
@@ -183,17 +182,14 @@ void Overseer::GenerateExternalASTHandler(const std::string& filename)
     clang::CompilerInstance ci(std::make_shared<clang::PCHContainerOperations>(), nullptr);
 
     //InvocationStat_t inv_stat;
-    // @TODO: lol, Where is this memory going?
-    pASTConsumer = new MyASTConsumer;
-    MyASTConsumer& ASTConsumer = *pASTConsumer;
+    
+    pASTConsumer->InitializeCI(ci, pFileManager->GetSearchPaths());
 
-    ASTConsumer.InitializeCI(ci, pFileManager->GetSearchPaths());
-
-    ASTConsumer.DumpContent(filename);
+    pASTConsumer->DumpContent(filename);
 
     //ASTConsumer.PrintStats();
-    ASTConsumer.VerifyMacroScope(true);
-    ASTMacroStat = ASTConsumer.GetMacroStat();
+    pASTConsumer->VerifyMacroScope(true);
+    ASTMacroStat = pASTConsumer->GetMacroStat();
     //inv_stat = ASTConsumer.GetInvocationStat();
 }
 

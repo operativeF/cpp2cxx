@@ -35,6 +35,8 @@ limitations under the License.
  *  compiles with g++-4.5 or higher,
  *  for compiling pass -std=c++0x to the compiler
  */
+
+#include "clang_interface/ASTConsumer.hpp"
 #include "ConfigScheme.h"
 #include "FileManager.h"
 #include "FileManagerScheme.h"
@@ -54,8 +56,6 @@ limitations under the License.
  * forward declaration
  */
 class MacTree;
-
-class MyASTConsumer;
 
 /**
  * @class Overseer
@@ -106,7 +106,7 @@ private:
     std::unique_ptr<FileManager> pFileManager;
     std::unique_ptr<Parser> pParser;
     const MacTree* pMacTree {nullptr};
-    MyASTConsumer* pASTConsumer {nullptr};
+    std::unique_ptr<MyASTConsumer> pASTConsumer;
     /// \brief holds information returned from clang AST
     ASTMacroStat_t ASTMacroStat;
 };
