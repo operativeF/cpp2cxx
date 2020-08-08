@@ -121,8 +121,7 @@ void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string 
     const auto ast_macro_iter = pASTMacroStat->find(macro_iden);
     if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
     {
-        // @TODO: Remove unsafe bounds here.
-        auto line_no = ast_macro_iter->second.invoked_lines[0];
+        auto line_no = ast_macro_iter->second.invoked_lines.front();
         readyQueue.insert(std::make_pair(line_no, outstr));
     }
     //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();

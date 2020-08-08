@@ -812,6 +812,7 @@ new_lexer_gen<IteratorT, PositionT>::new_lexer(IteratorT const &first,
     IteratorT const &last, PositionT const &pos,
     boost::wave::language_support language)
 {
+    // FIXME: Memory leak.
     return new slex_functor<IteratorT, PositionT>(first, last, pos,
         language);
 }

@@ -157,7 +157,7 @@ class MacTree
 public:
     MacTree() noexcept : nodeIndex(0), depGraph(1)
     {
-        // @TODO: Replace with smart pointer?
+        // FIXME: Memory leak.
         Node* pn = new Node;
         //currVertex is dummy here
         NodeMap_t::iterator nodeMap_iter = nodeMap.insert(std::make_pair(pn, currVertex)).first;

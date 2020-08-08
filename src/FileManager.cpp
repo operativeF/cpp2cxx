@@ -28,8 +28,9 @@ limitations under the License.
 #include "cpp2cxx/FileManagerScheme.h"
 #include "cpp2cxx/Overseer.h" //observable
 
-#include <fmt/ostream.h>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
+
 
 FileManager::FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds)
         : fileManagerScheme(fs), demacroficationScheme(ds), inputFileIndex(0), outputFileIndex(0)
@@ -175,43 +176,43 @@ void FileManager::PrepareDemacrofiedMacroStatFile()
 {
     if(demacroficationScheme.performCleanup)
     {
-        GetDemacrofiedMacroStatFile() <<
-                 "###################################################################\n"
-                 "#This file contains the details of each macro processed by the demacrofier\n"
-                 "#The file can be read by any yaml parser\n"
-                 "#The format is as follows:\n"
-                 "#file-name:"
-                 "#  - id: identifier string\n"
-                 "###################################################################\n";
+        GetDemacrofiedMacroStatFile()
+                << "###################################################################\n"
+                   "#This file contains the details of each macro processed by the demacrofier\n"
+                   "#The file can be read by any yaml parser\n"
+                   "#The format is as follows:\n"
+                   "#file-name:"
+                   "#  - id: identifier string\n"
+                   "###################################################################\n";
     }
     else
     {
-        GetDemacrofiedMacroStatFile() <<
-                 "###################################################################\n"
-                 "#This file contains the details of each macro processed by the demacrofier\n"
-                 "#The file can be read by any yaml parser\n"
-                 "#The format is as follows:\n"
-                 "#macro<count>\n"
-                 "#  - id: identifier string\n"
-                 "#  - category: macro_category\n"
-                 "#  - header_guard_string: string\n"
-                 "###################################################################\n";
+        GetDemacrofiedMacroStatFile()
+                << "###################################################################\n"
+                   "#This file contains the details of each macro processed by the demacrofier\n"
+                   "#The file can be read by any yaml parser\n"
+                   "#The format is as follows:\n"
+                   "#macro<count>\n"
+                   "#  - id: identifier string\n"
+                   "#  - category: macro_category\n"
+                   "#  - header_guard_string: string\n"
+                   "###################################################################\n";
     }
 }
 
 void FileManager::PrepareMacroStatFile()
 {
-    GetMacroStatFile() <<
-            "###################################################################\n"
-            "#This file contains the details of each macro present in the files processed\n"
-            "#The file can be read by any yaml parser\n"
-            "#The format is as follows:\n"
-            "#macro<count>\n"
-            "#  - m_id : identifier string\n"
-            "#  - m_cat: macro_category\n"
-            "#  - c_cat: if the replacement text maps to C++ expression then c_cat is complete otherwise partial\n"
-            "#  - d_cat: if the replacement text contains free variable(s) then d_cat is dependent otherwise closed\n"
-            "###################################################################\n";
+    GetMacroStatFile()
+            << "###################################################################\n"
+               "#This file contains the details of each macro present in the files processed\n"
+               "#The file can be read by any yaml parser\n"
+               "#The format is as follows:\n"
+               "#macro<count>\n"
+               "#  - m_id : identifier string\n"
+               "#  - m_cat: macro_category\n"
+               "#  - c_cat: if the replacement text maps to C++ expression then c_cat is complete otherwise partial\n"
+               "#  - d_cat: if the replacement text contains free variable(s) then d_cat is dependent otherwise closed\n"
+               "###################################################################\n";
 }
 
 std::ostream& FileManager::GetLogFile()

@@ -174,14 +174,15 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
 {
     //  const char* infile = "gConditions.h";
     globalMacros.clear();
-    std::string instr;
     std::ifstream gmstream(raw_global_macro_file_name, std::ios_base::in);
+
     if(!gmstream.is_open())
     {
         throw ExceptionHandler("file: " + raw_global_macro_file_name + " couldn't be opened\n");
     }
+
     gmstream.unsetf(std::ios::skipws);
-    instr = std::string(
+    std::string instr = std::string(
             std::istreambuf_iterator<char>(gmstream.rdbuf()), std::istreambuf_iterator<char>());
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
@@ -220,10 +221,6 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
 void Parser::ParseMacros(MacroList_t& macro_list)
 {
     InitializeMacTree();
-    boost::wave::token_id id = *it;
-    // causes memory leak
-    //id = boost::wave::token_id(*it);
-
     token_iterator ti_mac_begin;
     token_iterator ti_mac_end;
     bool PPDEFINED = true;
@@ -231,12 +228,11 @@ void Parser::ParseMacros(MacroList_t& macro_list)
 
     while(it != it_end)
     {
-        id = boost::wave::token_id(*it);
         //so that we get a new tempNode and macro everytime
         Node tempNode;
         PPMacro mac(logFile);
         condStmt.clear();
-        switch(id)
+        switch(auto id = boost::wave::token_id(*it); id)
         {
         case boost::wave::T_PP_DEFINE:
             ti_mac_begin = it;
@@ -523,8 +519,8 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     //and insert into the localMacros
     //macro_ref.get_replacement_list_idlist();
     macro_list.insert(std::make_pair(id_value.str(), rep_list_str.str()));
-    macro_ref.set_macro_stat();
-    vec_macro_stat.push_back(*macro_ref.get_macro_stat());
+    macro_ref.SetMacroStat();
+    vec_macro_stat.push_back(macro_ref.GetMacroStat());
 }
 
 /**
@@ -570,16 +566,16 @@ void Parser::PPIfHandler(Node& node)
 void Parser::PPIfHandler(Node& node, bool def)
 {
     std::stringstream id_value;
-    boost::wave::token_id id{};
     condStmt.push_back(*it);
 
-    while((id = *(++it)) == boost::wave::T_SPACE)
+    while((*(++it)) == boost::wave::T_SPACE)
     {
         condStmt.push_back(*it);
     }
 
     condStmt.push_back(*it);
     id_value << it->get_value();
+    // FIXME: Why don't we just use this function to return a condcat?
     if(PPCheckIdentifier(id_value.str(), globalMacros))
     {
         condCat = CondCategory::config;
@@ -660,7 +656,6 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     demac->SetMacroInvocationStat(pInvocationStat);
     demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
-    boost::wave::token_id id{};
     std::string demacrofied_string;
     it = it_begin;
     PPMacro* m_ptr = nullptr;
@@ -673,10 +668,9 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
 
     while(it != it_end)
     {
-        id = boost::wave::token_id(*it);
         std::size_t defn_counter = 0;
 
-        switch(id)
+        switch(auto id = boost::wave::token_id(*it); id)
         {
         case boost::wave::T_PP_DEFINE:
             it++;
