@@ -213,7 +213,7 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
         return DemacrofyStatementType(m_ptr);
     }
 
-    std::string template_arg {""};
+    std::string template_arg;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {

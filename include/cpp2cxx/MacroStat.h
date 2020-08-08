@@ -34,15 +34,27 @@ limitations under the License.
 enum class MacroCategory;
 
 /// use a smart pointer for resource management
-struct MacroStat
+class MacroStat
 {
-    static unsigned int macro_count;
-
+public:
     MacroCategory m_cat;
     RlDCat rl_dcat;
     RlCCat rl_ccat;
     std::string id_string;
     std::string rep_list;
+
+    static void IncrementMacroCount()
+    {
+        ++macro_count;
+    }
+
+    static unsigned int GetMacroCount()
+    {
+        return macro_count;
+    }
+
+private:
+    static inline unsigned int macro_count {0};
 };
 
 void PrintMacroStat(std::ostream& aStream, const MacroStat& stat);

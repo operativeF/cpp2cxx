@@ -127,10 +127,7 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
     try
     {
         globalMacros.clear();
-        const unsigned int line_width = 2048;
-        // @TODO: Initialize these.
-        char fc[line_width];
-        char sc[line_width];
+
         std::ifstream gMacros(global_macro_file_name, std::ios_base::in);
         if(!gMacros.is_open())
         {
@@ -142,18 +139,11 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
         gMacros.seekg(0, std::ios::beg);
 
         //to ignore the newline at the end of the file
-        // @TODO: No array decay.
-        gMacros.getline(fc, line_width);
-        gMacros.getline(sc, line_width);
-        while(gMacros.good())
+        for(std::string fc, sc; std::getline(gMacros, fc), std::getline(gMacros, sc); )
         {
-            // @TODO: No array decay.
-            //put the macro identifier and the replacement_list into some data structure
-            globalMacros.insert(std::make_pair(fc, sc));
-            //logFile<<fc<<"\t"<<sc<<"\n";
-            gMacros.getline(fc, line_width);
-            gMacros.getline(sc, line_width);
+            globalMacros.insert({fc, sc});
         }
+
         gMacros.close();
     }
     catch(ExceptionHandler& e)
