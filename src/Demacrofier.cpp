@@ -442,7 +442,7 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
         for(auto&& dep_list_iter : dep_list)
         {
             fmt::format_to(
-                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value();
+                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value());
         }
     }
 

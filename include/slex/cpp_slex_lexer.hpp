@@ -683,7 +683,7 @@ public:
                                 boost::wave::cpplexer::lexing_exception,
                                 invalid_long_long_literal, value,
                                 pos.get_line(), pos.get_column(),
-                                pos.get_file());
+                                pos.get_file().c_str());
                         }
                         break;
 

@@ -177,7 +177,7 @@ void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     instr += "\n";
-    position_type pos(raw_global_macro_file_name;
+    position_type pos(raw_global_macro_file_name);
 
     it = token_iterator(instr.begin(), instr.end(), pos,
             boost::wave::language_support(
