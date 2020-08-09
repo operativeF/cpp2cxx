@@ -89,7 +89,7 @@ public:
     // keep only the first use case
     // as a complete list of use case is already returned by clang
     void set_use_case(const std::pair<token_iterator, token_iterator>& token_iter_range);
-    void set_use_case_string(const std::vector<std::string>& vec_string);
+    void SetUseCaseStr(const std::vector<std::string>& vec_string);
 
     token_type get_identifier() const;
     std::vector<token_type> const& get_tokens() const;

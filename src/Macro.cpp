@@ -124,13 +124,15 @@ void PPMacro::set_use_case(const std::pair<token_iterator, token_iterator>& toke
 //capturing only the first macro invocation args
 /// @brief if there is a mismatch in the number of arguments
 /// then demacrofication is not done for that macro
-void PPMacro::set_use_case_string(const std::vector<std::string>& vec_string)
+void PPMacro::SetUseCaseStr(const std::vector<std::string>& vec_string)
 {
     if(vec_string.size() != identifier_parameters.size())
     {
-        logFile << "  - log: definition and invocation does not have equal number of args,";
-        logFile << " perhaps multiple definition of same macro.\n";
-        logFile << "  - log: Not demacrofying: " << identifier_str << "\n";
+        fmt::print(logFile,
+                "  - log: definition and invocation does not have equal number of args,"
+                " perhaps multiple definition of same macro.\n"
+                "  - log: Not demacrofying: {}\n",
+                identifier_str);
         rep_list.get_replacement_list_token_type().reject_type = true;
     }
 

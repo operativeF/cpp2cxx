@@ -98,7 +98,7 @@ public:
 
     void SetUseCaseString(PPMacro* pp)
     {
-        pp->set_use_case_string(argString);
+        pp->SetUseCaseStr(argString);
     }
 
     // the following function is only for function like macro
