@@ -112,7 +112,7 @@ void Parser::Parse(const std::string& file_name)
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     ifileStr += "\n";
-    position_type pos(file_name.c_str());
+    position_type pos(file_name);
     ParseLocalMacros(ifileStr, pos);
 }
 
@@ -160,7 +160,7 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
 
 //when we need to parse the global macros, and write the globalMacros
 //into the file formattedGlobalMacroList
-void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
+void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
 {
     //  const char* infile = "gConditions.h";
     globalMacros.clear();
@@ -177,7 +177,7 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     instr += "\n";
-    position_type pos(raw_global_macro_file_name.c_str());
+    position_type pos(raw_global_macro_file_name;
 
     it = token_iterator(instr.begin(), instr.end(), pos,
             boost::wave::language_support(
@@ -190,11 +190,14 @@ void Parser::ParseNewGlobalMacros(std::string const& raw_global_macro_file_name)
     {
         //writing into fileGlobalMacros
         ParseMacros(globalMacros);
+
         std::ofstream gMacros(fileGlobalMacros, std::ios_base::out);
+
         if(!gMacros.is_open())
         {
             throw ExceptionHandler("file: " + fileGlobalMacros.string() + " couldn't be opened\n");
         }
+
         std::for_each(globalMacros.begin(), globalMacros.end(),
                 [&gMacros](const std::pair<std::string, std::string>& gm) {
                     gMacros << gm.first << "\n" << gm.second << "\n";

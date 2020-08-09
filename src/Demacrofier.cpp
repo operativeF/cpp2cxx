@@ -31,6 +31,7 @@ limitations under the License.
 
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include <fmt/ostream.h>
 
 #include <iomanip>
 #include <ostream>
@@ -136,7 +137,7 @@ std::string Demacrofier::Translate(
     //std::string instr;
     std::string outstr;
     const std::string unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
-    const std::string macro_iden = m_ptr->get_identifier().get_value().c_str();
+    const std::string macro_iden = m_ptr->get_identifier().get_value();
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
@@ -167,7 +168,7 @@ std::string Demacrofier::Translate(
     if(cleanup)
     {
         outstr = GenerateTranslation(macro_iden, unique_macro_switch, demacrofied_fstream.str());
-        stat << "  - id:" << macro_iden << "\n";
+        fmt::print(stat, "  - id: {}\n", macro_iden);
     }
     else
     {
@@ -237,7 +238,7 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
     // FIXME: Use names for variables here.
     std::string demacrofied_line =
             fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n",
-                    template_arg, m_ptr->get_identifier().get_value().c_str(), arg_str.str(),
+                    template_arg, m_ptr->get_identifier().get_value(), arg_str.str(),
                     m_ptr->get_replacement_list_str(), m_ptr->get_replacement_list_str());
 
     return demacrofied_line;
@@ -371,7 +372,7 @@ std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]()->void {{ {}; }};\n",
-            m_ptr->get_identifier().get_value().c_str(), GetFunctionClosure(m_ptr),
+            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr),
             GetFunctionBody(m_ptr));
     // if it already has a semicolon or not
     // if(!(m_ptr->get_replacement_list().get_replacement_list_token_type()).statement_type)
@@ -422,7 +423,7 @@ bool IsDemacrofiable(PPMacro const& mac)
 std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]({}) {{ return {}; }};\n",
-            m_ptr->get_identifier().get_value().c_str(), GetFunctionClosure(m_ptr),
+            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr),
             GetFunctionArgs(m_ptr), GetFunctionBody(m_ptr));
 }
 
@@ -441,7 +442,7 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
         for(auto&& dep_list_iter : dep_list)
         {
             fmt::format_to(
-                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value().c_str());
+                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value();
         }
     }
 
@@ -456,7 +457,7 @@ std::string GetFunctionArgs(const PPMacro* m_ptr)
     auto invok_iter = m_ptr->get_use_case_string().begin();
     // identifier parameters iterator
     auto ip_iter = m_ptr->get_identifier_parameters().begin();
-    // @TODO: Make this a lambda
+
     if(!m_ptr->get_identifier_parameters().empty())
     {
         arg_string << dtype << *invok_iter << ") " << ip_iter->arg.get_value();
@@ -480,9 +481,9 @@ std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
     // @TODO: This gets called everytime, even for the same file.
     // Store the filename so it gets called only once per file.
     std::string file_name = general_utilities::keep_alpha_numeric(
-            m_ptr->get_identifier().get_position().get_file().c_str());
+            m_ptr->get_identifier().get_position().get_file());
 
-    return fmt::format("USE_{}_{}_{}_{}", m_ptr->get_identifier().get_value().c_str(), file_name,
+    return fmt::format("USE_{}_{}_{}_{}", m_ptr->get_identifier().get_value(), file_name,
             m_ptr->get_identifier().get_position().get_line(),
             m_ptr->get_identifier().get_position().get_column());
 }

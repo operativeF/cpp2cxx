@@ -5,7 +5,7 @@ project(demacrofier VERSION 2.0 LANGUAGES CXX)
 #set(CMAKE_TOOLCHAIN_FILE $ENV{CMAKE_TOOLCHAIN_FILE})
 include("C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /DBOOST_WAVE_STRINGTYPE_USE_STDSTRING=1 /DBOOST_WAVE_SUPPORT_THREADING=1")
 
 if(CMAKE_PROJECT_NAME STREQUAL demacrofier)
   set(CMAKE_CXX_EXTENSIONS OFF)

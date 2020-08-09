@@ -28,6 +28,8 @@ limitations under the License.
 
 #include "general_utilities/file_type.hpp"
 
+#include <fmt/ostream.h>
+
 #include <memory>
 #include <string>
 
@@ -83,7 +85,7 @@ void Overseer::StartProcessing(bool demacrofy)
     catch(ExceptionHandler& e)
     {
         //std::cout<<"There was some error in start processing";
-        GetLogFile() << "Error: " << e.GetExMessage() << "\n";
+        fmt::print(GetLogFile(), "Error: {}\n", e.GetExMessage());
     }
 }
 

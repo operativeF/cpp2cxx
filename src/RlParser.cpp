@@ -135,7 +135,7 @@ bool RlParser::Match(boost::wave::token_id id)
             return true;
         }
 
-        rl_str_formatted += it->get_value().c_str();
+        rl_str_formatted += it->get_value();
         FillFormattedRL(*it);
         ++it; //increment to get to the next token
 
@@ -145,7 +145,7 @@ bool RlParser::Match(boost::wave::token_id id)
         /// but check it first
         while(*it == boost::wave::T_SPACE || *it == boost::wave::T_CCOMMENT)
         {
-            rl_str_formatted += it->get_value().c_str();
+            rl_str_formatted += it->get_value();
             ++it;
         }
 
@@ -696,7 +696,7 @@ bool RlParser::IsRejectPredefinedMacro(const std::string& str) const
 void RlParser::FillFormattedRL(const token_type& tok)
 {
     using namespace boost::wave;
-    //rl_str_formatted += tok.get_value().c_str();
+    //rl_str_formatted += tok.get_value();
     //rl_str_formatted += " ";
     switch(tok)
     {

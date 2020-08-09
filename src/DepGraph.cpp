@@ -175,7 +175,7 @@ const DepList_t& MacTree::BuildMacroDependencyList()
             else
             {
                 fmt::print("Exception line number: {}, no macro found for token: {}\n", anId.get_position().get_line(),
-                    anId.get_value().c_str());
+                    anId.get_value());
             }
         }
 

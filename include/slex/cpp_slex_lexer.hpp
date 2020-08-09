@@ -636,7 +636,7 @@ public:
                 if ((token_id)(-1) == id)
                     id = T_EOF;     // end of input reached
 
-            string_type token_val(value.c_str());
+            string_type token_val(value);
 
                 if (boost::wave::need_emit_contnewlines(language) ||
                     T_CONTLINE != id)
@@ -681,9 +681,9 @@ public:
                         // syntax error: not allowed in C++ mode
                             BOOST_WAVE_LEXER_THROW(
                                 boost::wave::cpplexer::lexing_exception,
-                                invalid_long_long_literal, value.c_str(),
+                                invalid_long_long_literal, value,
                                 pos.get_line(), pos.get_column(),
-                                pos.get_file().c_str());
+                                pos.get_file());
                         }
                         break;
 
