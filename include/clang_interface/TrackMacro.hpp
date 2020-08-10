@@ -29,12 +29,14 @@ limitations under the License.
 #include "general_utilities/map_utils.hpp"
 #include "general_utilities/vector_utils.hpp"
 
+#pragma warning(push, 0)
 #include <clang/Basic/TokenKinds.h>
 #include <clang/Frontend/CompilerInstance.h>
 
 #include <clang/Lex/PPCallbacks.h>
 #include <clang/Lex/Preprocessor.h>
 #include <clang/Lex/Token.h>
+#pragma warning(pop)
 
 #include <map>
 #include <string>

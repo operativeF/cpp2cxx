@@ -27,10 +27,12 @@ limitations under the License.
 #include "general_utilities/map_utils.hpp"
 #include "general_utilities/vector_utils.hpp"
 
+#pragma warning(push, 0)
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/DeclGroup.h"
 
 #include "clang/Parse/ParseAST.h"
+#pragma warning(pop)
 
 #include <filesystem>
 #include <map>
