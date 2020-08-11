@@ -67,6 +67,18 @@ struct fmt::formatter<token_instances>
     }
 };
 
+std::string concat_func_arg(const std::vector<token_instances>& the_vec, std::string modifier)
+{
+    std::vector<std::string> temp_v;
+
+    for(auto&& tin : the_vec)
+    {
+        temp_v.push_back(fmt::format("_T{}{} {}", tin.param_count, modifier, tin.arg.get_value()));
+    }
+
+    return fmt::format("{}", fmt::join(temp_v, ", "));
+};
+
 void Demacrofier::SetMacroInvocationStat(InvocationStat_t* stat)
 {
     pInvocationStat = stat;
@@ -141,7 +153,7 @@ std::string Demacrofier::Translate(
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
-    std::string original_str = fmt::format("#define {} {} \n", m_ptr->get_identifier_str(),
+    std::string original_str = fmt::format("#define {} {}\n", m_ptr->get_identifier_str(),
             m_ptr->get_replacement_list_str_with_comments());
 
     //during the cleanup phase see if the macro was validated or not
@@ -195,7 +207,7 @@ std::string Demacrofier::Translate(
 // FIXME: Refactor out repeated code in the functions below.
 std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
-    std::stringstream arg_str;
+    std::string arg_str;
     vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
     // FIXME: breaks in case when the function doesn't have parameters F(,,,)
@@ -218,61 +230,38 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        //for the first argument in the function like macro
-        p_it = m_ptr->get_identifier_parameters().begin();
+        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "");
 
-        arg_str << "_T" << p_it->param_count << " " //space
-                << p_it->arg.get_value();
-
-        while(++p_it != m_ptr->get_identifier_parameters().end())
-        {
-            arg_str << ", ";
-            arg_str << "_T" << p_it->param_count << " " << p_it->arg.get_value();
-        }
-
-        template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
-
+        template_arg = fmt::format("template <class _T{}>",
+                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
     }
 
 
     // FIXME: Use names for variables here.
-    std::string demacrofied_line =
-            fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n",
-                    template_arg, m_ptr->get_identifier().get_value(), arg_str.str(),
-                    m_ptr->get_replacement_list_str(), m_ptr->get_replacement_list_str());
-
-    return demacrofied_line;
+    return fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n", template_arg,
+            m_ptr->get_identifier().get_value(), arg_str, m_ptr->get_replacement_list_str(),
+            m_ptr->get_replacement_list_str());
 }
 
 std::string DemacrofyStatementType(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
-    std::stringstream arg_str;
+    std::string arg_str;
     vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        //for the first argument in the function like macro
-        p_it = m_ptr->get_identifier_parameters().begin();
+        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
 
-        arg_str << "_T" << p_it->param_count << " && " //space
-                << p_it->arg.get_value();
-
-        //for the 2nd till the last argument in the function like macro
-        while(++p_it != m_ptr->get_identifier_parameters().end())
-        {
-            arg_str << ", "; //comma then space
-            arg_str << "_T" << p_it->param_count << " && " //space
-                    << p_it->arg.get_value();
-        }
-
-        std::string template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+        // TODO: I don't like the way this is. It hides the parameter we're interested in.
+        std::string template_arg = fmt::format("template <class _T{}>",
+                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
 
         demacrofied_line << template_arg;
     }
 
     demacrofied_line << "\nvoid " //auto then space
-                     << m_ptr->get_identifier().get_value() << "(" << arg_str.str() << ")\n{\n"
+                     << m_ptr->get_identifier().get_value() << "(" << arg_str << ")\n{\n"
                      << m_ptr->get_formatted_replacement_list_str()
                      //semicolon has been added because many use cases
                      //do not have semicolon. for the ones which have it doesn't hurt.
@@ -285,32 +274,20 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
 std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 {
     std::stringstream demacrofied_line;
-    std::stringstream arg_str;
+    std::string arg_str;
     vpTokInt::const_iterator p_it;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        //for the first argument in the function like macro
-        p_it = m_ptr->get_identifier_parameters().begin();
+        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
 
-        arg_str << "_T" << p_it->param_count << " && " //space
-                << p_it->arg.get_value();
-
-        //std::cout<<"the dummy value is "<< (*p_it).first.get_value()<<std::endl;
-        //for the 2nd till the last argument in the function like macro
-        while(++p_it != m_ptr->get_identifier_parameters().end())
-        {
-            arg_str << ", "; //comma then space
-            arg_str << "_T" << p_it->param_count << " && " //space
-                    << p_it->arg.get_value();
-        }
-
-        std::string template_arg = fmt::format("template <class _T{}>", fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+        std::string template_arg = fmt::format("template <class _T{}>",
+                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
         demacrofied_line << template_arg;
     }
 
     demacrofied_line << "\nvoid " //auto then space
-                     << m_ptr->get_identifier().get_value() << "(" << arg_str.str() << ")\n"
+                     << m_ptr->get_identifier().get_value() << "(" << arg_str << ")\n"
                      << m_ptr->get_formatted_replacement_list_str() << "\n";
 
     return demacrofied_line.str();
@@ -371,9 +348,8 @@ std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 
 std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
 {
-    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n",
-            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr),
-            GetFunctionBody(m_ptr));
+    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n", m_ptr->get_identifier().get_value(),
+            GetFunctionClosure(m_ptr), GetFunctionBody(m_ptr));
     // if it already has a semicolon or not
     // if(!(m_ptr->get_replacement_list().get_replacement_list_token_type()).statement_type)
     //  demacrofied_line << ";";
@@ -423,8 +399,8 @@ bool IsDemacrofiable(PPMacro const& mac)
 std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]({}) {{ return {}; }};\n",
-            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr),
-            GetFunctionArgs(m_ptr), GetFunctionBody(m_ptr));
+            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr), GetFunctionArgs(m_ptr),
+            GetFunctionBody(m_ptr));
 }
 
 std::string GetFunctionClosure(const PPMacro* m_ptr)
@@ -441,8 +417,7 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
 
         for(auto&& dep_list_iter : dep_list)
         {
-            fmt::format_to(
-                    std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value());
+            fmt::format_to(std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value());
         }
     }
 
