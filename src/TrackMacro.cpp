@@ -141,13 +141,13 @@ void TrackMacro::SetFileName(const std::string& f)
     file_name = f;
     //std::cout<<"File name in TrackMacro set to: "<<file_name;
     SetLocParams();
-    InitializeMacroInvocationStat();
+    //InitializeMacroInvocationStat();
 }
 
 /// @TODO: Use make_unique
 void TrackMacro::InitializeMacroInvocationStat()
 {
-    m_istat = new InvocationStat_t;
+    //m_istat = new InvocationStat_t;
 }
 
 const std::string& TrackMacro::GetFileName()

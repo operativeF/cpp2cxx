@@ -27,6 +27,7 @@ limitations under the License.
 #include "cpp2cxx/RlParser.h"
 #include "general_utilities/vector_utils.hpp"
 
+#include <fmt/core.h>
 #include <fmt/ostream.h>
 
 #include <algorithm>
@@ -145,28 +146,22 @@ void PPMacro::SetUseCaseStr(const std::vector<std::string>& vec_string)
 
 void PPMacro::AnalyzeIdentifier() const
 {
-    bool hasProblems = false;
-    std::string warning_msg;
-    std::stringstream strm;
+    if(bool contains_lower_case = HasLowerCase(), begins_with_underscore = HasLeadingUnderscore();
+            contains_lower_case || begins_with_underscore)
+    {
+        std::string warning_msg = fmt::format("  - line number: {}\t: {}\n",
+                identifier.get_position().get_line(), identifier_str);
 
-    warning_msg = "  - line number: ";
-    strm << identifier.get_position().get_line();
-    warning_msg += strm.str();
-    warning_msg += "\t: ";
-    warning_msg += identifier_str;
-    warning_msg += "\n";
-    if(HasLowerCase())
-    {
-        warning_msg += "  - warning: lower case letters:\n";
-        hasProblems = true;
-    }
-    if(HasLeadingUnderscore())
-    {
-        warning_msg += "  - warning: leading underscore(s):\n";
-        hasProblems = true;
-    }
-    if(hasProblems)
-    {
+        if(contains_lower_case)
+        {
+            warning_msg += "  - warning: lower case letters:\n";
+        }
+
+        if(begins_with_underscore)
+        {
+            warning_msg += "  - warning: leading underscore(s):\n";
+        }
+
         logFile << warning_msg;
         throw ExceptionHandler(warning_msg);
     }
@@ -301,14 +296,13 @@ std::vector<token_type> PPMacro::get_replacement_list_dep_idlist() const
         return dep_idlist;
     }
 
+    // FIXME: This could stand to be more efficient.
     //iterator over function_like PPMacro's arguments
     //iterator for the ReplacementList tokens
-    std::vector<token_type>::iterator iter_rl_idlist = dep_idlist.begin();
     //remove all those identifiers which are in the function argument
     for(auto&& id : identifier_parameters)
     {
-        iter_rl_idlist = dep_idlist.begin();
-        for(; iter_rl_idlist != dep_idlist.end();)
+        for(auto&& iter_rl_idlist = dep_idlist.begin(); iter_rl_idlist != dep_idlist.end(); )
         {
             if(id.arg == *iter_rl_idlist)
             {

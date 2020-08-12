@@ -184,7 +184,7 @@ public:
     int GetNumNodes() const;
 
     /// @brief is the node a root node
-    bool IsRoot(Vertex_t const v) const;
+    bool IsRoot(Vertex_t v) const;
 
     /// @brief sibling of the currently pointed vertex
     bool MakeSibling(Node& rn);

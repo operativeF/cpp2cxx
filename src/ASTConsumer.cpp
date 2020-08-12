@@ -521,9 +521,8 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
 
 void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::SourceLocation loc)
 {
-    const clang::PresumedLoc presumed = sm.getPresumedLoc(loc);
     /// print only when the functions are in the current file
-    if(m_current_file == presumed.getFilename())
+    if(const clang::PresumedLoc presumed = sm.getPresumedLoc(loc); m_current_file == presumed.getFilename())
     {
         fmt::print("line: {}, column: {}", presumed.getLine(), presumed.getColumn());
     }

@@ -73,7 +73,7 @@ int MacTree::GetNumNodes() const
     return nodeIndex;
 }
 
-bool MacTree::IsRoot(Vertex_t const vd) const
+bool MacTree::IsRoot(Vertex_t vd) const
 {
     return vd == startVertex;
 }

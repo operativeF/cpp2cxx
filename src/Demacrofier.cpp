@@ -182,10 +182,15 @@ std::string Demacrofier::Translate(
     else
     {
         outstr = SuggestTranslation(unique_macro_switch, demacrofied_str, original_str);
-        stat << "  - macro" << std::setw(sizeof(double)) << std::setfill('0') << count++ << ":\n"
-             << "    - id: " << m_ptr->get_identifier_str() << "\n"
-             << "    - category: " << m_ptr->get_macro_category() << "\n"
-             << "    - header_guard_string: " << unique_macro_switch << "\n";
+        fmt::print(stat, "  - macro{:0{}}:\n"
+                         "     -id: {}\n"
+                         "     - category: {}\n"
+                         "     - header_guard_string: {}\n",
+                         count++,
+                         sizeof(double),
+                         m_ptr->get_identifier_str(),
+                         fmt::format("{}", m_ptr->get_macro_category()),
+                         unique_macro_switch);
     }
 
     if(postponed)
