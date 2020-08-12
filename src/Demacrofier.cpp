@@ -143,17 +143,11 @@ void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string 
 std::string Demacrofier::Translate(
         PPMacro const* m_ptr, std::ostream& stat, bool cleanup, bool demacrofy)
 {
-    bool postponed = false;
-    std::string demacrofied_str;
-    std::stringstream demacrofied_fstream;
-    //std::string instr;
-    std::string outstr;
     const std::string unique_macro_switch = GenerateUniqueMacroSwitch(m_ptr);
-    const std::string macro_iden = m_ptr->get_identifier().get_value();
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
-    std::string original_str = fmt::format("#define {} {}\n", m_ptr->get_identifier_str(),
+    const std::string original_str = fmt::format("#define {} {}\n", m_ptr->get_identifier_str(),
             m_ptr->get_replacement_list_str_with_comments());
 
     //during the cleanup phase see if the macro was validated or not
@@ -162,12 +156,12 @@ std::string Demacrofier::Translate(
         demacrofy = false;
     }
 
-    //test its transformability
-    if(IsDemacrofiable(*m_ptr) && demacrofy)
+    std::string demacrofied_str;
+    bool postponed = false;
+    if(IsDemacrofiable(*m_ptr) && demacrofy) // test its transformability
     {
         //if transformable then collect the transformed string
         postponed = CollectDemacrofiedString(m_ptr, demacrofied_str);
-        demacrofied_fstream << demacrofied_str;
     }
     else
     {
@@ -177,14 +171,17 @@ std::string Demacrofier::Translate(
 
     //should be after the previous if stmt,
     // as the previous one tests for boolean demacrofy.
+    std::string outstr;
+    const std::string macro_iden = m_ptr->get_identifier().get_value();
+
     if(cleanup)
     {
-        outstr = GenerateTranslation(macro_iden, unique_macro_switch, demacrofied_fstream.str());
+        outstr = GenerateTranslation(macro_iden, unique_macro_switch, demacrofied_str);
         fmt::print(stat, "  - id: {}\n", macro_iden);
     }
     else
     {
-        outstr = SuggestTranslation(unique_macro_switch, demacrofied_fstream.str(), original_str);
+        outstr = SuggestTranslation(unique_macro_switch, demacrofied_str, original_str);
         stat << "  - macro" << std::setw(sizeof(double)) << std::setfill('0') << count++ << ":\n"
              << "    - id: " << m_ptr->get_identifier_str() << "\n"
              << "    - category: " << m_ptr->get_macro_category() << "\n"
@@ -207,8 +204,6 @@ std::string Demacrofier::Translate(
 // FIXME: Refactor out repeated code in the functions below.
 std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
-    std::string arg_str;
-    vpTokInt::const_iterator p_it;
     //TODO: make check for function like macro
     // FIXME: breaks in case when the function doesn't have parameters F(,,,)
     const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
@@ -226,6 +221,7 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
         return DemacrofyStatementType(m_ptr);
     }
 
+    std::string arg_str;
     std::string template_arg;
 
     if(!m_ptr->get_identifier_parameters().empty())
@@ -245,52 +241,37 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 
 std::string DemacrofyStatementType(PPMacro const* m_ptr)
 {
-    std::stringstream demacrofied_line;
     std::string arg_str;
-    vpTokInt::const_iterator p_it;
+    std::string template_arg;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
         arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
 
-        // TODO: I don't like the way this is. It hides the parameter we're interested in.
-        std::string template_arg = fmt::format("template <class _T{}>",
+        template_arg = fmt::format("template <class _T{}>",
                 fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
-
-        demacrofied_line << template_arg;
     }
 
-    demacrofied_line << "\nvoid " //auto then space
-                     << m_ptr->get_identifier().get_value() << "(" << arg_str << ")\n{\n"
-                     << m_ptr->get_formatted_replacement_list_str()
-                     //semicolon has been added because many use cases
-                     //do not have semicolon. for the ones which have it doesn't hurt.
-                     << ";\n}\n";
-
-    return demacrofied_line.str();
+    return fmt::format("{}\nvoid {}({})\n{{\n{};\n}}\n", template_arg,
+            m_ptr->get_identifier().get_value(), arg_str,
+            m_ptr->get_formatted_replacement_list_str());
 }
-
 
 std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 {
-    std::stringstream demacrofied_line;
     std::string arg_str;
-    vpTokInt::const_iterator p_it;
+    std::string template_arg;
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
         arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
 
-        std::string template_arg = fmt::format("template <class _T{}>",
+        template_arg = fmt::format("template <class _T{}>",
                 fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
-        demacrofied_line << template_arg;
     }
 
-    demacrofied_line << "\nvoid " //auto then space
-                     << m_ptr->get_identifier().get_value() << "(" << arg_str << ")\n"
-                     << m_ptr->get_formatted_replacement_list_str() << "\n";
-
-    return demacrofied_line.str();
+    return fmt::format("{}\nvoid {}({})\n{}\n", template_arg, m_ptr->get_identifier().get_value(),
+            arg_str, m_ptr->get_formatted_replacement_list_str());
 }
 
 std::string DemacrofyObjectLike(PPMacro const* m_ptr)
@@ -407,12 +388,12 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
 {
     std::string closure_str;
 
-    // FIXME: Use std::span.
     std::vector<token_type> dep_list = m_ptr->get_replacement_list_dep_idlist();
 
     if(!dep_list.empty())
     {
-        // taking all the parameters by reference
+        // FIXME: This is wasteful.
+        // Figure out the context so that we don't have to do this.
         closure_str = "&";
 
         for(auto&& dep_list_iter : dep_list)
