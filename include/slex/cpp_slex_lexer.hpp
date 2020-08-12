@@ -74,10 +74,9 @@ class lexer_base
         boost::wave::util::position_iterator<IteratorT, PositionT> >
 {
 protected:
-    typedef boost::wave::util::position_iterator<IteratorT, PositionT>
-        iterator_type;
-    typedef typename std::iterator_traits<IteratorT>::value_type  char_type;
-    typedef boost::spirit::classic::lexer<iterator_type> base_type;
+    using iterator_type = boost::wave::util::position_iterator<IteratorT, PositionT>;
+    using char_type = typename std::iterator_traits<IteratorT>::value_type;
+    using base_type = boost::spirit::classic::lexer<iterator_type>;
 
     lexer_base();
 
@@ -96,7 +95,7 @@ class lexer
 :   public lexer_base<IteratorT, PositionT>
 {
 public:
-    typedef boost::wave::cpplexer::slex_token<PositionT>  token_type;
+    using token_type = boost::wave::cpplexer::slex_token<PositionT>;
 
     void init_dfa(boost::wave::language_support language);
 
@@ -108,7 +107,7 @@ public:
     static boost::wave::util::time_conversion_helper compilation_time;
 
 private:
-    typedef lexer_base<IteratorT, PositionT> base_type;
+    using base_type = lexer_base<IteratorT, PositionT>;
 
     static typename base_type::lexer_data const init_data[INIT_DATA_SIZE];          // common patterns
     static typename base_type::lexer_data const init_data_cpp[INIT_DATA_CPP_SIZE];  // C++ only patterns
@@ -608,11 +607,10 @@ class slex_functor
 {
 public:
 
-    typedef boost::wave::util::position_iterator<IteratorT, PositionT>
-          iterator_type;
-    typedef typename std::iterator_traits<IteratorT>::value_type    char_type;
-    typedef BOOST_WAVE_STRINGTYPE                                   string_type;
-    typedef typename lexer::lexer<IteratorT, PositionT>::token_type token_type;
+    using iterator_type = boost::wave::util::position_iterator<IteratorT, PositionT>;
+    using char_type = typename std::iterator_traits<IteratorT>::value_type;
+    using string_type = BOOST_WAVE_STRINGTYPE;
+    using token_type = typename lexer::lexer<IteratorT, PositionT>::token_type;
 
     slex_functor(IteratorT const &first_, IteratorT const &last_,
             PositionT const &pos_, boost::wave::language_support language_)

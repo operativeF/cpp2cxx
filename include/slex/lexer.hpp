@@ -982,7 +982,7 @@ ccl_node::dump(std::ostream& out) const
 template <typename ScannerT>
 class make_concat
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
 
@@ -1063,12 +1063,11 @@ get_byte(CharT c, unsigned int byte)
 template <typename ScannerT>
 class make_star
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     make_star(std::stack<node*>& the_stack)
         : m_stack(the_stack)
@@ -1088,7 +1087,7 @@ public:
 template <typename ScannerT>
 class make_or
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
 
@@ -1112,12 +1111,11 @@ public:
 template <typename ScannerT>
 class make_plus
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     make_plus(std::stack<node*>& the_stack)
         : m_stack(the_stack)
@@ -1141,12 +1139,11 @@ public:
 template <typename ScannerT>
 class make_optional
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     make_optional(std::stack<node*>& the_stack)
         : m_stack(the_stack)
@@ -1489,12 +1486,11 @@ end_outer_for:
 template <typename ScannerT>
 class make_char
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     make_char(std::stack<node*>& the_stack)
         : m_stack(the_stack)
@@ -1519,12 +1515,11 @@ public:
 template <typename ScannerT>
 class make_ccl
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     make_ccl(std::stack<node*>& the_stack)
         : m_stack(the_stack)
@@ -1664,12 +1659,11 @@ public:
 template <typename ScannerT>
 class make_any_char
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     std::stack<node*>& m_stack;
 
@@ -1697,12 +1691,11 @@ public:
 template <typename ScannerT>
 class make_string
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     std::stack<node*>& m_stack;
 
@@ -1761,12 +1754,11 @@ node* optional_node(node* n)
 template <typename ScannerT>
 class make_rep1
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     std::stack<node*>& m_stack;
 
@@ -1797,12 +1789,11 @@ public:
 template <typename ScannerT>
 class make_rep2
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     std::stack<node*>& m_stack;
 
@@ -1835,12 +1826,11 @@ public:
 template <typename ScannerT>
 class make_rep3
 {
-    typedef typename ScannerT::iterator_t iterator_type;
+    using iterator_type = typename ScannerT::iterator_t;
 
 public:
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-        char_t;
+    using char_t =
+        typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
     std::stack<node*>& m_stack;
 
@@ -1895,11 +1885,10 @@ public:
     template <typename ScannerT>
     struct definition
     {
-        typedef rule<ScannerT> rule_t;
-        typedef typename ScannerT::iterator_t iterator_type;
-        typedef
-            typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type
-            char_t;
+        using rule_t = rule<ScannerT>;
+        using iterator_type = typename ScannerT::iterator_t;
+        using char_t =
+            typename BOOST_SPIRIT_IT_NS::iterator_traits<iterator_type>::value_type;
 
         rule_t regex, re, series, singleton, singleton2, fullccl, ccl, string,
             escseq, ccl_char;
@@ -1999,14 +1988,14 @@ public:
                     +( (anychar_p - chset<>("\"\\")) | escseq )
                 ;
 
-            typedef
+            using oct_parser_t =
                 uint_parser<char_t, 8, 1,
                     std::numeric_limits<char_t>::digits / 3 + 1
-                > oct_parser_t;
-            typedef
+                >;
+            using hex_parser_t =
                 uint_parser<char_t, 16, 1,
                     std::numeric_limits<char_t>::digits / 4 + 1
-                > hex_parser_t;
+                >;
 
             escseq =
                     ch_p('\\')
@@ -2045,11 +2034,8 @@ template <typename StringT>
 inline node *
 parse(lexer_grammar& g, StringT const& str)
 {
-    typedef
-        scanner<typename StringT::const_iterator, scanner_policies<> >
-        scanner_t;
-    typedef typename rule<scanner_t>::template result<scanner_t>::type
-        result_t;
+    using scanner_t = scanner<typename StringT::const_iterator, scanner_policies<> >;
+    using result_t = typename rule<scanner_t>::template result<scanner_t>::type;
         
     typename StringT::const_iterator first = str.begin();
     typename StringT::const_iterator last = str.end();
@@ -2108,10 +2094,10 @@ struct regex_match_helper<false> // single byte char
             typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type
         > *token)
     {
-        typedef std::basic_string<
+        using string_type = std::basic_string<
             typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type
-        > string_type;
-        typedef typename string_type::size_type size_type;
+        >;
+        using size_type = typename string_type::size_type;
         
         node_id_t s = 0;
         node_id_t last_accepting_index = invalid_node;
@@ -2157,11 +2143,10 @@ struct regex_match_helper<true> // wide char
             typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type
         > *token)
     {
-        typedef
-            typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type
-            char_t;
-        typedef std::basic_string<char_t> string_type;
-        typedef typename string_type::size_type size_type;
+        using char_t =
+            typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type;
+        using string_type = std::basic_string<char_t>;
+        using size_type = typename string_type::size_type;
 
         node_id_t s = 0;
         node_id_t last_accepting_index = invalid_node;
@@ -2233,10 +2218,8 @@ template <typename IteratorT = char const*, typename TokenT = int,
 class lexer
 {
 public:
-    typedef CallbackT callback_t;
-    typedef
-        typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type
-        char_t;
+    using callback_t = CallbackT;
+    using char_t = typename BOOST_SPIRIT_IT_NS::iterator_traits<IteratorT>::value_type;
 
     struct regex_info
     {
@@ -2259,9 +2242,9 @@ public:
         std::vector<std::vector<node_id_t> >    transition_table;
         std::vector<node_id_t>                  acceptance_index;
     };
-    typedef std::vector<node_id_t> node_table_t;
-    typedef std::vector<node_table_t> transition_table_t;
-    typedef std::vector<dfa_table> dfa_t;
+    using node_table_t = std::vector<node_id_t>;
+    using transition_table_t = std::vector<node_table_t>;
+    using dfa_t = std::vector<dfa_table>;
 
 
     lexer(unsigned int states = 1);
@@ -2281,7 +2264,7 @@ public:
 #if defined(BOOST_SPIRIT_DEBUG) && (BOOST_SPIRIT_DEBUG_FLAGS & BOOST_SPIRIT_DEBUG_FLAGS_SLEX)
     void dump(std::ostream& out);
 #endif
-    typedef std::vector<std::vector<regex_info> > regex_list_t;
+    using regex_list_t = std::vector<std::vector<regex_info> >;
 
     bool load (std::ifstream &in, long unique_id = 0);
     bool save (std::ofstream &out, long unique_id = 0);
@@ -2704,9 +2687,9 @@ long out_long = SLEX_SIGNATURE;
     slex_out(out, m_num_states);
 
 // save the dfa tables
-    typedef typename dfa_t::const_iterator dfa_iter_t;
-    typedef transition_table_t::const_iterator transition_table_iter_t;
-    typedef node_table_t::const_iterator node_table_iter_t;
+    using dfa_iter_t = typename dfa_t::const_iterator;
+    using transition_table_iter_t = transition_table_t::const_iterator;
+    using node_table_iter_t = node_table_t::const_iterator;
 
     std::size_t out_size_t = m_dfa.size();
     slex_out(out, out_size_t);

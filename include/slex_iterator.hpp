@@ -48,7 +48,7 @@ namespace impl {
 template <typename TokenT> 
 class slex_iterator_functor_shim 
 {
-    typedef typename TokenT::position_type  position_type;
+    using position_type = typename TokenT::position_type;
 
 public:
     slex_iterator_functor_shim()
@@ -136,24 +136,22 @@ typename slex_iterator_functor_shim<TokenT>::result_type const
 template <typename FunctorData>
 struct make_multi_pass
 {
-    typedef  
-        std::pair<typename FunctorData::unique, typename FunctorData::shared> 
-    functor_data_type;
-    typedef typename FunctorData::result_type result_type;
+    using functor_data_type =  
+        std::pair<typename FunctorData::unique, typename FunctorData::shared>;
+    using result_type = typename FunctorData::result_type;
 
-    typedef boost::spirit::iterator_policies::split_functor_input input_policy;
-    typedef boost::spirit::iterator_policies::ref_counted ownership_policy;
+    using input_policy = boost::spirit::iterator_policies::split_functor_input;
+    using ownership_policy = boost::spirit::iterator_policies::ref_counted;
 #if defined(BOOST_WAVE_DEBUG)
-    typedef boost::spirit::iterator_policies::buf_id_check check_policy;
+    using check_policy = boost::spirit::iterator_policies::buf_id_check;
 #else
-    typedef boost::spirit::iterator_policies::no_check check_policy;
+    using check_policy = boost::spirit::iterator_policies::no_check;
 #endif
-    typedef boost::spirit::iterator_policies::split_std_deque storage_policy;
+    using storage_policy = boost::spirit::iterator_policies::split_std_deque;
 
-    typedef boost::spirit::iterator_policies::default_policy<
-            ownership_policy, check_policy, input_policy, storage_policy>
-        policy_type;
-    typedef boost::spirit::multi_pass<functor_data_type, policy_type> type;
+    using policy_type = boost::spirit::iterator_policies::default_policy<
+            ownership_policy, check_policy, input_policy, storage_policy>;
+    using type = boost::spirit::multi_pass<functor_data_type, policy_type>;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,17 +159,16 @@ template <typename TokenT>
 class slex_iterator 
 :   public make_multi_pass<impl::slex_iterator_functor_shim<TokenT> >::type
 {
-    typedef impl::slex_iterator_functor_shim<TokenT> input_policy_type;
+    using input_policy_type = impl::slex_iterator_functor_shim<TokenT>;
 
-    typedef typename make_multi_pass<input_policy_type>::type base_type;
-    typedef typename make_multi_pass<input_policy_type>::functor_data_type 
-        functor_data_type;
+    using base_type = typename make_multi_pass<input_policy_type>::type;
+    using functor_data_type = typename make_multi_pass<input_policy_type>::functor_data_type;
 
-    typedef typename input_policy_type::unique unique_functor_type;
-    typedef typename input_policy_type::shared shared_functor_type;
+    using unique_functor_type = typename input_policy_type::unique;
+    using shared_functor_type = typename input_policy_type::shared;
 
 public:
-    typedef TokenT token_type;
+    using token_type = TokenT;
 
     slex_iterator()
     {}
@@ -191,7 +188,7 @@ public:
 
     void set_position(typename TokenT::position_type const &pos)
     {
-        typedef typename token_type::position_type position_type;
+        using position_type = typename token_type::position_type;
 
     // set the new position in the current token
     token_type const& currtoken = this->base_type::dereference(*this);

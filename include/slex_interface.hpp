@@ -64,7 +64,7 @@ template <typename TokenT>
 struct slex_input_interface 
 :   lex_input_interface<TokenT>
 {
-    typedef typename lex_input_interface<TokenT>::position_type position_type;
+    using position_type = typename lex_input_interface<TokenT>::position_type;
 
 //  The new_lexer function allows the opaque generation of a new lexer object.
 //  It is coupled to the token type to allow to distinguish different 
