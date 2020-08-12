@@ -407,15 +407,15 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
 
 std::string GetFunctionArgs(const PPMacro* m_ptr)
 {
-    std::string dtype = "decltype(";
     std::stringstream arg_string;
-
-    auto invok_iter = m_ptr->get_use_case_string().begin();
-    // identifier parameters iterator
-    auto ip_iter = m_ptr->get_identifier_parameters().begin();
 
     if(!m_ptr->get_identifier_parameters().empty())
     {
+        std::string dtype = "decltype(";
+        
+        auto invok_iter = m_ptr->get_use_case_string().begin();
+        auto ip_iter = m_ptr->get_identifier_parameters().begin();
+
         arg_string << dtype << *invok_iter << ") " << ip_iter->arg.get_value();
 
         while(++ip_iter != m_ptr->get_identifier_parameters().end())
