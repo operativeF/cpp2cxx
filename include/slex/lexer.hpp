@@ -2623,36 +2623,36 @@ std::size_t dfa_size = 0;
 
     slex_in (in, dfa_size);
     in_dfa.resize(dfa_size);
-    for (std::size_t dfa = 0; dfa < dfa_size; ++dfa)
+    for (auto&& dfa_id : in_dfa)
     {
     // load the transition tables
     std::size_t tt_size = 0;
-    transition_table_t &tt_table = in_dfa[dfa].transition_table;
+    transition_table_t &tt_table = dfa_id.transition_table;
 
         slex_in (in, tt_size);
         tt_table.resize(tt_size);
-        for (std::size_t tt = 0; tt < tt_size; ++tt)
+        for (auto&& tt_id : tt_table)
         {
         std::size_t nt_size = 0;
-        node_table_t &nt_table = tt_table[tt];
+        node_table_t &nt_table = tt_id;
 
             slex_in (in, nt_size);
             nt_table.resize(nt_size);
-            for (std::size_t nt = 0; nt < nt_size; ++nt)
+            for (auto&& nt_id : nt_table)
             {
-                slex_in (in, nt_table[nt]);
+                slex_in (in, nt_id);
             }
         }
 
     // load the acceptance index table
     std::size_t ai_size = 0;
-    node_table_t &ai_table = in_dfa[dfa].acceptance_index;
+    node_table_t &ai_table = dfa_id.acceptance_index;
 
         slex_in (in, ai_size);
         ai_table.resize(ai_size);
-        for (std::size_t ai = 0; ai < ai_size; ++ai)
+        for (auto&& n_id : ai_table)
         {
-            slex_in (in, ai_table[ai]);
+            slex_in (in, n_id);
         }
     }
 
@@ -2675,7 +2675,7 @@ template <typename IteratorT, typename TokenT, typename CallbackT>
 inline bool
 lexer<IteratorT, TokenT, CallbackT>::save (std::ofstream &out, long unique_id)
 {
-// save signature and version information
+// save signature and version information1
 long out_long = SLEX_SIGNATURE;
 
     slex_out(out, out_long);
