@@ -524,22 +524,20 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 // @TODO: This does too many things to the input variables.
 std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
-    std::stringstream id_value;
-    std::stringstream mac_stmt;
-    mac_stmt << it->get_value();
+    std::string mac_stmt = fmt::format("{}", it->get_value());
     macro_ref.set_operation(PPOperation::undef);
     boost::wave::token_id id{};
     while((id = *(++it)) == boost::wave::T_SPACE)
     {
-        mac_stmt << it->get_value();
+        fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
     }
-    id_value << it->get_value();
-    mac_stmt << it->get_value();
+    std::string id_value = it->get_value();
+    fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
     macro_ref.set_identifier(*it);
-    macro_ref.set_identifier_str(id_value.str());
+    macro_ref.set_identifier_str(id_value);
     macro_ref.set_macro_category(MacroCategory::null_define); // no replacement list
     //macro_ref.set_replacement_list_str("");
-    return mac_stmt.str();
+    return mac_stmt;
 }
 
 /** @todo to check how the incomplete expressions are tested
