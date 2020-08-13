@@ -24,7 +24,6 @@ limitations under the License.
 #include "clang_interface/ASTConsumer.hpp"
 #include "clang_interface/FunctionInfo.h"
 
-#pragma warning(push, 0)
 #include "llvm/Support/Host.h"
 
 #include "clang/AST/Decl.h"
@@ -41,7 +40,6 @@ limitations under the License.
 #include "clang/Lex/HeaderSearch.h"
 #include "clang/Lex/Preprocessor.h"
 #include "clang/Parse/ParseAST.h"
-#pragma warning(pop)
 
 #include <fmt/format.h>
 

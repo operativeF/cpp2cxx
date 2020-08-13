@@ -25,7 +25,6 @@ limitations under the License.
 #include "cpp2cxx/Macro.h"
 
 #include <fmt/ostream.h>
-#include <iomanip>
 #include <ostream>
 
 

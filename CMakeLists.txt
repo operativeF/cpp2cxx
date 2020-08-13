@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.17)
 
 project(demacrofier VERSION 2.0 LANGUAGES CXX)
 
@@ -41,6 +41,8 @@ message(STATUS "Found CLI11")
 
 find_package(doctest CONFIG REQUIRED)
 message(STATUS "Found doctest library")
+
+find_path(ROBIN_MAP_INCLUDE_DIRS "tsl/robin_growth_policy.h")
 
 add_subdirectory(src)
 
