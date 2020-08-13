@@ -72,10 +72,10 @@ struct MacroStat;
 class PPMacro
 {
 public:
+    // FIXME: Create better constructors.
     PPMacro(std::ostream& log_file);
 
     void set_identifier(token_type const& tok);
-    void put_tokens(std::vector<token_type> const& vec_tokens);
     void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);
     void set_identifier_str(const std::string& str);
     void set_replacement_list(const token_type& tok);
@@ -92,8 +92,6 @@ public:
     void SetUseCaseStr(const std::vector<std::string>& vec_string);
 
     token_type get_identifier() const;
-    std::vector<token_type> const& get_tokens() const;
-    std::size_t get_num_tokens() const;
     std::string const& get_identifier_str() const;
     void dump() const;
     std::string get_replacement_list_str() const;
@@ -106,12 +104,13 @@ public:
     PPOperation get_operation() const;
     MacroCategory get_macro_category() const;
 
-    bool is_function_like() const
+    // FIXME: Make these functions static non-members
+    bool IsFunctionLike() const
     {
         return m_cat == MacroCategory::function_like;
     }
 
-    bool is_object_like() const
+    bool IsObjLike() const
     {
         return m_cat == MacroCategory::object_like;
     }
@@ -125,8 +124,6 @@ public:
     std::vector<token_type> get_replacement_list_dep_idlist() const;
 
     CondCategory get_conditional_category() const;
-
-    std::pair<token_iterator, token_iterator> get_use_case() const;
 
     std::vector<std::string> const& get_use_case_string() const;
 
@@ -147,11 +144,9 @@ private:
     bool HasLowerCase() const;
     bool HasLeadingUnderscore() const;
 
-private:
     // the macro identifier token
     token_type identifier;
-    //the complete macro -- operation + identifier +(args)opt + rep_text
-    std::vector<token_type> macro_tokens;
+    std::pair<token_iterator, token_iterator> use_case;
     //the complete identifier string including arguments
     std::string identifier_str;
     //keep the function_like PPMacro's arguments and their position
@@ -163,8 +158,6 @@ private:
     std::ostream& logFile;
     ReplacementList rep_list;
     CondCategory condCat{ CondCategory::config };
-    // keep only the first use case
-    std::pair<token_iterator, token_iterator> use_case;
     std::vector<std::string> invoArgs;
     bool use_case_set;
     MacroStat m_stat;

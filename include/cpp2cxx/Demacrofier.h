@@ -35,7 +35,6 @@ limitations under the License.
  *  for compiling pass -std=c++0x to the compiler
  */
 
-#include "ValidatorMap.h"
 #include "clang_interface/FunctionInfo.h"
 
 #include <iosfwd>
@@ -58,6 +57,10 @@ class PPMacro;
  * @class Demacrofier
  * @brief demacrofies the macro on a per macro basis
  */
+
+// Also defined in ValidatorMap.h
+using ValidMacros_t = std::set<std::string>;
+
 class Demacrofier
 {
 public:

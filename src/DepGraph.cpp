@@ -258,7 +258,7 @@ void MacTree::CheckToken(const token_iterator& tok_iter)
         /// @todo this token is a macro we are taking the first entry
         /// of the multimap which keeps macro
         /// *********collecting the args of function like macro **********
-        if(pm_iter.first->second->is_function_like())
+        if(pm_iter.first->second->IsFunctionLike())
         {
             macroUseCaseState.PutArgBegin(tok_iter, pm_iter.first->second);
         }

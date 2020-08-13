@@ -29,6 +29,7 @@ limitations under the License.
 #include "cpp2cxx/Macro.h"
 #include "cpp2cxx/MacroStat.h"
 #include "cpp2cxx/RlParser.h"
+#include "cpp2cxx/ValidatorMap.h"
 
 #include "general_utilities/vector_utils.hpp"
 
@@ -415,7 +416,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
         ++object_like_count;
     }
     macro_ref.set_identifier_str(id_value.str());
-    macro_ref.put_tokens(macro_tokens);
+
     try
     {
         if(macro_list == localMacros && pDemacroficationScheme->enableWarningFlag)

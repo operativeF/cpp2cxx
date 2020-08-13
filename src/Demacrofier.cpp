@@ -33,12 +33,13 @@ limitations under the License.
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
-#include <iomanip>
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <string_view>
 #include <vector>
+
+// TODO: Remove line continuations that are on their own line.
 
 template <>
 struct fmt::formatter<token_instances>
@@ -98,7 +99,7 @@ void Demacrofier::SetValidator(ValidMacros_t const* v_macros)
 bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
 {
     bool postponed = false;
-    if(m_ptr->is_function_like())
+    if(m_ptr->IsFunctionLike())
     {
         if(m_ptr->get_macro_scope_category().inside_function)
         {
@@ -110,7 +111,7 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
             demacrofied_str = DemacrofyFunctionLike(m_ptr);
         }
     }
-    else if(m_ptr->is_object_like())
+    else if(m_ptr->IsObjLike())
     {
         const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
         // only statement like functions can have the lambda function tx
@@ -239,6 +240,9 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 
 
     // FIXME: Use names for variables here.
+    // TODO: This is simple substitution and can be improved by type deduction
+    // from the tokens. This also means that types are deduced even for functions
+    // that don't return anything, which looks a bit nonsensical.
     return fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n", template_arg,
             m_ptr->get_identifier().get_value(), arg_str, m_ptr->get_replacement_list_str(),
             m_ptr->get_replacement_list_str());
@@ -262,6 +266,8 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
             m_ptr->get_formatted_replacement_list_str());
 }
 
+// TODO: Determine the appropriate variable value / reference / pointer
+// somehow.
 std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 {
     std::string arg_str;
@@ -410,6 +416,9 @@ std::string GetFunctionClosure(const PPMacro* m_ptr)
     return closure_str;
 }
 
+// TODO: Replace regular (basic) types with their actual
+// names vs using decltype. This should be just a matter of
+// getting the correct token ID.
 std::string GetFunctionArgs(const PPMacro* m_ptr)
 {
     std::stringstream arg_string;

@@ -478,6 +478,7 @@ void RlParser::Expression8()
     case T_SIGNED:
     ///@todo left for now  to be looked into later
     ///how to handle macros like #define _size_type_ unsigned int
+    /// 8/11/2020: Should be handled something like - using _size_type_ = unsigned int;
     case T_NEW:
     case T_DELETE:
     case T_DYNAMICCAST:

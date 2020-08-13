@@ -25,13 +25,11 @@ limitations under the License.
 #include "cpp2cxx/ExceptionHandler.h"
 #include "cpp2cxx/MacroStat.h"
 #include "cpp2cxx/RlParser.h"
-#include "general_utilities/vector_utils.hpp"
 
 #include <fmt/core.h>
 #include <fmt/ostream.h>
 
 #include <algorithm>
-#include <cctype>
 #include <string>
 
 // @TODO: Replace with smart pointer
@@ -47,12 +45,6 @@ void PPMacro::set_identifier(const token_type& tok)
 {
     identifier = tok;
     //    std::cout<<"identifier: "<<(*it).get_value()<<std::endl;
-}
-
-void PPMacro::put_tokens(const std::vector<token_type>& vec_tokens)
-{
-    macro_tokens = vec_tokens;
-    //macro_tokens will have atleast one element
 }
 
 void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int parameter_count)
@@ -173,30 +165,15 @@ bool PPMacro::HasLowerCase() const
             [](unsigned char c) { return std::islower(c) != 0; });
 }
 
-
 bool PPMacro::HasLeadingUnderscore() const
 {
     return identifier_str.starts_with("_");
 }
 
-
 token_type PPMacro::get_identifier() const
 {
     return identifier;
 }
-
-
-const std::vector<token_type>& PPMacro::get_tokens() const
-{
-    return macro_tokens;
-}
-
-
-std::size_t PPMacro::get_num_tokens() const
-{
-    return macro_tokens.size();
-}
-
 
 const std::string& PPMacro::get_identifier_str() const
 {
@@ -318,12 +295,6 @@ std::vector<token_type> PPMacro::get_replacement_list_dep_idlist() const
     }
 
     return dep_idlist;
-}
-
-
-std::pair<token_iterator, token_iterator> PPMacro::get_use_case() const
-{
-    return use_case;
 }
 
 const std::vector<std::string>& PPMacro::get_use_case_string() const

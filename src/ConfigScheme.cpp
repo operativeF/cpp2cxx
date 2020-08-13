@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "cpp2cxx/ValidatorMap.h"
 #include "cpp2cxx/ConfigScheme.h"
 
 #include <algorithm>
