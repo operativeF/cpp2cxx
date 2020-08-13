@@ -33,7 +33,7 @@ limitations under the License.
 #include <memory>
 #include <string>
 
-Overseer::Overseer(ConfigScheme& config_scheme)
+Overseer::Overseer(ConfigScheme&& config_scheme)
         : configScheme(config_scheme),
           pFileManager(std::make_unique<FileManager>(
                   GetFileManagerScheme(), GetDemacroficationScheme())),
@@ -170,7 +170,6 @@ FileManagerScheme& Overseer::GetFileManagerScheme()
     return configScheme.GetFileManagerScheme();
 }
 
-// @TODO: Move to the constructor?
 void Overseer::GenerateExternalASTHandler(const std::string& filename)
 {
     /// generally the function definitions are not in header files. This has been done to make things faster and minimize

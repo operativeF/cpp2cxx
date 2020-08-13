@@ -66,7 +66,7 @@ class MacTree;
 class Overseer
 {
 public:
-    Overseer(ConfigScheme& config_scheme);
+    explicit Overseer(ConfigScheme&& config_scheme);
 
     void ConfigureFileManager();
     /**
@@ -102,7 +102,7 @@ public:
 
 
 private:
-    ConfigScheme& configScheme;
+    ConfigScheme configScheme;
     std::unique_ptr<FileManager> pFileManager;
     std::unique_ptr<Parser> pParser;
     const MacTree* pMacTree {nullptr};

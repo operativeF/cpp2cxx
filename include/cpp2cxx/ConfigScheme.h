@@ -49,8 +49,6 @@ class ConfigScheme
 {
 
 public:
-    ConfigScheme() noexcept;
-    ~ConfigScheme();
     void SetFileManagerScheme(const std::vector<std::filesystem::path>& input_files,
             const std::vector<std::filesystem::path>& output_files,
             const std::vector<std::filesystem::path>& search_paths, const std::filesystem::path& input_directory,
@@ -71,8 +69,8 @@ public:
     BuildScheme& GetBuildScheme();
 
 private:
-    FileManagerScheme* pFileManagerScheme;
-    DemacroficationScheme* pDemacroficationScheme;
-    BuildScheme* pBuildScheme;
+    FileManagerScheme pFileManagerScheme;
+    DemacroficationScheme pDemacroficationScheme;
+    BuildScheme pBuildScheme;
 };
 #endif /*CONFIGSCHEME_H*/
