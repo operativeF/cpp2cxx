@@ -60,16 +60,6 @@ namespace clang
 class TrackMacro : public PPCallbacks
 {
 public:
-    TrackMacro() noexcept : m_istat(nullptr)
-    {
-    }
-
-    // @TODO: Get rid of manual memory usage
-    ~TrackMacro()
-    {
-        delete m_istat;
-    }
-
     /// PPCallback
     void MacroExpands(const Token& MacroNameTok, const MacroInfo* MI,
             SourceRange Range); //, MacroArgs* Args); in old version of 3.1
@@ -83,7 +73,7 @@ public:
     /// if the macro is local to the current file being processed
     bool MacroIsLocal(SourceLocation loc);
 
-    void SetFileName(const std::string& f);
+    void SetFileName(std::string_view f);
 
     const std::string& GetFileName();
 
@@ -116,7 +106,7 @@ private:
     ASTMacroStat_t ASTMacroStat;
     //std::map<std::string, CollectedMacroInfo>ASTMacroStat;
     // contains the line numbers of all the macro invocations in a file
-    InvocationStat_t* m_istat;
+    InvocationStat_t* m_istat{nullptr};
     const CompilerInstance* pci;
     SourceManager* sm{ nullptr };
 };

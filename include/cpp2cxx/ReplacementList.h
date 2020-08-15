@@ -72,7 +72,7 @@ class ReplacementList
 public:
     //use token_iterator const&
     void set_replacement_list(const token_type& tok);
-    void set_replacement_list_str(std::string const& str, const vpTokInt& argId);
+    void set_replacement_list_str(std::string_view str, const vpTokInt& argId);
     void set_replacement_list_category(RlParser& rl_parser);
     /// set by the dependency analyzer at a later stage
     void set_replacement_list_dependency_category(bool c);

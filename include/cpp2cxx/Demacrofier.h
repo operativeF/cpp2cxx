@@ -39,6 +39,7 @@ limitations under the License.
 
 #include <iosfwd>
 #include <map>
+#include <optional>
 #include <string>
 
 /**
@@ -116,8 +117,8 @@ public:
 };
 
 std::string DemacrofyFunctionLike(const PPMacro* m_ptr);
-std::string GetFunctionClosure(const PPMacro* m_ptr);
-std::string GetFunctionArgs(const PPMacro* m_ptr);
+std::optional<std::string> GetFunctionClosure(const PPMacro* m_ptr);
+std::optional<std::string> GetFunctionArgs(const PPMacro* m_ptr);
 std::string GetFunctionBody(const PPMacro* m_ptr);
 std::string DemacrofyObjectLike(const PPMacro* m_ptr);
 std::string DemacrofyMultipleStatements(const PPMacro* m_ptr);

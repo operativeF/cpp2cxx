@@ -76,7 +76,7 @@ Parser::Parser(const DemacroficationScheme& demacrofication_scheme, std::ostream
     cp = std::make_unique<CondParser>(fileGlobalMacros);
 }
 
-void Parser::Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is)
+void Parser::Parse(const std::filesystem::path& file_name, ASTMacroStat_t* p, InvocationStat_t* is)
 {
     assert(p && "AST does not give any information");
     pASTMacroStat = p;
@@ -86,13 +86,15 @@ void Parser::Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationSt
     //after parsing localMacros contains all the macros parsed
     //putting all the macros in this file
     fmt::print(mlFile,
-            "- Total_Macros: {}\n- Total_Function_Like_Macros: {}\n- Total_Object_Like_Macros: {}\n",
+            "- Total_Macros: {}\n"
+            "- Total_Function_Like_Macros: {}\n"
+            "- Total_Object_Like_Macros: {}\n",
             macro_count, function_like_count, object_like_count);
     PrintMacroStats(mlFile, vec_macro_stat);
 }
 
 /// @todo complete this function
-void Parser::Parse(const std::string& file_name)
+void Parser::Parse(const std::filesystem::path& file_name)
 {
     logFile << file_name << ":\n";
     /// @todo not clearing the list of local macros for a file
@@ -113,7 +115,7 @@ void Parser::Parse(const std::string& file_name)
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     ifileStr += "\n";
-    position_type pos(file_name);
+    position_type pos(file_name.string(), 1Ui64, 1Ui64);
     ParseLocalMacros(ifileStr, pos);
 }
 
@@ -130,9 +132,10 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
         globalMacros.clear();
 
         std::ifstream gMacros(global_macro_file_name, std::ios_base::in);
+
         if(!gMacros.is_open())
         {
-            logFile << "  - error: " << global_macro_file_name << " couldn't be opened\n";
+            fmt::print(logFile, "  - error: {} could not be opened.\n", global_macro_file_name.string());
             throw ExceptionHandler("global macro file could not be opened");
         }
 
@@ -149,7 +152,7 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
     }
     catch(ExceptionHandler& e)
     {
-        logFile << "  - error: " << e.GetExMessage() << "\n";
+        fmt::print(logFile, "  - error: {}\n", e.GetExMessage());
         throw;
     }
     //should be after parsing the global macros
@@ -178,7 +181,7 @@ void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     instr += "\n";
-    position_type pos(raw_global_macro_file_name);
+    position_type pos(raw_global_macro_file_name, 1Ui64, 1Ui64);
 
     it = token_iterator(instr.begin(), instr.end(), pos,
             boost::wave::language_support(
@@ -428,6 +431,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     {
         logFile << "  - error: " << e.GetExMessage() << "\n";
     }
+    
     //skip spaces until we find the replacement text
     while((id = *it) == boost::wave::T_SPACE)
     {
@@ -527,15 +531,15 @@ std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
     std::string mac_stmt = fmt::format("{}", it->get_value());
     macro_ref.set_operation(PPOperation::undef);
-    boost::wave::token_id id{};
-    while((id = *(++it)) == boost::wave::T_SPACE)
+    
+    while((*(++it)) == boost::wave::T_SPACE)
     {
         fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
     }
-    std::string id_value = it->get_value();
+
     fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
     macro_ref.set_identifier(*it);
-    macro_ref.set_identifier_str(id_value);
+    macro_ref.set_identifier_str(it->get_value());
     macro_ref.set_macro_category(MacroCategory::null_define); // no replacement list
     //macro_ref.set_replacement_list_str("");
     return mac_stmt;

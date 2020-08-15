@@ -94,7 +94,7 @@ const std::vector<std::filesystem::path>& Overseer::GetInputFiles()
     return pFileManager->GetInputFiles();
 }
 
-void Overseer::RunParser(const std::string& log_file_name)
+void Overseer::RunParser(const std::filesystem::path& log_file_name)
 {
     /// pass the data collected from clang front end
     pParser->Parse(log_file_name, &ASTMacroStat, nullptr);

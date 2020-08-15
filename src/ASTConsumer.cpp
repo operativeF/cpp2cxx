@@ -501,11 +501,9 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // Kind is C_User for now because I do not know how to set the right option,
     // this does not matter so much, I think it is only used to selectively
     // emit/ignore compiler warnings.
-    const clang::SrcMgr::CharacteristicKind Kind = clang::SrcMgr::C_User;
-
     const clang::FileEntry* pFile = ci.getFileManager().getFile(file_name).get();
     clang::SourceManager& SourceMgr = ci.getSourceManager();
-    SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), Kind));
+    SourceMgr.setMainFileID(SourceMgr.createFileID(pFile, clang::SourceLocation(), clang::SrcMgr::C_User));
 
     // set file and loc parameters for the track_macro callback
     // placing here is important. It should be after the source manager
@@ -520,7 +518,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
 void MyASTConsumer::PrintSourceLocation(const clang::SourceManager& sm, clang::SourceLocation loc)
 {
     /// print only when the functions are in the current file
-    if(const clang::PresumedLoc presumed = sm.getPresumedLoc(loc); m_current_file == presumed.getFilename())
+    if(const clang::PresumedLoc presumed = sm.getPresumedLoc(loc, true); m_current_file == presumed.getFilename())
     {
         fmt::print("line: {}, column: {}", presumed.getLine(), presumed.getColumn());
     }
@@ -531,7 +529,7 @@ void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
     const clang::CompilerInstance& ci = *pci;
     const clang::SourceManager& sm = ci.getSourceManager();
     // @TODO: Check fd for nullness?
-    clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin());
+    clang::PresumedLoc presumed = sm.getPresumedLoc(fd->getSourceRange().getBegin(), true);
     /// print only when the functions are in the current file
     if(m_current_file == presumed.getFilename())
     {
@@ -546,7 +544,7 @@ void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
         ParsedDeclInfo inf{};
 
         inf.start_line = presumed.getLine();
-        presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
+        presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd(), true);
         inf.end_line = presumed.getLine();
         FunctionInfo[fd->getNameInfo().getAsString()] = inf;
     }

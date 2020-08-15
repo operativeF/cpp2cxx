@@ -23,6 +23,9 @@ limitations under the License.
 
 #include "clang_interface/TrackMacro.hpp"
 
+#include <fmt/core.h>
+#include <fmt/ranges.h>
+
 #include <map>
 #include <string>
 
@@ -55,7 +58,7 @@ void TrackMacro::MacroExpands(const Token& MacroNameTok, const MacroInfo* MI, So
     /// so that global macros can be skipped
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
-        const PresumedLoc presumed = sm->getPresumedLoc(Range.getBegin());
+        const PresumedLoc presumed = sm->getPresumedLoc(Range.getBegin(), true);
 
         //NOTE PresumedLoc can be modified by the LINE directive
 
@@ -91,7 +94,7 @@ void TrackMacro::MacroDefined(const Token& MacroNameTok, const MacroDirective* M
     CollectedMacroInfo cmi;
     if(sm->isInMainFile(MI->getDefinitionLoc()))
     {
-        const PresumedLoc presumed = sm->getPresumedLoc(MI->getDefinitionLoc());
+        const PresumedLoc presumed = sm->getPresumedLoc(MI->getDefinitionLoc(), true);
 
         cmi.defined_line = presumed.getLine();
         //std::cout<<"Macro "<<tok::getTokenName(MacroNameTok.getKind())<<" is defined here\n\t";
@@ -131,12 +134,12 @@ bool TrackMacro::MacroIsLocal(SourceLocation loc)
     //clang::FileID ID = sm->getFileID(loc);
     //std::cout<<"file id = "<<ID.getHashValue()<<"\n";
     //std::cout<<"Filea name is: "<<file_name;
-    return file_name == sm->getBufferName(loc);
+    return file_name == sm->getBufferName(loc, nullptr);
     //PresumedLoc presumed = sm->getPresumedLoc(loc);
     //if(file_name == presumed.getFilename())
 }
 
-void TrackMacro::SetFileName(const std::string& f)
+void TrackMacro::SetFileName(std::string_view f)
 {
     file_name = f;
     //std::cout<<"File name in TrackMacro set to: "<<file_name;

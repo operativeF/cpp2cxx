@@ -475,7 +475,7 @@ int main(int argc, char* argv[])
         /**     ***********     END PRORAM OPTIONS   ************/
 
 
-        ConfigScheme pConfigScheme; // = new ConfigScheme();
+        ConfigScheme pConfigScheme;
 
         //set file manager scheme should be called before
         //the set demcrofication scheme because the demacrofication scheme
@@ -493,8 +493,7 @@ int main(int argc, char* argv[])
         //step2. start processing
         pOverseer.StartProcessing(!no_translate);
         
-        std::cout << "\ndone...\n";
-
+        fmt::print("\nFinished...\n");
 
         ///@todo when global_macros_formatted is provided use that one
         plog_file.close();

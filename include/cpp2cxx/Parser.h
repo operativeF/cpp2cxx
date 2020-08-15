@@ -78,10 +78,10 @@ public:
     Parser(DemacroficationScheme const& demacrofication_scheme, std::ostream& log_file,
             std::ostream& macro_list_file);
 
-    void Parse(const std::string& file_name);
-    void Parse(const std::string& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
+    void Parse(const std::filesystem::path& file_name);
+    void Parse(const std::filesystem::path& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
 
-    void ParseNewGlobalMacros(std::string const& raw_global_macro_file_name);
+    void ParseNewGlobalMacros(const std::string& raw_global_macro_file_name);
     void ReadGlobalMacros(const std::filesystem::path& global_macro_file_name);
     //Parser(std::string instr, position_type pos);
 

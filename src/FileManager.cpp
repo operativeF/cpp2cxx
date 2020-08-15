@@ -97,12 +97,11 @@ void FileManager::UpdateFile(std::string_view file_str)
         ///For no output file name output shall be
         ///redirected to the standard output";
         // @TODO: Remove unsafe bounds here.
-        std::string log_msg = fmt::format(
-                "No output file was found for input file: {}."
-                "Output shall be redirected to the standard output",
-                fileManagerScheme.inputFiles[outputFileIndex].string());
+        WriteLog(
+                fmt::format("No output file was found for input file: {}."
+                            "Output shall be redirected to the standard output",
+                        fileManagerScheme.inputFiles[outputFileIndex].string()));
 
-        WriteLog(log_msg);
         UpdateFile(std::cout, file_str);
     }
 }

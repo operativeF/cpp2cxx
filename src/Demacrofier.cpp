@@ -341,7 +341,7 @@ std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]()->void {{ {}; }};\n", m_ptr->get_identifier().get_value(),
-            GetFunctionClosure(m_ptr), GetFunctionBody(m_ptr));
+            GetFunctionClosure(m_ptr).value_or(""), GetFunctionBody(m_ptr));
     // if it already has a semicolon or not
     // if(!(m_ptr->get_replacement_list().get_replacement_list_token_type()).statement_type)
     //  demacrofied_line << ";";
@@ -391,54 +391,49 @@ bool IsDemacrofiable(PPMacro const& mac)
 std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]({}) {{ return {}; }};\n",
-            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr), GetFunctionArgs(m_ptr),
+            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr).value_or(""), GetFunctionArgs(m_ptr).value_or(""),
             GetFunctionBody(m_ptr));
 }
 
-std::string GetFunctionClosure(const PPMacro* m_ptr)
+std::optional<std::string> GetFunctionClosure(const PPMacro* m_ptr)
 {
-    std::string closure_str;
-
-    std::vector<token_type> dep_list = m_ptr->get_replacement_list_dep_idlist();
-
-    if(!dep_list.empty())
+    if(!m_ptr->get_replacement_list_dep_idlist().empty())
     {
-        // FIXME: This is wasteful.
-        // Figure out the context so that we don't have to do this.
-        closure_str = "&";
+        std::string closure_str;
 
-        for(auto&& dep_list_iter : dep_list)
+        for(auto&& dep : m_ptr->get_replacement_list_dep_idlist())
         {
-            fmt::format_to(std::back_inserter(closure_str), ", &{}", dep_list_iter.get_value());
+            fmt::format_to(std::back_inserter(closure_str), "&{}", dep.get_value());
         }
+
+        return closure_str;
     }
 
-    return closure_str;
+    return std::nullopt;
 }
 
 // TODO: Replace regular (basic) types with their actual
 // names vs using decltype. This should be just a matter of
 // getting the correct token ID.
-std::string GetFunctionArgs(const PPMacro* m_ptr)
+std::optional<std::string> GetFunctionArgs(const PPMacro* m_ptr)
 {
-    std::stringstream arg_string;
-
     if(!m_ptr->get_identifier_parameters().empty())
     {
-        std::string dtype = "decltype(";
-        
-        auto invok_iter = m_ptr->get_use_case_string().begin();
+        std::vector<std::string> func_args;
+        func_args.reserve(m_ptr->get_use_case_string().size());
         auto ip_iter = m_ptr->get_identifier_parameters().begin();
 
-        arg_string << dtype << *invok_iter << ") " << ip_iter->arg.get_value();
-
-        while(++ip_iter != m_ptr->get_identifier_parameters().end())
+        for(auto&& invok : m_ptr->get_use_case_string())
         {
-            arg_string << ", " << dtype << *(++invok_iter) << ") " << ip_iter->arg.get_value();
+            auto& part_arg = func_args.emplace_back("decltype(" + invok + ") ");
+            part_arg += ip_iter->arg.get_value();
+            ip_iter = std::next(ip_iter);
         }
+
+        return fmt::format("{}", fmt::join(func_args, ", "));
     }
 
-    return arg_string.str();
+    return std::nullopt;
 }
 
 std::string GetFunctionBody(const PPMacro* m_ptr)

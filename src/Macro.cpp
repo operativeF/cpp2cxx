@@ -54,7 +54,7 @@ void PPMacro::set_identifier_parameters(const token_type& tok, unsigned int para
     identifier_parameters.emplace_back(token_instances(tok, parameter_count));
 }
 
-void PPMacro::set_identifier_str(const std::string& ident_str)
+void PPMacro::set_identifier_str(std::string_view ident_str)
 {
     identifier_str = ident_str;
     //    std::cout<<"iden_string: "<<identifier_str<<std::endl;
@@ -67,7 +67,7 @@ void PPMacro::set_replacement_list(const token_type& tok)
     //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
 }
 
-void PPMacro::set_replacement_list_str(const std::string& replacement_str, RlParser& rl_parser)
+void PPMacro::set_replacement_list_str(std::string_view replacement_str, RlParser& rl_parser)
 {
     rep_list.set_replacement_list_str(replacement_str, identifier_parameters);
     //    std::cout<<"repl_string: "<<replacement_list_str<<std::endl;
@@ -138,7 +138,7 @@ void PPMacro::SetUseCaseStr(const std::vector<std::string>& vec_string)
 
 void PPMacro::AnalyzeIdentifier() const
 {
-    if(bool contains_lower_case = HasLowerCase(), begins_with_underscore = HasLeadingUnderscore();
+    if(const bool contains_lower_case = HasLowerCase(), begins_with_underscore = HasLeadingUnderscore();
             contains_lower_case || begins_with_underscore)
     {
         std::string warning_msg = fmt::format("  - line number: {}\t: {}\n",
@@ -154,7 +154,7 @@ void PPMacro::AnalyzeIdentifier() const
             warning_msg += "  - warning: leading underscore(s):\n";
         }
 
-        logFile << warning_msg;
+        fmt::print(logFile, "{}", warning_msg);
         throw ExceptionHandler(warning_msg);
     }
 }
@@ -183,7 +183,7 @@ const std::string& PPMacro::get_identifier_str() const
 
 void PPMacro::dump() const
 {
-    std::cout << identifier_str;
+    fmt::print("{}", identifier_str);
 }
 
 std::string PPMacro::get_replacement_list_str() const
@@ -251,7 +251,7 @@ CondCategory PPMacro::get_conditional_category() const
     return condCat;
 }
 
-
+// TODO: Change this name to reflect creation of object in place.
 std::vector<token_type> PPMacro::get_replacement_list_idlist() const
 {
     return rep_list.get_replacement_list_idlist();

@@ -35,7 +35,7 @@ void ReplacementList::set_replacement_list(const token_type& tok)
     //    std::cout<<"ReplacementList: "<<(*it).get_value()<<std::endl;
 }
 
-void ReplacementList::set_replacement_list_str(const std::string& str, const vpTokInt& argId)
+void ReplacementList::set_replacement_list_str(std::string_view str, const vpTokInt& argId)
 {
     rl_str = str;
     if(!argId.empty())
@@ -70,18 +70,18 @@ std::string ReplacementList::get_replacement_list_str() const
     return strm.str();
 }
 
-std::string const& ReplacementList::get_formatted_replacement_list_str() const
+const std::string& ReplacementList::get_formatted_replacement_list_str() const
 {
     return rl_str_formatted;
 }
 
 //the replacement_list_str contains all the tokens including the comments
-std::string const& ReplacementList::get_replacement_list_str_with_comments() const
+const std::string& ReplacementList::get_replacement_list_str_with_comments() const
 {
     return rl_str;
 }
 
-std::vector<token_type> const& ReplacementList::get_replacement_list_tokens() const
+const std::vector<token_type>& ReplacementList::get_replacement_list_tokens() const
 {
     return rl_tokens;
 }
@@ -96,7 +96,7 @@ RlCCat ReplacementList::get_replacement_list_closure_category() const
     return rl_ccat;
 }
 
-RlTokType const& ReplacementList::get_replacement_list_token_type() const
+const RlTokType& ReplacementList::get_replacement_list_token_type() const
 {
     return rl_ttype;
 }
@@ -106,7 +106,6 @@ RlTokType& ReplacementList::get_replacement_list_token_type()
 {
     return rl_ttype;
 }
-
 
 std::vector<token_type> ReplacementList::get_replacement_list_idlist() const
 {

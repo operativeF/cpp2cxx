@@ -84,7 +84,7 @@ public:
      * 10. catch any errors
      */
     void StartProcessing(bool demacrofy);
-    void RunParser(const std::string& file_name);
+    void RunParser(const std::filesystem::path& file_name);
     void RunDependencyAnalyzer();
     void PrintTotalOrder();
     void RunDemacrofier();

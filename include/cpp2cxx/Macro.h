@@ -77,9 +77,9 @@ public:
 
     void set_identifier(token_type const& tok);
     void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);
-    void set_identifier_str(const std::string& str);
+    void set_identifier_str(std::string_view str);
     void set_replacement_list(const token_type& tok);
-    void set_replacement_list_str(const std::string& str, RlParser& rl_parser);
+    void set_replacement_list_str(std::string_view str, RlParser& rl_parser);
     void set_operation(PPOperation op);
     void set_macro_category(MacroCategory m_cat);
     void set_replacement_list_category(RlParser& rl_parser);
@@ -92,11 +92,11 @@ public:
     void SetUseCaseStr(const std::vector<std::string>& vec_string);
 
     token_type get_identifier() const;
-    std::string const& get_identifier_str() const;
+    const std::string& get_identifier_str() const;
     void dump() const;
     std::string get_replacement_list_str() const;
-    std::string const& get_formatted_replacement_list_str() const;
-    std::string const& get_replacement_list_str_with_comments() const;
+    const std::string& get_formatted_replacement_list_str() const;
+    const std::string& get_replacement_list_str_with_comments() const;
     const vpTokInt& get_identifier_parameters() const;
 
     ReplacementList& get_replacement_list();

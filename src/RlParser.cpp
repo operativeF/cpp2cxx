@@ -697,29 +697,9 @@ bool RlParser::IsRejectPredefinedMacro(const std::string& str) const
 void RlParser::FillFormattedRL(const token_type& tok)
 {
     using namespace boost::wave;
-    //rl_str_formatted += tok.get_value();
-    //rl_str_formatted += " ";
-    switch(tok)
-    {
-    case T_SEMICOLON:
-    case T_LEFTBRACE:
-    case T_RIGHTBRACE:
-        rl_str_formatted += "\n";
-        break;
-    default:
-        break;
-    }
-    //  std::cout<<"FORMATTED REPLACEMENT TEXT:\n";
-    //  std::cout<<rl_str_formatted<<"\n";
-}
 
-/*
- * might be useful for analyzing how the parsing is done
- * capture the output from all the functions like "indside expression 1" etc
-void RlParser::print_state_transition()
-{
-  //std::cout<<replacement_list_str<<"\n";
-  //std::for_each(state_transition.begin(),state_transition.end(),[](int v){//std::cout<<v<<" ";});
-  //std::cout<<"\n";
+    if(tok == T_SEMICOLON || tok == T_LEFTBRACE || tok == T_RIGHTBRACE)
+    {
+        rl_str_formatted += "\n";
+    } 
 }
-*/
