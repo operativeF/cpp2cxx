@@ -47,13 +47,7 @@ Parser::Parser(const DemacroficationScheme& demacrofication_scheme, std::ostream
           rp(std::make_unique<RlParser>(demacrofication_scheme, log_file)),
           demac(std::make_unique<Demacrofier>()),
           logFile(log_file),
-          mlFile(macro_list_file),
-          nesting_level(0),
-          condCat(CondCategory::local),
-          pTree(nullptr),
-          macro_count(0),
-          object_like_count(0),
-          function_like_count(0)
+          mlFile(macro_list_file)
 {
     /// @todo complete this function
     /// @todo dispatch components of demacrofication_scheme to relevant
@@ -97,25 +91,32 @@ void Parser::Parse(const std::filesystem::path& file_name, ASTMacroStat_t* p, In
 void Parser::Parse(const std::filesystem::path& file_name)
 {
     logFile << file_name << ":\n";
-    /// @todo not clearing the list of local macros for a file
+    /// TODO: not clearing the list of local macros for a file
     /// and using the existing macros might become useful
     /// to find the macros in a header file included by the the current file
     localMacros.clear();
+
     std::ifstream instream(file_name, std::ios_base::in);
+
     if(!instream.is_open())
     {
         logFile << "  - error: " << file_name << " couldn't be opened\n";
         throw ExceptionHandler("Input file could not be opened");
     }
-    /// @note the following part is not to be taken into ParseLocalMacros
+
+    /// NOTE: the following part is not to be taken into ParseLocalMacros
     /// because the position_type requires the file name
     instream.unsetf(std::ios::skipws);
+
     ifileStr = std::string(
             std::istreambuf_iterator<char>(instream.rdbuf()), std::istreambuf_iterator<char>());
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
+    // FIXME: Is this necessary?
     ifileStr += "\n";
+
     position_type pos(file_name.string(), 1Ui64, 1Ui64);
+
     ParseLocalMacros(ifileStr, pos);
 }
 
@@ -135,7 +136,8 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
 
         if(!gMacros.is_open())
         {
-            fmt::print(logFile, "  - error: {} could not be opened.\n", global_macro_file_name.string());
+            fmt::print(logFile, "  - error: {} could not be opened.\n",
+                    global_macro_file_name.string());
             throw ExceptionHandler("global macro file could not be opened");
         }
 
@@ -143,9 +145,9 @@ void Parser::ReadGlobalMacros(const std::filesystem::path& global_macro_file_nam
         gMacros.seekg(0, std::ios::beg);
 
         //to ignore the newline at the end of the file
-        for(std::string fc, sc; std::getline(gMacros, fc), std::getline(gMacros, sc); )
+        for(std::string fc, sc; std::getline(gMacros, fc), std::getline(gMacros, sc);)
         {
-            globalMacros.insert({fc, sc});
+            globalMacros.insert({ fc, sc });
         }
 
         gMacros.close();
@@ -168,6 +170,7 @@ void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
 {
     //  const char* infile = "gConditions.h";
     globalMacros.clear();
+
     std::ifstream gmstream(raw_global_macro_file_name, std::ios_base::in);
 
     if(!gmstream.is_open())
@@ -176,18 +179,23 @@ void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
     }
 
     gmstream.unsetf(std::ios::skipws);
+
     std::string instr = std::string(
             std::istreambuf_iterator<char>(gmstream.rdbuf()), std::istreambuf_iterator<char>());
     //just in case the file has only macros and the
     //replacement list of last macro doesn't find a newline
     instr += "\n";
+
     position_type pos(raw_global_macro_file_name, 1Ui64, 1Ui64);
 
     it = token_iterator(instr.begin(), instr.end(), pos,
             boost::wave::language_support(
                     boost::wave::support_cpp | boost::wave::support_option_long_long));
+
     it_begin = it;
+
     it_end = token_iterator();
+
     //first parse the global macros and put into a file which can be used by
     //conditional parser for looking up the list of global macros
     try
@@ -206,6 +214,7 @@ void Parser::ParseNewGlobalMacros(const std::string& raw_global_macro_file_name)
                 [&gMacros](const std::pair<std::string, std::string>& gm) {
                     gMacros << gm.first << "\n" << gm.second << "\n";
                 });
+
         gMacros.close();
     }
     catch(ExceptionHandler& e)
@@ -304,6 +313,7 @@ void Parser::ParseMacros(MacroList_t& macro_list)
             pTree->CheckToken(it);
             break; //goto next line of the code
         }
+
         it++;
     }
 }
@@ -364,6 +374,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
             id = *(++it);
             macro_tokens.push_back(*it);
             id_value << it->get_value();
+
             switch(id)
             {
             case boost::wave::T_NEWLINE:
@@ -418,6 +429,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     {
         ++object_like_count;
     }
+
     macro_ref.set_identifier_str(id_value.str());
 
     try
@@ -431,12 +443,13 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     {
         logFile << "  - error: " << e.GetExMessage() << "\n";
     }
-    
+
     //skip spaces until we find the replacement text
     while((id = *it) == boost::wave::T_SPACE)
     {
         it++;
     }
+
     id = boost::wave::token_id(*it);
     std::stringstream rep_list_str;
 
@@ -455,6 +468,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
         {
             rep_list_str << it->get_value();
         }
+
         macro_ref.set_replacement_list(*it);
 
         if(id == boost::wave::T_CPPCOMMENT)
@@ -466,28 +480,28 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
             break;
         }
         /*
-    else if(id == boost::wave::T_CCOMMENT) {
-      rep_list_str<<it->get_value();
-    }
-    else {
-      rep_list_str<<it->get_value();
-      if(id != boost::wave::T_SPACE)
-        macro_ref.set_replacement_list(*it);
-/// @todo contline is not detected
-//       if(id == boost::wave::T_CONTLINE)
-//         logFile<<"found a contline\n";
-    }
-    */
+        else if(id == boost::wave::T_CCOMMENT) {
+            rep_list_str<<it->get_value();
+        }
+        else {
+            rep_list_str<<it->get_value();
+        if(id != boost::wave::T_SPACE)
+            macro_ref.set_replacement_list(*it);
+        /// @todo contline is not detected
+        //       if(id == boost::wave::T_CONTLINE)
+        //         logFile<<"found a contline\n";
+        }
+        */
 
         //accumulate all the tokens in replacement list in a string
         //id = boost::wave::token_id(*(++it));
         id = *(++it);
     }
-    /**          The order of following two statements should not be changed
+
+    /** The order of following two statements should not be changed
     If the last token was a CPP comment then we insert a token which will
     make replacement string have 1 token, and hence would not pass the
-    null_define criteria
-  */
+    null_define criteria */
     if(rep_list_str.str().empty())
     {
         m_cat = MacroCategory::null_define;
@@ -529,9 +543,9 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 // @TODO: This does too many things to the input variables.
 std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
-    std::string mac_stmt = fmt::format("{}", it->get_value());
+    std::string mac_stmt = it->get_value();
     macro_ref.set_operation(PPOperation::undef);
-    
+
     while((*(++it)) == boost::wave::T_SPACE)
     {
         fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
@@ -561,7 +575,6 @@ void Parser::PPIfHandler(Node& node)
 //used when '#ifdef or #ifndef' is called
 void Parser::PPIfHandler(Node& node, bool def)
 {
-    std::stringstream id_value;
     condStmt.push_back(*it);
 
     while((*(++it)) == boost::wave::T_SPACE)
@@ -570,9 +583,8 @@ void Parser::PPIfHandler(Node& node, bool def)
     }
 
     condStmt.push_back(*it);
-    id_value << it->get_value();
     // FIXME: Why don't we just use this function to return a condcat?
-    if(PPCheckIdentifier(id_value.str(), globalMacros))
+    if(PPCheckIdentifier(it->get_value(), globalMacros))
     {
         condCat = CondCategory::config;
     }
@@ -587,7 +599,7 @@ void Parser::PPIfHandler(Node& node, bool def)
     //not useful as of now
     if(def)
     {
-        PPCheckIdentifier(id_value.str());
+        PPCheckIdentifier(it->get_value());
     }
 }
 
@@ -595,10 +607,9 @@ void Parser::ParseLocalMacros(std::string ifileStr, const position_type& pos)
 {
     //logFile<<"Parsing local Macros:\n";
     it = token_iterator(ifileStr.begin(), ifileStr.end(), pos,
-            boost::wave::language_support(
-                    boost::wave::support_cpp |
-                    boost::wave::support_option_long_long |
-                    boost::wave::support_option_emit_contnewlines));
+            boost::wave::language_support(boost::wave::support_cpp
+                                          | boost::wave::support_option_long_long
+                                          | boost::wave::support_option_emit_contnewlines));
     it_begin = it;
     it_end = token_iterator();
 
@@ -619,6 +630,7 @@ void Parser::PPBuildMacroDependencyList(std::ostream& os)
     //typedef std::vector<std::pair<PPMacro*,std::vector<PPMacro*> > > DepList_t;
 
     DepList_t const& dl = pTree->BuildMacroDependencyList();
+
     try
     {
         DepAnalyzer<PPMacro> macro_dep(dl);
@@ -652,23 +664,17 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
     demac->SetMacroInvocationStat(pInvocationStat);
     demac->SetValidator(&pDemacroficationScheme->validatorMap.GetValidMacros());
 
-    std::string demacrofied_string;
     it = it_begin;
-    PPMacro* m_ptr = nullptr;
 
     using TokenMacroMap_t = std::multimap<token_type, PPMacro*>;
     using PairMacroIter_t = std::pair<TokenMacroMap_t::iterator, TokenMacroMap_t::iterator>;
-    PairMacroIter_t pm_iter;
-
-    Demacrofier::ReadyQueue_t::iterator post_demac_iter;
 
     while(it != it_end)
     {
         std::size_t defn_counter = 0;
 
-        switch(auto id = boost::wave::token_id(*it); id)
+        if(auto id = boost::wave::token_id(*it); id == boost::wave::T_PP_DEFINE)
         {
-        case boost::wave::T_PP_DEFINE:
             it++;
             it++; //one for #define and the other for space
             /// find the macro associated with this token and then pass the macro
@@ -677,8 +683,10 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
             /// find the exact match by matching the location(position)
             /// @todo: check if works for object_like macro only
             //modify for function_like macro--check
-            pm_iter = pTree->GetMacro(*it);
+            auto pm_iter = pTree->GetMacro(*it);
             /// to be looked for exact macro
+            PPMacro* m_ptr = nullptr;
+
             std::for_each(pm_iter.first, pm_iter.second,
                     [this, &m_ptr, &defn_counter](const std::pair<token_type, PPMacro*>& tm_pair) {
                         ++defn_counter;
@@ -687,15 +695,21 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
                             m_ptr = tm_pair.second;
                         }
                     });
+
             // if there was no match then throw error, although it is unlikely
+            // FIXME: How unlikely?
             if(m_ptr == nullptr)
             {
-                std::string err_msg = fmt::format("  - error: no macro with identifier: {} found.\n", it->get_value());
+                std::string err_msg = fmt::format(
+                        "  - error: no macro with identifier: {} found.\n", it->get_value());
                 throw ExceptionHandler(err_msg);
             }
             /// multiple definitions should not actually matter
             /// because if they are not in the conditionals that means
             /// the programmer has messed up in the first place
+
+            std::string demacrofied_string;
+
             if(defn_counter > 1 && !multiple_definitions_allowed)
             {
                 logFile << "  - error: "
@@ -716,11 +730,13 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
 
             /// @todo call the observer class here for the compilation
             it = GoPastMacro(it);
-            break;
-        default:
+        }
+        else
+        {
             //search if there is a postponed demacrofication for this line number
 
-            post_demac_iter = demac->readyQueue.find(it->get_position().get_line());
+            auto post_demac_iter = demac->readyQueue.find(it->get_position().get_line());
+
             if(post_demac_iter != demac->readyQueue.end())
             {
                 //std::cout<<"\nline number:"<<it->get_position().get_line();
@@ -732,15 +748,15 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
             /// handle postponed demacrofication here
             outStream << it->get_value();
             //std::cout<<"\nPrinting the demacrofied string::\n"<<demacrofied_string<<"\n\n";
-            break;
         }
+
         it++;
     }
 }
 
 token_iterator Parser::GoPastMacro(token_iterator it)
 {
-    boost::wave::token_id id = *it;
+    auto id = boost::wave::token_id(*it);
 
     while(id != boost::wave::T_NEWLINE)
     {
@@ -748,8 +764,10 @@ token_iterator Parser::GoPastMacro(token_iterator it)
         {
             return it; //go back to point to the end of macro
         }
+
         id = *(++it);
     }
+
     return it; //go back to point to the end of macro
 }
 
@@ -768,41 +786,3 @@ void Parser::InitializeMacTree()
     }
     pTree = new MacTree;
 }
-
-/*
-void Parser::ParseGlobalMacros()
-{
-#ifdef BUILD_NEW_MACRO_LIST
-  //writing into fileGlobalMacros
-  ParseMacros(globalMacros);
-  std::ofstream gMacros(fileGlobalMacros);
-  if(!gMacros.is_open())
-    throw ExceptionHandler("file: " + fileGlobalMacros + " couldn't be opened\n");
-  std::for_each(globalMacros.begin(),globalMacros.end(),
-    [&gMacros](std::pair<std::string,std::string> gm) {
-      gMacros << gm.first <<"\n"<< gm.second<<"\n";
-    });
-  gMacros.close();
-#else
-  //reading from fileGlobalMacros
-  const unsigned int line_width = 2048;
-  char fc[line_width],sc[line_width];
-  std::ifstream gMacros(fileGlobalMacros);
-  if(!gMacros.is_open())
-    throw ExceptionHandler("file: " + fileGlobalMacros + " couldn't be opened\n");
-  gMacros.seekg(0,std::ios::beg);
-
-  //to ignore the newline at the end of the file
-  gMacros.getline(fc,line_width);
-  gMacros.getline(sc,line_width);
-  while(gMacros.good()) {
-    //put the macro identifier and the replacement_list into some data structure
-    globalMacros.insert(std::make_pair(fc,sc));
-    //logFile<<fc<<"\t"<<sc<<"\n";
-    gMacros.getline(fc,line_width);
-    gMacros.getline(sc,line_width);
-  }
-  gMacros.close();
-#endif
-}
-*/

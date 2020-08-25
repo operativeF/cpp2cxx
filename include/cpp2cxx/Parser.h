@@ -79,7 +79,8 @@ public:
             std::ostream& macro_list_file);
 
     void Parse(const std::filesystem::path& file_name);
-    void Parse(const std::filesystem::path& file_name, ASTMacroStat_t* p, InvocationStat_t* is = nullptr);
+    void Parse(const std::filesystem::path& file_name, ASTMacroStat_t* p,
+            InvocationStat_t* is = nullptr);
 
     void ParseNewGlobalMacros(const std::string& raw_global_macro_file_name);
     void ReadGlobalMacros(const std::filesystem::path& global_macro_file_name);
@@ -120,7 +121,6 @@ private:
      *     @class Demacrofier;
      */
     /// @todo friend to be removed from CondParser
-    friend class CondParser;
     friend class Demacrofier;
 
     /// @brief pointer to the map passed by the Overseer class,
@@ -166,12 +166,11 @@ private:
      * @details nesting level is 0 for the predefined macros and
      * increases by 1 with each #if style block
      */
-    int nesting_level;
+    int nesting_level{ 0 };
     /**
-     * @var std::string fileGlobalMacros;
      * @details useful for passing around the conditional category(config/local)
      */
-    CondCategory condCat;
+    CondCategory condCat{ CondCategory::local };
 
     /**
      * @var std::string fileGlobalMacros;
@@ -193,17 +192,18 @@ private:
     /// @brief list of macros in the current file
     MacroList_t localMacros;
     /// @brief list of predefined macros
+    // FIXME: Make this static.
     MacroList_t globalMacros;
     /// @brief make this a pointer to tree and dynamically allocate
-    MacTree* pTree;
+    MacTree* pTree{ nullptr };
     /// @brief demacrofied file
     std::stringstream outStream;
     /// @brief the input file contents
     std::string ifileStr;
     /// @brief statistics
-    unsigned int macro_count;
-    unsigned int object_like_count;
-    unsigned int function_like_count;
+    std::size_t macro_count{ 0 };
+    std::size_t object_like_count{ 0 };
+    std::size_t function_like_count{ 0 };
     std::vector<MacroStat> vec_macro_stat;
 };
 
