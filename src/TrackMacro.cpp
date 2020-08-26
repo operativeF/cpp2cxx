@@ -213,7 +213,7 @@ void TrackMacro::VerifyMacroScopeFast(std::map<std::string, ParsedDeclInfo> cons
 
         if(fdr_iter->second == end)
         {
-            (ms->second).s_cat.inside_function = true;
+            (ms->second).s_cat = MacroScopeCategory::inside_function;
         }
     }
 }
@@ -230,7 +230,7 @@ void TrackMacro::VerifyMacroScope(std::map<std::string, ParsedDeclInfo> const& F
             if((ms->second).defined_line > (fi->second).start_line
                     && (ms->second).defined_line < (fi->second).end_line)
             {
-                (ms->second).s_cat.inside_function = true;
+                (ms->second).s_cat = MacroScopeCategory::inside_function;
             }
         }
     }

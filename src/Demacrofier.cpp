@@ -96,12 +96,14 @@ void Demacrofier::SetValidator(ValidMacros_t const* v_macros)
 }
 
 // @TODO: Remove the out argument, it's confusing.
+// FIXME: Put the postponement inside the macro?
+// FIXME: Return the demacrofied_string
 bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
 {
     bool postponed = false;
     if(m_ptr->IsFunctionLike())
     {
-        if(m_ptr->get_macro_scope_category().inside_function)
+        if(m_ptr->get_macro_scope_category() == MacroScopeCategory::inside_function)
         {
             demacrofied_str = DemacrofyFunctionLikePostponed(m_ptr);
             postponed = true;
@@ -129,10 +131,12 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
     return postponed;
 }
 
+// 
 void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr)
 {
     // each macro has an entry in the pASTMacroStat
     const auto ast_macro_iter = pASTMacroStat->find(macro_iden);
+
     if((ast_macro_iter != pASTMacroStat->end()) && !ast_macro_iter->second.invoked_lines.empty())
     {
         auto line_no = ast_macro_iter->second.invoked_lines.front();
@@ -141,6 +145,7 @@ void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string 
     //std::cout<<"\nmacro was not found in the ASTConsumer:"<<macro_iden.str();
 }
 
+// TODO: Clean up this function a bit.
 std::string Demacrofier::Translate(
         PPMacro const* m_ptr, std::ostream& stat, bool cleanup, bool demacrofy)
 {
@@ -159,6 +164,7 @@ std::string Demacrofier::Translate(
 
     std::string demacrofied_str;
     bool postponed = false;
+    
     if(IsDemacrofiable(*m_ptr) && demacrofy) // test its transformability
     {
         //if transformable then collect the transformed string
@@ -196,10 +202,8 @@ std::string Demacrofier::Translate(
 
     if(postponed)
     {
-        //std::cout << "\nPutting macro: "
-        //          << macro_iden.str()
-        //          << ", into ready queue:\n" << outstr;
         InsertToReadyQueue(macro_iden, outstr);
+        // TODO: Should an empty string really be returned here?
         return "";
     }
 
@@ -239,7 +243,7 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
     }
 
 
-    // FIXME: Use names for variables here.
+    // FIXME: Use names for variables for clarity here.
     // TODO: This is simple substitution and can be improved by type deduction
     // from the tokens. This also means that types are deduced even for functions
     // that don't return anything, which looks a bit nonsensical.
@@ -287,7 +291,6 @@ std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
 
 std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 {
-    // @TODO: Check m_ptr for nullness?
     /*  std::stringstream template_arg;
   std::stringstream arg_str;
   //if it is a statement_type&&assignment_type
@@ -347,7 +350,7 @@ std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
     //  demacrofied_line << ";";
 }
 
-// @TODO: I don't think this is a sane implementation.
+// FIXME: Clean this up a bit...
 bool IsDemacrofiable(PPMacro const& mac)
 {
     bool demacrofiable = false;
@@ -364,7 +367,7 @@ bool IsDemacrofiable(PPMacro const& mac)
         {
             demacrofiable = !(token_cat.keyword_type
                               || (token_cat.assignment_type
-                                      && !mac.get_macro_scope_category().inside_function)
+                                      && (mac.get_macro_scope_category() != MacroScopeCategory::inside_function))
                               || token_cat.braces_type || token_cat.reject_type
                               || token_cat.special_type || token_cat.unknown_type
                               || token_cat.out_of_order_dependent_type);
@@ -376,7 +379,7 @@ bool IsDemacrofiable(PPMacro const& mac)
                               || token_cat.out_of_order_dependent_type);
             /// @brief if we couldnot capture any use case then
             /// it is not possible to apply the lambda function txform
-            if(mac.get_macro_scope_category().inside_function && mac.get_use_case_string().empty())
+            if((mac.get_macro_scope_category() == MacroScopeCategory::inside_function) && mac.get_use_case_string().empty())
             {
                 demacrofiable = false;
             }
@@ -443,7 +446,7 @@ std::string GetFunctionBody(const PPMacro* m_ptr)
 
 std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
 {
-    // @TODO: This gets called everytime, even for the same file.
+    // FIXME: This gets called everytime, even for the same file.
     // Store the filename so it gets called only once per file.
     std::string file_name = general_utilities::keep_alpha_numeric(
             m_ptr->get_identifier().get_position().get_file());

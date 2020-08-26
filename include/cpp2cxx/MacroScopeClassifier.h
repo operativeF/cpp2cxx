@@ -114,47 +114,34 @@ inline std::ostream& operator<<(std::ostream& os, MacroCategory const& m_cat)
 /**
  * @enum  MacroScopeCategory
  */
-struct MacroScopeCategory
+enum class MacroScopeCategory
 {
-    bool predefined{ false };
-    bool local{ true };
-    bool inside_function{ false };
-    bool inside_class{ false };
+    predefined,
+    local,
+    inside_function,
+    inside_class
 };
+
 inline std::ostream& operator<<(std::ostream& os, MacroScopeCategory const& m_cat)
 {
-    if(m_cat.predefined)
-        os << "predefined\t";
-    if(m_cat.local)
-        os << "local\t";
-    if(m_cat.inside_function)
-        os << "inside_function\t";
-    if(m_cat.inside_class)
-        os << "inside_class\t";
-    else
-        os << "Not classified\t";
+    switch(m_cat)
+    {
+        case MacroScopeCategory::predefined:
+            os << "predefined\t";
+            break;
+        case MacroScopeCategory::local:
+            os << "local\t";
+            break;
+        case MacroScopeCategory::inside_function:
+            os << "inside_function\t";
+            break;
+        case MacroScopeCategory::inside_class:
+            os << "inside_class\t";
+            break;
+    }
+
     return os;
 }
-
-/*
-inline std::ostream& operator<<(std::ostream& os, MacroScopeCategory const& m_cat )
-{
-  switch(m_cat){
-    case MacroScopeCategory::predefined:
-      os<<"predefine";
-      break;
-    case MacroScopeCategory::local:
-      os<<"local";
-      break;
-    case MacroScopeCategory::inside_function:
-      os<<"inside_function";
-      break;
-    case MacroScopeCategory::inside_class:
-      os<<"inside_class";
-      break;
-  }
-  return os;
-}*/
 
 /**
  * @enum CondCategory
