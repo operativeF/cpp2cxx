@@ -152,7 +152,7 @@ void MacTree::PushBackMacro(PPMacro& mac)
 {
     PPMacro* m_ptr = depGraph[currVertex]->PushBackMacro(mac);
     linearOrder.push_back(m_ptr);
-    tokenMacroMap.insert({m_ptr->get_identifier(), m_ptr});
+    tokenMacroMap.insert({m_ptr->identifier, m_ptr});
 }
 
 const DepList_t& MacTree::BuildMacroDependencyList()
@@ -165,7 +165,7 @@ const DepList_t& MacTree::BuildMacroDependencyList()
 
         for(auto&& anId : mp_iter->get_replacement_list_dep_idlist())
         {
-            const auto tmm_iter = tokenMacroMap.find(anId);
+            auto tmm_iter = tokenMacroMap.find(anId);
 
             //check if the token was not found
             if(tmm_iter != tokenMacroMap.end())
@@ -258,7 +258,7 @@ void MacTree::CheckToken(const token_iterator& tok_iter)
         /// @todo this token is a macro we are taking the first entry
         /// of the multimap which keeps macro
         /// *********collecting the args of function like macro **********
-        if(pm_iter.first->second->IsFunctionLike())
+        if(IsFunctionLike(*pm_iter.first->second))
         {
             macroUseCaseState.PutArgBegin(tok_iter, pm_iter.first->second);
         }

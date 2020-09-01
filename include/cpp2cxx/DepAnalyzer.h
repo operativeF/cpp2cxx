@@ -61,7 +61,7 @@ private:
     {
         bool operator()(const Vertex_t* v1, const Vertex_t* v2) const
         {
-            return v1->get_identifier_str() == v2->get_identifier_str();
+            return v1->identifier_str == v2->identifier_str;
         }
     };
 
@@ -172,7 +172,7 @@ void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
     for(std::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi)
     {
         orig_order_map[depGraph[*vi]] = ++i;
-        //std::cout<<depGraph[*vi]->get_identifier_str()<<"\n";
+        //std::cout<<depGraph[*vi]->identifier_str<<"\n";
     }
     //num_macros = i;
     i = 0;
@@ -182,14 +182,14 @@ void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
     {
         //inserts the macros in hash table with value as integer
         topo_order_map[depGraph[*ordered_vertices_iter]] = ++i;
-        //std::cout<<depGraph[*ordered_vertices_iter]->get_identifier_str()<<"\n";
+        //std::cout<<depGraph[*ordered_vertices_iter]->identifier_str<<"\n";
     }
 
     ordered_vertices_iter = topo_order.begin();
     if(ordered_vertices_iter != topo_order.end())
     {
         os << "  - log: checking the dependency order of macro "
-           << depGraph[*ordered_vertices_iter]->get_identifier_str() << "\n";
+           << depGraph[*ordered_vertices_iter]->identifier_str << "\n";
     }
     for(; ordered_vertices_iter != topo_order.end(); ordered_vertices_iter++)
     {
@@ -203,23 +203,23 @@ void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
             //macro is found, ask Andrew
 
             err_msg << "  - "
-                    << depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_file()
+                    << depGraph[*ordered_vertices_iter]->identifier.get_position().get_file()
                     << ":"
-                    << depGraph[*ordered_vertices_iter]->get_identifier().get_position().get_line()
+                    << depGraph[*ordered_vertices_iter]->identifier.get_position().get_line()
                     << ":"
                     << depGraph[*ordered_vertices_iter]
-                               ->get_identifier()
+                               ->identifier
                                .get_position()
                                .get_column()
                     << ":\n";
             err_msg << "    - warning: ";
             os << err_msg.str() << "macro '"
-               << depGraph[*ordered_vertices_iter]->get_identifier_str()
+               << depGraph[*ordered_vertices_iter]->identifier_str
                << "' is used before it is defined\n";
             err_msg.str(std::string());
             /// set the out_of_order_dependent_type token type, to true
             depGraph[*ordered_vertices_iter]
-                    ->get_replacement_list()
+                    ->rep_list
                     .set_replacement_list_dependency_category(true);
             boost::tie(ei, ei_end) = boost::edges(depGraph);
             //finding the macro which depend upon this out of order macros
@@ -231,29 +231,29 @@ void DepAnalyzer<Vertex_t>::CheckTotalOrder(std::ostream& os)
                     //print the source vertex
                     os << "    - note: used at: "
                        << depGraph[source(*ei, depGraph)]
-                                    ->get_identifier()
+                                    ->identifier
                                     .get_position()
                                     .get_file()
                        << ":"
                        << depGraph[source(*ei, depGraph)]
-                                    ->get_identifier()
+                                    ->identifier
                                     .get_position()
                                     .get_line()
                        << ":"
                        << depGraph[source(*ei, depGraph)]
-                                    ->get_identifier()
+                                    ->identifier
                                     .get_position()
                                     .get_column()
                        << ":"
-                       << " with macro: " << depGraph[source(*ei, depGraph)]->get_identifier_str()
+                       << " with macro: " << depGraph[source(*ei, depGraph)]->identifier_str
                        << "\n";
                     /// this macro depends upon a macro that is defined after its use
                     depGraph[source(*ei, depGraph)]
-                            ->get_replacement_list()
+                            ->rep_list
                             .set_replacement_list_dependency_category(true);
                 }
             }
-            //err_msg = depGraph[*ordered_vertices_iter]->get_identifier_str();
+            //err_msg = depGraph[*ordered_vertices_iter]->identifier_str;
             //std::cerr << "macro: " << err_msg << ": out of order\n";
         }
     }
@@ -318,7 +318,7 @@ void DepAnalyzer<Vertex_t>::MakeEdges()
         else
         {
             std::string err_msg =
-                    "vertex for " + dl_iter->first->get_identifier_str() + " not added\n";
+                    "vertex for " + dl_iter->first->identifier_str + " not added\n";
             throw ExceptionHandler(err_msg);
         }
         dt_iter = dl_iter->second.begin();
@@ -335,7 +335,7 @@ void DepAnalyzer<Vertex_t>::MakeEdges()
             }
             else
             { //first vertex not found => error
-                std::string err_msg = "macro: " + (*dt_iter)->get_identifier_str() + " not found\n";
+                std::string err_msg = "macro: " + (*dt_iter)->identifier_str + " not found\n";
                 throw ExceptionHandler(err_msg);
             }
         }
@@ -356,7 +356,7 @@ void DepAnalyzer<Vertex_t>::PrintVertices()
 
     for(boost::tie(vi, vi_end) = boost::vertices(depGraph); vi != vi_end; ++vi)
     {
-        strm << depGraph[*vi]->get_identifier_str() << "\n";
+        strm << depGraph[*vi]->identifier_str << "\n";
     }
     std::cout << strm.str();
 }
@@ -375,8 +375,8 @@ void DepAnalyzer<Vertex_t>::PrintEdges()
 
     for(boost::tie(ei, ei_end) = boost::edges(depGraph); ei != ei_end; ++ei)
     {
-        strm << " (" << depGraph[source(*ei, depGraph)]->get_identifier_str() << " , "
-             << depGraph[target(*ei, depGraph)]->get_identifier_str() << ")\n";
+        strm << " (" << depGraph[source(*ei, depGraph)]->identifier_str << " , "
+             << depGraph[target(*ei, depGraph)]->identifier_str << ")\n";
     }
     std::cout << strm.str();
 }

@@ -49,8 +49,7 @@ Parser::Parser(const DemacroficationScheme& demacrofication_scheme, std::ostream
           logFile(log_file),
           mlFile(macro_list_file)
 {
-    /// @todo complete this function
-    /// @todo dispatch components of demacrofication_scheme to relevant
+    /// TODO: dispatch components of demacrofication_scheme to relevant
     /// classes.
     if(!pDemacroficationScheme->globalMacrosFormatted.empty())
     {
@@ -59,14 +58,15 @@ Parser::Parser(const DemacroficationScheme& demacrofication_scheme, std::ostream
     }
     else
     {
-        /// @TODO supply the file name of formatted global macros
+        /// TODO: supply the file name of formatted global macros
         /// from the main function, hardcoding the name here is not a good idea
-        /// @TODO check:: previously the file name was gMacros.dat. I've changed it.
+        /// TODO: check:: previously the file name was gMacros.dat. I've changed it.
         fileGlobalMacros = "gConditions.h";
         ParseNewGlobalMacros(pDemacroficationScheme->globalMacrosRaw);
     }
     // passing the file containing global macros so that it can make a list
     // which is useful in determining if a conditional macro uses global macros
+    // FIXME: We're reading the global macros twice by doing this.
     cp = std::make_unique<CondParser>(fileGlobalMacros);
 }
 
@@ -236,8 +236,10 @@ void Parser::ParseMacros(MacroList_t& macro_list)
     {
         //so that we get a new tempNode and macro everytime
         Node tempNode;
-        PPMacro mac(logFile);
+        PPMacro mac;
         condStmt.clear();
+
+        // FIXME: What happens if there is no endif after the ifs?
         switch(auto id = boost::wave::token_id(*it); id)
         {
         case boost::wave::T_PP_DEFINE:
@@ -296,7 +298,7 @@ void Parser::ParseMacros(MacroList_t& macro_list)
         case boost::wave::T_PP_QHEADER:
         case boost::wave::T_PP_HHEADER:
         case boost::wave::T_PP_ERROR:
-            //what happens if #error is followed by #define in the same line
+            //FIXME: what happens if #error is followed by #define in the same line
         case boost::wave::T_PP_LINE:
         case boost::wave::T_PP_PRAGMA:
             break;
@@ -306,7 +308,7 @@ void Parser::ParseMacros(MacroList_t& macro_list)
             pTree->PushBackMacro(mac);
             break;
         case boost::wave::T_PP_WARNING:
-            //what happens if #error is followed by #define in the same line
+            //FIXME: what happens if #error is followed by #define in the same line
             break;
         default:
             //logFile<<"  - log: checking token: "<<it->get_value()<<"\n";
@@ -329,11 +331,12 @@ bool Parser::PPCheckIdentifier(std::string const& id_str, MacroList_t const& mac
     return macro_list.find(id_str) != macro_list.end();
 }
 
+// FIXME: Change this to a factory-like function.
 void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
     //PPMacro macro_ref;
     ++macro_count;
-    macro_ref.set_operation(PPOperation::define);
+    macro_ref.operation = PPOperation::define;
     // logFile<<"  - log: in define \n";
     //identifier string
     std::stringstream id_value;
@@ -348,7 +351,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     id_value << it->get_value();
     //keep the identifier token string for later use
     std::string iden_token_str = id_value.str();
-    macro_ref.set_identifier(*it);
+    macro_ref.identifier = *it;
     macro_tokens.push_back(*it);
     //move to the next token to check if it is function like PPMacro or not
     it++;
@@ -391,7 +394,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
                 if(parameter_count == comma_count && parameter_count != 0)
                 {
                     parameter_count++;
-                    macro_ref.set_identifier_parameters(dummy_token, parameter_count);
+                    macro_ref.identifier_parameters.push_back({dummy_token, parameter_count});
                 }
                 break;
                 //read next function argument
@@ -399,14 +402,14 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
                 if(parameter_count == comma_count)
                 {
                     parameter_count++;
-                    macro_ref.set_identifier_parameters(dummy_token, parameter_count);
+                    macro_ref.identifier_parameters.push_back({dummy_token, parameter_count});
                 }
                 comma_count++;
                 // cout<<"\nfound comma :: parameter_count "<<parameter_count;
                 break;
             case boost::wave::T_IDENTIFIER:
                 parameter_count++;
-                macro_ref.set_identifier_parameters(*it, parameter_count);
+                macro_ref.identifier_parameters.push_back({*it, parameter_count});
                 break;
             /// make the MacroCategory as struct with member variables
             /// or think of other scheme because the membership is not
@@ -430,13 +433,13 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
         ++object_like_count;
     }
 
-    macro_ref.set_identifier_str(id_value.str());
+    macro_ref.identifier_str = id_value.str();
 
     try
     {
         if(macro_list == localMacros && pDemacroficationScheme->enableWarningFlag)
         {
-            macro_ref.AnalyzeIdentifier();
+            AnalyzeIdentifier(macro_ref);
         }
     }
     catch(ExceptionHandler& e)
@@ -469,7 +472,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
             rep_list_str << it->get_value();
         }
 
-        macro_ref.set_replacement_list(*it);
+        macro_ref.rep_list.set_replacement_list(*it);
 
         if(id == boost::wave::T_CPPCOMMENT)
         {
@@ -512,7 +515,7 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     //and hence the newline token is inserted separately there itself
     if(id != boost::wave::T_CPPCOMMENT)
     {
-        macro_ref.set_replacement_list(*it);
+        macro_ref.rep_list.set_replacement_list(*it);
     }
     /** **********************************************************************/
 
@@ -522,29 +525,31 @@ void Parser::PPDefineHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     if(pASTMacroStat->find(iden_token_str) != pASTMacroStat->end())
     {
         //std::cout<<"setting the scope category for macro: "<<iden_token_str<<"\n";
-        macro_ref.set_macro_scope_category((*pASTMacroStat)[iden_token_str].s_cat);
+        macro_ref.m_scat = (*pASTMacroStat)[iden_token_str].s_cat;
     }
 
-    macro_ref.set_macro_category(m_cat);
-    macro_ref.set_replacement_list_str(rep_list_str.str(), *rp);
+    macro_ref.m_cat = m_cat;
+    macro_ref.rep_list.set_replacement_list_str(rep_list_str.str(), macro_ref.identifier_parameters);
+    macro_ref.rep_list.set_replacement_list_category(*rp);
     //get the list of identifiers from the replacement_list
     //and insert into the localMacros
     //macro_ref.get_replacement_list_idlist();
     macro_list.insert(std::make_pair(id_value.str(), rep_list_str.str()));
     macro_ref.SetMacroStat();
-    vec_macro_stat.push_back(macro_ref.GetMacroStat());
+    vec_macro_stat.push_back(macro_ref.m_stat);
 }
 
 /**
- * @todo not inserting the identifier into the macro_list as of now.
+ * FIXME: not inserting the identifier into the macro_list as of now.
  * look into the macro_list if the macro is predefined or local,
  * or if the macro was even present or not.
  */
-// @TODO: This does too many things to the input variables.
+// FIXME: This does too many things to the input variables.
+// FIXME: Change this to a factory-like function.
 std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
 {
     std::string mac_stmt = it->get_value();
-    macro_ref.set_operation(PPOperation::undef);
+    macro_ref.operation = PPOperation::undef;
 
     while((*(++it)) == boost::wave::T_SPACE)
     {
@@ -552,9 +557,9 @@ std::string Parser::PPUndefHandler(MacroList_t& macro_list, PPMacro& macro_ref)
     }
 
     fmt::format_to(std::back_inserter(mac_stmt), "{}", it->get_value());
-    macro_ref.set_identifier(*it);
-    macro_ref.set_identifier_str(it->get_value());
-    macro_ref.set_macro_category(MacroCategory::null_define); // no replacement list
+    macro_ref.identifier = *it;
+    macro_ref.identifier_str = it->get_value();
+    macro_ref.m_cat = MacroCategory::null_define; // no replacement list
     //macro_ref.set_replacement_list_str("");
     return mac_stmt;
 }
@@ -605,7 +610,6 @@ void Parser::PPIfHandler(Node& node, bool def)
 
 void Parser::ParseLocalMacros(std::string ifileStr, const position_type& pos)
 {
-    //logFile<<"Parsing local Macros:\n";
     it = token_iterator(ifileStr.begin(), ifileStr.end(), pos,
             boost::wave::language_support(boost::wave::support_cpp
                                           | boost::wave::support_option_long_long
@@ -681,8 +685,8 @@ void Parser::Demacrofy(std::ostream& stat, bool multiple_definitions_allowed)
             /// find the macro corresponding to this identifier from the tree
             /// since the tree returns entries from multimap, we have to
             /// find the exact match by matching the location(position)
-            /// @todo: check if works for object_like macro only
-            //modify for function_like macro--check
+            /// FIXME: check if works for object_like macro only
+            //  modify for function_like macro--check
             auto pm_iter = pTree->GetMacro(*it);
             /// to be looked for exact macro
             PPMacro* m_ptr = nullptr;
@@ -777,6 +781,7 @@ MacTree const* Parser::GetMacTree()
     return pTree;
 }
 
+// FIXME: Memory leak.
 void Parser::InitializeMacTree()
 {
     if(pTree != nullptr)

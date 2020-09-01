@@ -49,17 +49,6 @@ limitations under the License.
 *  for compiling pass -std=c++0x to the compiler
 */
 
-
-/** forward declaration
- * @class DemacroficationScheme
- */
-struct DemacroficationScheme;
-
-/** forward declaration
- * @class RlParser
- */
-class RlParser;
-
 /** forward declaration
  * @class MacroStat
  */
@@ -72,96 +61,118 @@ struct MacroStat;
 class PPMacro
 {
 public:
-    // FIXME: Create better constructors.
-    PPMacro(std::ostream& log_file);
-
-    void set_identifier(token_type const& tok);
-    void set_identifier_parameters(token_type const& tok, unsigned int parameter_count);
-    void set_identifier_str(std::string_view str);
-    void set_replacement_list(const token_type& tok);
-    void set_replacement_list_str(std::string_view str, RlParser& rl_parser);
-    void set_operation(PPOperation op);
-    void set_macro_category(MacroCategory m_cat);
-    void set_replacement_list_category(RlParser& rl_parser);
-    void set_conditional_category(CondCategory ccat);
-    void set_macro_scope_category(MacroScopeCategory m_scat);
-    //for the object like macro first == last for the use_case
+    //for the object like macro 1first == last for the use_case
     // keep only the first use case
     // as a complete list of use case is already returned by clang
     void set_use_case(const std::pair<token_iterator, token_iterator>& token_iter_range);
     void SetUseCaseStr(const std::vector<std::string>& vec_string);
 
-    token_type get_identifier() const;
-    const std::string& get_identifier_str() const;
     void dump() const;
-    std::string get_replacement_list_str() const;
-    const std::string& get_formatted_replacement_list_str() const;
-    const std::string& get_replacement_list_str_with_comments() const;
-    const vpTokInt& get_identifier_parameters() const;
-
-    ReplacementList& get_replacement_list();
-    ReplacementList const& get_replacement_list() const;
-    PPOperation get_operation() const;
-    MacroCategory get_macro_category() const;
-
-    // FIXME: Make these functions static non-members
-    bool IsFunctionLike() const
-    {
-        return m_cat == MacroCategory::function_like;
-    }
-
-    bool IsObjLike() const
-    {
-        return m_cat == MacroCategory::object_like;
-    }
-
-    RlDCat get_replacement_list_dependency_category() const;
-
-    RlCCat get_replacement_list_closure_category() const;
-
-    std::vector<token_type> get_replacement_list_idlist() const;
 
     std::vector<token_type> get_replacement_list_dep_idlist() const;
 
-    CondCategory get_conditional_category() const;
-
-    std::vector<std::string> const& get_use_case_string() const;
-
-    MacroScopeCategory get_macro_scope_category() const;
-
-    static bool IsEquivalent(const std::pair<token_iterator, token_iterator>& token_iter_range);
-    void AnalyzeIdentifier() const;
     /// @brief keeps important details about macro for printing to a file
+    // TODO: Remove this function. Create a separate struct for stats or create stats that link to macros as a separate data structure.
     void SetMacroStat();
-    MacroStat GetMacroStat() const;
 
     bool operator==(PPMacro const& mac) const;
     //bool operator==(token_type const& tok) const;
     //no less than operator should be defined but why??
     bool operator<(PPMacro const& mac) const;
 
-private:
-    bool HasLowerCase() const;
-    bool HasLeadingUnderscore() const;
-
-    // the macro identifier token
-    token_type identifier;
-    std::pair<token_iterator, token_iterator> use_case;
+    MacroCategory m_cat{ MacroCategory::none }; //function like or object like etc...
     //the complete identifier string including arguments
-    std::string identifier_str;
+    std::string identifier_str; // Unique to each macro
+    // the macro identifier token
+    token_type identifier{ boost::wave::T_UNKNOWN }; // Unique to each macro
+    std::pair<token_iterator, token_iterator> use_case;
     //keep the function_like PPMacro's arguments and their position
-    vpTokInt identifier_parameters;
+    vpTokInt identifier_parameters;                // Unique to each macro
     PPOperation operation{ PPOperation::unknown }; //define or undefine etc...
-    MacroCategory m_cat;                           //function like or object like etc...
     MacroScopeCategory m_scat;                     // inside function, inside class, etc...
-    //log file to store all the errors and warnings etc.
-    std::ostream& logFile;
-    ReplacementList rep_list;
-    CondCategory condCat{ CondCategory::config };
-    std::vector<std::string> invoArgs;
-    bool use_case_set;
+    ReplacementList rep_list;                      // Unique to each macro
+    CondCategory cond_cat{ CondCategory::config };
+    std::vector<std::string> invoArgs; // Unique to each macro
+    bool use_case_set{ false };
     MacroStat m_stat;
 };
+
+struct FunctionLike
+{
+    static std::string demacrofy()
+    {
+        return "";
+    }
+};
+
+struct ObjectLike
+{
+    static std::string demacrofy()
+    {
+        return "";
+    }
+};
+
+
+struct MacroStore
+{
+    // std::vector<PPMacro<FunctionLike>> func_macros;
+    // std::vector<PPMacro<ObjectLike>> obj_macros;
+};
+
+template<typename... MacroBunches>
+static void demacro(const MacroBunches&... bunches)
+{
+    // TODO: Transform, instead of for_each, so we can shove the results in another set of vectors.
+    (std::for_each(bunches.begin(), bunches.end(), [](auto&& mac){ mac.demacrofy(); }), ...);
+}
+
+static bool HasLowerCase(const PPMacro& mac)
+{
+    return std::any_of(mac.identifier_str.begin(), mac.identifier_str.end(),
+            [](unsigned char c) { return std::islower(c) != 0; });
+}
+
+static bool HasLeadingUnderscore(const PPMacro& mac)
+{
+    return mac.identifier_str.starts_with("_");
+}
+
+static bool IsFunctionLike(const PPMacro& mac)
+{
+    return mac.m_cat == MacroCategory::function_like;
+}
+
+static bool IsObjLike(const PPMacro& mac)
+{
+    return mac.m_cat == MacroCategory::object_like;
+}
+
+// TODO: Change this behavior. It's misleading, as we're writing to a log here.
+// Also, this generally isn't very well written.
+static void AnalyzeIdentifier(const PPMacro& mac)
+{
+    if(const bool contains_lower_case = HasLowerCase(mac),
+            begins_with_underscore    = HasLeadingUnderscore(mac);
+            contains_lower_case || begins_with_underscore)
+    {
+        std::string warning_msg = fmt::format("  - line number: {}\t: {}\n",
+                mac.identifier.get_position().get_line(), mac.identifier_str);
+
+        if(contains_lower_case)
+        {
+            warning_msg += "  - warning: lower case letters:\n";
+        }
+
+        if(begins_with_underscore)
+        {
+            warning_msg += "  - warning: leading underscore(s):\n";
+        }
+        // TODO: Store to a container and print out at once?
+        //fmt::print(mac.logFile, "{}", warning_msg);
+        //throw ExceptionHandler(warning_msg);
+    }
+}
 
 /**
  * @struct MacroOrder

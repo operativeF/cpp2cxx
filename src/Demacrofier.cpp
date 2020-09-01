@@ -101,9 +101,9 @@ void Demacrofier::SetValidator(ValidMacros_t const* v_macros)
 bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& demacrofied_str) const
 {
     bool postponed = false;
-    if(m_ptr->IsFunctionLike())
+    if(IsFunctionLike(*m_ptr))
     {
-        if(m_ptr->get_macro_scope_category() == MacroScopeCategory::inside_function)
+        if(m_ptr->m_scat == MacroScopeCategory::inside_function)
         {
             demacrofied_str = DemacrofyFunctionLikePostponed(m_ptr);
             postponed = true;
@@ -113,9 +113,9 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
             demacrofied_str = DemacrofyFunctionLike(m_ptr);
         }
     }
-    else if(m_ptr->IsObjLike())
+    else if(IsObjLike(*m_ptr))
     {
-        const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
+        const RlTokType token_cat = m_ptr->rep_list.get_replacement_list_token_type();
         // only statement like functions can have the lambda function tx
         if(token_cat.assignment_type || token_cat.statement_type || token_cat.braces_type)
         {
@@ -131,7 +131,7 @@ bool Demacrofier::CollectDemacrofiedString(PPMacro const* m_ptr, std::string& de
     return postponed;
 }
 
-// 
+//
 void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string const& outstr)
 {
     // each macro has an entry in the pASTMacroStat
@@ -146,6 +146,8 @@ void Demacrofier::InsertToReadyQueue(std::string const& macro_iden, std::string 
 }
 
 // TODO: Clean up this function a bit.
+// Demacrofy and cleanup are global input variables.
+// Either make them part of the macro, or make them static const members.
 std::string Demacrofier::Translate(
         PPMacro const* m_ptr, std::ostream& stat, bool cleanup, bool demacrofy)
 {
@@ -153,8 +155,8 @@ std::string Demacrofier::Translate(
 
     //in case not demacrofiable return the original_str
     //take the function str and the replacement list from *m_ptr
-    const std::string original_str = fmt::format("#define {} {}\n", m_ptr->get_identifier_str(),
-            m_ptr->get_replacement_list_str_with_comments());
+    const std::string original_str = fmt::format("#define {} {}\n", m_ptr->identifier_str,
+            m_ptr->rep_list.get_replacement_list_str_with_comments());
 
     //during the cleanup phase see if the macro was validated or not
     if(cleanup && (pValidaMacros->find(unique_macro_switch) == pValidaMacros->end()))
@@ -164,7 +166,7 @@ std::string Demacrofier::Translate(
 
     std::string demacrofied_str;
     bool postponed = false;
-    
+
     if(IsDemacrofiable(*m_ptr) && demacrofy) // test its transformability
     {
         //if transformable then collect the transformed string
@@ -179,7 +181,7 @@ std::string Demacrofier::Translate(
     //should be after the previous if stmt,
     // as the previous one tests for boolean demacrofy.
     std::string outstr;
-    const std::string macro_iden = m_ptr->get_identifier().get_value();
+    const std::string macro_iden = m_ptr->identifier.get_value();
 
     if(cleanup)
     {
@@ -189,15 +191,13 @@ std::string Demacrofier::Translate(
     else
     {
         outstr = SuggestTranslation(unique_macro_switch, demacrofied_str, original_str);
-        fmt::print(stat, "  - macro{:0{}}:\n"
-                         "     -id: {}\n"
-                         "     - category: {}\n"
-                         "     - header_guard_string: {}\n",
-                         count++,
-                         sizeof(double),
-                         m_ptr->get_identifier_str(),
-                         fmt::format("{}", m_ptr->get_macro_category()),
-                         unique_macro_switch);
+        fmt::print(stat,
+                "  - macro{:0{}}:\n"
+                "     -id: {}\n"
+                "     - category: {}\n"
+                "     - header_guard_string: {}\n",
+                count++, sizeof(double), m_ptr->identifier_str,
+                fmt::format("{}", m_ptr->m_cat), unique_macro_switch);
     }
 
     if(postponed)
@@ -212,11 +212,12 @@ std::string Demacrofier::Translate(
 
 
 // FIXME: Refactor out repeated code in the functions below.
+// FIXME: Create a single Demacrofy that is parameterized on the macro category type.
 std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
 {
     //TODO: make check for function like macro
     // FIXME: breaks in case when the function doesn't have parameters F(,,,)
-    const RlTokType token_cat = m_ptr->get_replacement_list().get_replacement_list_token_type();
+    const RlTokType token_cat = m_ptr->rep_list.get_replacement_list_token_type();
 
     // F(X) {/**/}
     // F(X) X = X+1
@@ -234,12 +235,13 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
     std::string arg_str;
     std::string template_arg;
 
-    if(!m_ptr->get_identifier_parameters().empty())
+    // FIXME: Use empty base class so we can handle cases like this.
+    if(!m_ptr->identifier_parameters.empty())
     {
-        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "");
+        arg_str = concat_func_arg(m_ptr->identifier_parameters, "");
 
         template_arg = fmt::format("template <class _T{}>",
-                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+                fmt::join(m_ptr->identifier_parameters, ", class _T"));
     }
 
 
@@ -248,8 +250,8 @@ std::string DemacrofyFunctionLike(PPMacro const* m_ptr)
     // from the tokens. This also means that types are deduced even for functions
     // that don't return anything, which looks a bit nonsensical.
     return fmt::format("{}\nauto {}({}) -> decltype({})\n{{\n return {};\n}}\n", template_arg,
-            m_ptr->get_identifier().get_value(), arg_str, m_ptr->get_replacement_list_str(),
-            m_ptr->get_replacement_list_str());
+            m_ptr->identifier.get_value(), arg_str, m_ptr->rep_list.get_replacement_list_str(),
+            m_ptr->rep_list.get_replacement_list_str());
 }
 
 std::string DemacrofyStatementType(PPMacro const* m_ptr)
@@ -257,17 +259,17 @@ std::string DemacrofyStatementType(PPMacro const* m_ptr)
     std::string arg_str;
     std::string template_arg;
 
-    if(!m_ptr->get_identifier_parameters().empty())
+    if(!m_ptr->identifier_parameters.empty())
     {
-        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
+        arg_str = concat_func_arg(m_ptr->identifier_parameters, "&&");
 
         template_arg = fmt::format("template <class _T{}>",
-                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+                fmt::join(m_ptr->identifier_parameters, ", class _T"));
     }
 
     return fmt::format("{}\nvoid {}({})\n{{\n{};\n}}\n", template_arg,
-            m_ptr->get_identifier().get_value(), arg_str,
-            m_ptr->get_formatted_replacement_list_str());
+            m_ptr->identifier.get_value(), arg_str,
+            m_ptr->rep_list.get_formatted_replacement_list_str());
 }
 
 // TODO: Determine the appropriate variable value / reference / pointer
@@ -277,16 +279,16 @@ std::string DemacrofyMultipleStatements(PPMacro const* m_ptr)
     std::string arg_str;
     std::string template_arg;
 
-    if(!m_ptr->get_identifier_parameters().empty())
+    if(!m_ptr->identifier_parameters.empty())
     {
-        arg_str = concat_func_arg(m_ptr->get_identifier_parameters(), "&&");
+        arg_str = concat_func_arg(m_ptr->identifier_parameters, "&&");
 
         template_arg = fmt::format("template <class _T{}>",
-                fmt::join(m_ptr->get_identifier_parameters(), ", class _T"));
+                fmt::join(m_ptr->identifier_parameters, ", class _T"));
     }
 
-    return fmt::format("{}\nvoid {}({})\n{}\n", template_arg, m_ptr->get_identifier().get_value(),
-            arg_str, m_ptr->get_formatted_replacement_list_str());
+    return fmt::format("{}\nvoid {}({})\n{}\n", template_arg, m_ptr->identifier.get_value(),
+            arg_str, m_ptr->rep_list.get_formatted_replacement_list_str());
 }
 
 std::string DemacrofyObjectLike(PPMacro const* m_ptr)
@@ -337,37 +339,36 @@ std::string DemacrofyObjectLike(PPMacro const* m_ptr)
 
     // @TODO: do constexpr only for integer literals.
     // figure out how to identify integer literals...
-    return fmt::format("constexpr auto {} = {};\n", m_ptr->get_identifier_str(),
-            m_ptr->get_replacement_list_str());
+    // TODO: Determine viability of using static or inline here.
+    return fmt::format("constexpr auto {} = {};\n", m_ptr->identifier_str,
+            m_ptr->rep_list.get_replacement_list_str());
 }
 
 std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr)
 {
-    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n", m_ptr->get_identifier().get_value(),
+    return fmt::format("auto {} = [{}]()->void {{ {}; }};\n", m_ptr->identifier.get_value(),
             GetFunctionClosure(m_ptr).value_or(""), GetFunctionBody(m_ptr));
     // if it already has a semicolon or not
     // if(!(m_ptr->get_replacement_list().get_replacement_list_token_type()).statement_type)
     //  demacrofied_line << ";";
 }
 
-// FIXME: Clean this up a bit...
+// FIXME: This should be part of the macro, or at least a nonmember in the macro.cpp file.
 bool IsDemacrofiable(PPMacro const& mac)
 {
     bool demacrofiable = false;
-    const RlTokType token_cat = mac.get_replacement_list().get_replacement_list_token_type();
-    //std::cout<<"testing..."<<mac.get_identifier_str()<<"\n";
-    //if(mac.get_conditional_category() == CondCategory::local) {
-    //std::cout<<"condCat: local\n";
-    //std::cout<<"RlCCat: closed\n";
-    if(mac.get_replacement_list_closure_category() == RlCCat::closed)
+    const RlTokType token_cat = mac.rep_list.get_replacement_list_token_type();
+
+    if(mac.rep_list.get_replacement_list_closure_category() == RlCCat::closed)
     {
-        const MacroCategory m_cat = mac.get_macro_category();
+        const MacroCategory m_cat = mac.m_cat;
         /// @brief no demacrofication for null_define, variadic or other types
         if(m_cat == MacroCategory::object_like)
         {
             demacrofiable = !(token_cat.keyword_type
                               || (token_cat.assignment_type
-                                      && (mac.get_macro_scope_category() != MacroScopeCategory::inside_function))
+                                      && (mac.m_scat
+                                              != MacroScopeCategory::inside_function))
                               || token_cat.braces_type || token_cat.reject_type
                               || token_cat.special_type || token_cat.unknown_type
                               || token_cat.out_of_order_dependent_type);
@@ -379,7 +380,8 @@ bool IsDemacrofiable(PPMacro const& mac)
                               || token_cat.out_of_order_dependent_type);
             /// @brief if we couldnot capture any use case then
             /// it is not possible to apply the lambda function txform
-            if((mac.get_macro_scope_category() == MacroScopeCategory::inside_function) && mac.get_use_case_string().empty())
+            if((mac.m_scat == MacroScopeCategory::inside_function)
+                    && mac.invoArgs.empty())
             {
                 demacrofiable = false;
             }
@@ -394,8 +396,8 @@ bool IsDemacrofiable(PPMacro const& mac)
 std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr)
 {
     return fmt::format("auto {} = [{}]({}) {{ return {}; }};\n",
-            m_ptr->get_identifier().get_value(), GetFunctionClosure(m_ptr).value_or(""), GetFunctionArgs(m_ptr).value_or(""),
-            GetFunctionBody(m_ptr));
+            m_ptr->identifier.get_value(), GetFunctionClosure(m_ptr).value_or(""),
+            GetFunctionArgs(m_ptr).value_or(""), GetFunctionBody(m_ptr));
 }
 
 std::optional<std::string> GetFunctionClosure(const PPMacro* m_ptr)
@@ -420,13 +422,13 @@ std::optional<std::string> GetFunctionClosure(const PPMacro* m_ptr)
 // getting the correct token ID.
 std::optional<std::string> GetFunctionArgs(const PPMacro* m_ptr)
 {
-    if(!m_ptr->get_identifier_parameters().empty())
+    if(!m_ptr->identifier_parameters.empty())
     {
         std::vector<std::string> func_args;
-        func_args.reserve(m_ptr->get_use_case_string().size());
-        auto ip_iter = m_ptr->get_identifier_parameters().begin();
+        func_args.reserve(m_ptr->invoArgs.size());
+        auto ip_iter = m_ptr->identifier_parameters.begin();
 
-        for(auto&& invok : m_ptr->get_use_case_string())
+        for(auto&& invok : m_ptr->invoArgs)
         {
             auto& part_arg = func_args.emplace_back("decltype(" + invok + ") ");
             part_arg += ip_iter->arg.get_value();
@@ -441,7 +443,7 @@ std::optional<std::string> GetFunctionArgs(const PPMacro* m_ptr)
 
 std::string GetFunctionBody(const PPMacro* m_ptr)
 {
-    return m_ptr->get_replacement_list_str();
+    return m_ptr->rep_list.get_replacement_list_str();
 }
 
 std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
@@ -449,11 +451,11 @@ std::string GenerateUniqueMacroSwitch(PPMacro const* m_ptr)
     // FIXME: This gets called everytime, even for the same file.
     // Store the filename so it gets called only once per file.
     std::string file_name = general_utilities::keep_alpha_numeric(
-            m_ptr->get_identifier().get_position().get_file());
+            m_ptr->identifier.get_position().get_file());
 
-    return fmt::format("USE_{}_{}_{}_{}", m_ptr->get_identifier().get_value(), file_name,
-            m_ptr->get_identifier().get_position().get_line(),
-            m_ptr->get_identifier().get_position().get_column());
+    return fmt::format("USE_{}_{}_{}_{}", m_ptr->identifier.get_value(), file_name,
+            m_ptr->identifier.get_position().get_line(),
+            m_ptr->identifier.get_position().get_column());
 }
 
 std::string SuggestTranslation(std::string_view unique_macro_switch,
