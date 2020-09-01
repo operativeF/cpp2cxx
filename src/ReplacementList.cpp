@@ -38,6 +38,7 @@ void ReplacementList::set_replacement_list(const token_type& tok)
 void ReplacementList::set_replacement_list_str(std::string_view str, const vpTokInt& argId)
 {
     rl_str = str;
+    
     if(!argId.empty())
     {
         std::for_each(argId.begin(), argId.end(), [this](const auto& p_ti) {

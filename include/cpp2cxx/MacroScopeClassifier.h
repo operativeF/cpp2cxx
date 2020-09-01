@@ -151,6 +151,7 @@ enum class CondCategory
     config,
     local
 };
+
 inline std::ostream& operator<<(std::ostream& os, CondCategory const& c_cat)
 {
     switch(c_cat)

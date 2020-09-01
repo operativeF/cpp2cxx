@@ -103,17 +103,18 @@ private:
 
     ReadyQueue_t readyQueue;
     // contains all the line numbers where macros were invoked in current file
-    InvocationStat_t* pInvocationStat {nullptr};
+    InvocationStat_t* pInvocationStat{ nullptr };
     // containes all the information about macros in current file a/c clang
-    ASTMacroStat_t* pASTMacroStat {nullptr};
+    ASTMacroStat_t* pASTMacroStat{ nullptr };
 
     //pointer to the container having all the valid macros
     //to be used only when the cleanup is in process
     ValidMacros_t const* pValidaMacros;
-    int count {0};
+    int count{ 0 };
     // FIXME: Add getter / setter.
 public:
-    static constexpr std::string_view headerGuard = "#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)";
+    static constexpr std::string_view headerGuard =
+            "#if defined(__cplusplus) && defined(__GXX_EXPERIMENTAL_CXX0X__)";
 };
 
 std::string DemacrofyFunctionLike(const PPMacro* m_ptr);
@@ -127,9 +128,9 @@ std::string GenerateUniqueMacroSwitch(const PPMacro* m_ptr);
 std::string DemacrofyFunctionLikePostponed(const PPMacro* m_ptr);
 std::string DemacrofyObjectLikePostponed(const PPMacro* m_ptr);
 std::string SuggestTranslation(std::string_view unique_macro_switch,
-            std::string_view demacrofied_fstream, std::string_view original_str);
-std::string GenerateTranslation(std::string_view macro_iden,
-            std::string_view unique_macro_switch, std::string_view demacrofied_fstream);
+        std::string_view demacrofied_fstream, std::string_view original_str);
+std::string GenerateTranslation(std::string_view macro_iden, std::string_view unique_macro_switch,
+        std::string_view demacrofied_fstream);
 bool IsDemacrofiable(PPMacro const& mac);
 
 #endif /*DEMACROFIER*/

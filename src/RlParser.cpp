@@ -141,7 +141,7 @@ bool RlParser::Match(boost::wave::token_id id)
 
         //condStmt.push_back(*it);
 
-        /// @todo all the space is already consumed so no need of this,
+        /// TODO: all the space is already consumed so no need of this,
         /// but check it first
         while(*it == boost::wave::T_SPACE || *it == boost::wave::T_CCOMMENT)
         {
@@ -155,7 +155,7 @@ bool RlParser::Match(boost::wave::token_id id)
     //it--;
     //std::cout<<"\nNOMATCH::Expected: "<<id_value.str();
     //if there is mismatch the replacement_list is assumed to be open
-    /// @todo decide open/close carefully
+    /// TODO: decide open/close carefully
     //if(id != boost::wave::T_CPPCOMMENT || id != boost::wave::T_SEMICOLON) {
     if(id != boost::wave::T_SEMICOLON)
     {
@@ -333,6 +333,7 @@ void RlParser::Expression7()
     const auto id = boost::wave::token_id(*it);
     if(id == T_POUND_POUND || id == T_POUND_POUND_ALT || id == T_POUND_POUND_TRIGRAPH)
     {
+        // FIXME: Don't throw an exception over expected behavior.
         rl_ccat = RlCCat::open;
         throw ExceptionHandler(*it, "'##' operator");
     }
@@ -352,6 +353,7 @@ void RlParser::Expression8()
     case T_POUND_ALT:
     case T_POUND_TRIGRAPH:
         rl_ccat = RlCCat::open;
+        //FIXME: Don't throw an exception over expected behavior.
         throw ExceptionHandler("  - note: '#' operator");
         //prefix operators
     case T_MINUS:
@@ -559,6 +561,7 @@ void RlParser::Expression8()
         //continue overlooking symbols until a right brace is found
         //assumption: the macro is a multi-statement C++ code
         //there are no macros which has only open or only close brace
+        // FIXME: Throw an exception here.
         do
         {
             id = *it;

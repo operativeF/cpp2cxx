@@ -21,7 +21,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 #include "cpp2cxx/CondParser.h"
 
 #include <algorithm>
@@ -34,6 +33,7 @@ CondParser::CondParser(const std::filesystem::path& file_global_macros)
     
     if(!gMacros.is_open())
     {
+        // FIXME: Communicate this error better.
         return;
     }
 
@@ -246,7 +246,7 @@ void CondParser::Expression7()
         id = *it;
     }
 }
-// TODO look for the post increment operator
+// TODO: look for the post increment operator
 void CondParser::Expression8()
 {
     using namespace boost::wave;

@@ -31,6 +31,7 @@ limitations under the License.
 #include <fmt/format.h>
 #include <fmt/ostream.h>
 
+namespace fs = std::filesystem;
 
 FileManager::FileManager(FileManagerScheme const& fs, DemacroficationScheme const& ds)
         : fileManagerScheme(fs), demacroficationScheme(ds), inputFileIndex(0), outputFileIndex(0)
@@ -44,22 +45,22 @@ void FileManager::Configure(FileManagerScheme const& fs)
     //fileManagerScheme = fs;
 }
 
-const std::vector<std::filesystem::path>& FileManager::GetOutputFiles()
+const std::vector<fs::path>& FileManager::GetOutputFiles()
 {
     return fileManagerScheme.outputFiles;
 }
 
-const std::vector<std::filesystem::path>& FileManager::GetInputFiles()
+const std::vector<fs::path>& FileManager::GetInputFiles()
 {
     return fileManagerScheme.inputFiles;
 }
 
-const std::filesystem::path& FileManager::GetOutputDirectory()
+const fs::path& FileManager::GetOutputDirectory()
 {
     return fileManagerScheme.outputDirectory;
 }
 
-const std::filesystem::path& FileManager::GetInputDirectory()
+const fs::path& FileManager::GetInputDirectory()
 {
     return fileManagerScheme.inputDirectory;
 }
@@ -74,7 +75,7 @@ void FileManager::UpdateFile(std::string_view file_str)
 {
     auto output_file = GetCurrentOutputFile();
 
-    if(std::filesystem::exists(output_file))
+    if(fs::exists(output_file))
     {
         std::ofstream fp(output_file, std::ios_base::out);
 
@@ -111,7 +112,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
 {
     auto output_file = GetCurrentOutputFile();
 
-    if(std::filesystem::exists(output_file))
+    if(fs::exists(output_file))
     {
         std::ofstream fp(output_file, std::ios_base::out);
 
@@ -148,7 +149,7 @@ void FileManager::UpdateFile(Overseer const& overseer)
 }
 
 
-std::filesystem::path FileManager::GetCurrentOutputFile()
+fs::path FileManager::GetCurrentOutputFile()
 {
     // @TODO: Remove unsafe bounds here.
     auto output_file_name = fileManagerScheme.outputFiles[outputFileIndex];
@@ -156,12 +157,12 @@ std::filesystem::path FileManager::GetCurrentOutputFile()
     return output_file_name;
 }
 
-const std::vector<std::filesystem::path>& FileManager::GetSearchPaths() const
+const std::vector<fs::path>& FileManager::GetSearchPaths() const
 {
     return fileManagerScheme.searchPaths;
 }
 
-const std::vector<std::filesystem::path>& FileManager::GetInputFiles() const
+const std::vector<fs::path>& FileManager::GetInputFiles() const
 {
     return fileManagerScheme.inputFiles;
 }

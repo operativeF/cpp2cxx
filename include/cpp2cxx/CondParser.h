@@ -76,9 +76,9 @@ public:
     token_iterator GetTokenPosition();
 
 private:
-    CondCategory condCat {CondCategory::config};
+    CondCategory condCat{ CondCategory::config };
     //std::vector<token_type> condStmt;
-    Node* pNode {nullptr};
+    Node* pNode{ nullptr };
     token_iterator it;
     MacroList_t macroList;
 };

@@ -88,7 +88,7 @@ void TrackMacro::MacroExpands(const Token& MacroNameTok, const MacroInfo* MI, So
 /// PPCallback
 void TrackMacro::MacroDefined(const Token& MacroNameTok, const MacroDirective* MD)
 {
-    // @TODO: Check MD for nullness?
+    // TODO: Check MD for nullness?
     const MacroInfo* MI = MD->getMacroInfo();
     //if(MacroIsLocal(MI->getDefinitionLoc())) {
     CollectedMacroInfo cmi;

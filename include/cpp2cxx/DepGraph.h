@@ -62,7 +62,11 @@ limitations under the License.
 struct Node
 {
     //public:
-    Node() noexcept : key(boost::wave::T_UNKNOWN), nodeIndex(0), condCat(CondCategory::local), parent(nullptr)
+    Node() noexcept
+            : key(boost::wave::T_UNKNOWN),
+              nodeIndex(0),
+              condCat(CondCategory::local),
+              parent(nullptr)
     {
     }
     ~Node()
@@ -79,7 +83,7 @@ struct Node
     //put the macro in the free store
     PPMacro* PushBackMacro(PPMacro& mac)
     {
-        // @TODO: Replace with smart pointer?
+        // TODO: Replace with smart pointer.
         PPMacro* m = new PPMacro(mac);
         //*m = mac;
         return vecMacro.emplace_back(m);
@@ -89,15 +93,15 @@ struct Node
         return (condStmt == n.condStmt) && (parent == n.parent) && (vecMacro == n.vecMacro);
     }
 
-    token_type key; //this key may be #if, #ifdef, ifndef, endif
-    int nodeIndex;
+    token_type key{ boost::wave::T_UNKNOWN }; //this key may be #if, #ifdef, #ifndef, #endif
+    int nodeIndex{ 0 };
     //whether config macros used or local macros tested for
-    CondCategory condCat;
+    CondCategory condCat{ CondCategory::local };
     //the complete condition text including the #if etc...
     std::vector<token_type> condStmt;
     //Macros within the condition block
     std::vector<PPMacro*> vecMacro; //keep only the pointer to macro
-    Node* parent;
+    Node* parent{ nullptr };
 };
 
 /**
@@ -151,6 +155,7 @@ public:
  * @class MacTree
  * @brief The tree class having Node as vertices of the trees
  */
+// TODO: Make this more of a container.
 class MacTree
 {
 

@@ -509,7 +509,7 @@ void MyASTConsumer::DumpContent(std::string const& file_name)
     // placing here is important. It should be after the source manager
     // has created fileid for the file to be processed.
     track_macro->SetFileName(m_current_file);
-    ///////////////////////////////////////////////////////////
+
     ci.getDiagnosticClient().BeginSourceFile(ci.getLangOpts(), &ci.getPreprocessor());
     clang::ParseAST(ci.getPreprocessor(), this, ci.getASTContext());
     ci.getDiagnosticClient().EndSourceFile();
@@ -533,14 +533,14 @@ void MyASTConsumer::PrintSourceLocation(const clang::FunctionDecl* fd)
     /// print only when the functions are in the current file
     if(m_current_file == presumed.getFilename())
     {
-        /*    std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";
-    std::cout<<"Start:\t";
-    std::cout<<"line: "<<presumed.getLine();
-    std::cout<<", column: "<<presumed.getColumn();
-    presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
-    std::cout<<"\nEnd:\t";
-    std::cout<<"line: "<<presumed.getLine();
-    std::cout<<", column: "<<presumed.getColumn();*/
+        /* std::cout<<"Function declaration with name: "<<fd->getNameInfo().getAsString()<<"\n";
+        std::cout<<"Start:\t";
+        std::cout<<"line: "<<presumed.getLine();
+        std::cout<<", column: "<<presumed.getColumn();
+        presumed = sm.getPresumedLoc(fd->getSourceRange().getEnd());
+        std::cout<<"\nEnd:\t";
+        std::cout<<"line: "<<presumed.getLine();
+        std::cout<<", column: "<<presumed.getColumn();*/
         ParsedDeclInfo inf{};
 
         inf.start_line = presumed.getLine();

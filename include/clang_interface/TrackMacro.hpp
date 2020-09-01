@@ -96,17 +96,16 @@ public:
 
     InvocationStat_t* GetInvocationStat();
     //void CollectFunArgs(const MacroInfo* MI, SourceRange Range);
-    /*    MacroArgs *ReadFunctionLikeMacroArgs(Token &MacroNameStr,
+    /*MacroArgs *ReadFunctionLikeMacroArgs(Token &MacroNameStr,
                                          MacroInfo *MI,
-                                         SourceLocation &MacroEnd);
-*/
+                                         SourceLocation &MacroEnd);*/
 private:
     std::string file_name;
     // contains all the information about macros in a file as collected by clang
     ASTMacroStat_t ASTMacroStat;
     //std::map<std::string, CollectedMacroInfo>ASTMacroStat;
     // contains the line numbers of all the macro invocations in a file
-    InvocationStat_t* m_istat{nullptr};
+    InvocationStat_t* m_istat{ nullptr };
     const CompilerInstance* pci;
     SourceManager* sm{ nullptr };
 };
